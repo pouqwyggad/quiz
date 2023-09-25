@@ -1,7 +1,6 @@
 @import "../../../css/common";
 
 .container {
-  //margin-top: 15px;
   display: flex;
   position: relative;
   gap: 180px;
@@ -86,7 +85,6 @@
 .SliderRightValue {
   color: cornflowerblue;
   font-size: 12px;
-  //margin-top: 20px;
 }
 
 .SliderLeftValue {
@@ -99,9 +97,6 @@
   border-radius: 2px;
   border: 1px solid $borderColor;
   background: #fff;
-  //position: absolute;
-  //left: -48px;
-  //top: -15px;
 }
 
 .SliderRightValue {
@@ -114,7 +109,4 @@
   border-radius: 2px;
   border: 1px solid $borderColor;
   background: #fff;
-  //position: absolute;
-  //right: -52px;
-  //top: -15px;
 }

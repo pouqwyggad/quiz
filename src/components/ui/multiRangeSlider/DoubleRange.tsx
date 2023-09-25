@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState, useRef, FC } from "react";
+import React, {useCallback, useEffect, useState, useRef, FC} from "react";
 import PropTypes from "prop-types";
 import "./MultiRangeSlider.scss";
+import {RangeInputs} from "../RangeInputs/RangeInputs";
 
 interface DoubleRangeProps {
     min: number;
@@ -8,8 +9,9 @@ interface DoubleRangeProps {
     onChange: (values: { min: number; max: number }) => void;
 }
 
-export const DoubleRange: FC<DoubleRangeProps> = ({ min, max, onChange }) => {
+export const DoubleRange: FC<DoubleRangeProps> = ({min, max, onChange}) => {
     const range = useRef<HTMLDivElement | null>(null);
+
     const [minVal, setMinVal] = useState<number>(min);
     const [maxVal, setMaxVal] = useState<number>(max);
     const minValRef = useRef<number>(min);
@@ -43,7 +45,7 @@ export const DoubleRange: FC<DoubleRangeProps> = ({ min, max, onChange }) => {
     }, [minVal, maxVal, getPercent]);
 
     useEffect(() => {
-        const newValues = { min: minVal, max: maxVal };
+        const newValues = {min: minVal, max: maxVal};
         if (newValues.min !== min || newValues.max !== max) {
             onChange(newValues);
         }
@@ -54,39 +56,20 @@ export const DoubleRange: FC<DoubleRangeProps> = ({ min, max, onChange }) => {
             <div className="SliderLeftValue">{minVal}</div>
 
             <div className="Slider">
-                <input
-                    type="range"
+
+                <RangeInputs
                     min={min}
                     max={max}
-                    value={minVal}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        const value: number = Math.min(
-                            Number(event.target.value),
-                            maxVal - 1
-                        );
-                        setMinVal(value);
-                        minValRef.current = value;
-                    }}
-                    className="Thumb ThumbLeft"
-                    style={{ zIndex: minVal > max - 100 ? "5" : undefined }}
+                    minVal={minVal}
+                    maxVal={maxVal}
+                    minValRef={minValRef}
+                    maxValRef={maxValRef}
+                    changeMinValue={setMinVal}
+                    changeMaxValue={setMaxVal}
                 />
-                <input
-                    type="range"
-                    min={min}
-                    max={max}
-                    value={maxVal}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        const value: number = Math.max(
-                            Number(event.target.value),
-                            minVal + 1
-                        );
-                        setMaxVal(value);
-                        maxValRef.current = value;
-                    }}
-                    className="Thumb ThumbRight"
-                />
-                <div className="SliderTrack" />
-                <div ref={range} className="SliderRange" />
+
+                <div className="SliderTrack"/>
+                <div ref={range} className="SliderRange"/>
             </div>
 
             <div className="SliderRightValue">{maxVal}</div>
@@ -99,3 +82,36 @@ DoubleRange.propTypes = {
     max: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
 };
+
+
+// <input
+//     type="range"
+//     min={min}
+//     max={max}
+//     value={minVal}
+//     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+//         const value: number = Math.min(
+//             Number(event.target.value),
+//             maxVal - 1
+//         );
+//         setMinVal(value);
+//         minValRef.current = value;
+//     }}
+//     className="Thumb ThumbLeft"
+//     style={{ zIndex: minVal > max - 100 ? "5" : undefined }}
+// />
+// <input
+//     type="range"
+//     min={min}
+//     max={max}
+//     value={maxVal}
+//     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+//         const value: number = Math.max(
+//             Number(event.target.value),
+//             minVal + 1
+//         );
+//         setMaxVal(value);
+//         maxValRef.current = value;
+//     }}
+//     className="Thumb ThumbRight"
+// />
