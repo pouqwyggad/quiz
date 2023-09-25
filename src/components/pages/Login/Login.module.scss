@@ -1,0 +1,107 @@
+@import '../../../css/common.scss';
+
+.Login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 35px;
+  background: #fff;
+  filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.10)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.10));
+}
+
+.Title {
+  @include create-text(#000, 26px, 600);
+  margin-bottom: 41px;
+}
+
+.CustomCheckbox {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  @include create-text(#000, 14px, 600);
+}
+
+.HiddenCheckbox {
+  display: none;
+
+  &:checked + .Checkmark {
+    background: $bb;
+    border: 1.5px solid $bb;
+  }
+
+  &:checked + .Checkmark::after {
+    display: block;
+  }
+}
+
+.Checkmark {
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: 1.5px solid grey;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 8px;
+  position: relative;
+  transition: all .1s ease;
+
+  &::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 3px;
+    top: 3px;
+    width: 10px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+}
+
+.ForgotPass {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  @include create-text(#000, 14px, 600);
+  margin-bottom: 70px;
+}
+
+.SubmitButton {
+  @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);
+  background: $bb;
+  padding: 8px 145px;
+  border-radius: 30px;
+  box-shadow: $blueShadow;
+  margin-bottom: 31px;
+}
+
+.NoAccount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  @include create-text($sideText, 14px, 600, $lineHeight: 24px);
+  margin-bottom: 11px;
+}
+
+.SingUpButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  @include create-text($bb, 16px, 600, $lineHeight: 24px);
+  text-decoration-line: underline;
+  margin-bottom: 5px;
+  transition: all .1s ease;
+
+  &:hover {
+    text-decoration-line: none;
+  }
+}

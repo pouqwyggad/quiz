@@ -1,0 +1,13 @@
+@import '../../../css/common.scss';
+
+.Layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.Main {
+  display: flex;
+  height: 100%;
+}
