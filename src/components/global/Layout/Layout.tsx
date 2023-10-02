@@ -1,4 +1,4 @@
-import {FC, PropsWithChildren, useRef, useLayoutEffect, useEffect} from "react";
+import {FC, PropsWithChildren, useRef, useLayoutEffect, useEffect, useMemo} from "react";
 import classes from './Layout.module.scss';
 import {Header} from "../../ui/Header/Header";
 import {Outlet} from "@tanstack/react-router";
@@ -11,9 +11,8 @@ interface LayoutProps {
 export const Layout: FC<PropsWithChildren<LayoutProps>> = ({}) => {
     const path = useRef('')
 
-    useEffect(() => {
+    useMemo(() => {
         path.current = window.location.pathname
-        console.log(path.current)
     }, [window.location.pathname]);
 
 
@@ -22,7 +21,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = ({}) => {
             <Header/>
 
             <main className={classes.Main}>
-                {!path.current.includes('/auth') && (
+                {path.current === '/' && (
                     <Main/>
                 )}
 

@@ -71,15 +71,6 @@
   margin-bottom: 70px;
 }
 
-.SubmitButton {
-  @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);
-  background: $bb;
-  padding: 8px 145px;
-  border-radius: 30px;
-  box-shadow: $blueShadow;
-  margin-bottom: 31px;
-}
-
 .NoAccount {
   display: flex;
   justify-content: center;
@@ -87,7 +78,7 @@
   width: 100%;
   cursor: pointer;
   @include create-text($sideText, 14px, 600, $lineHeight: 24px);
-  margin-bottom: 11px;
+  margin: 31px 0 11px 0;
 }
 
 .SingUpButton {

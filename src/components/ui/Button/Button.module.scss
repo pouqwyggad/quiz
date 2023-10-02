@@ -1,0 +1,21 @@
+@import "../../../css/common";
+
+.Button {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 7px;
+  border-radius: 30px;
+
+  &Blue {
+    @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);
+    background: $bb;
+    box-shadow: $blueShadow;
+  }
+
+  &White {
+    @include create-text(#000, 16px, 500, $letterSpacing: 0.16px);
+    background: $cleanWhite;
+    box-shadow: $logOutButton;
+  }
+}

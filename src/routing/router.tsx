@@ -4,6 +4,7 @@ import React from 'react';
 import {Login} from "../components/pages/Login/Login";
 import {Form} from "../components/global/Form/Form";
 import {Registration} from "../components/pages/Registration/Registration";
+import {Profile} from "../components/pages/Profile/Profile";
 
 const rootRoute = new RootRoute({
     component: () => (
@@ -37,17 +38,23 @@ const registrationRoute = new Route({
     component: () => <Registration/>
 })
 
+const profileRoute = new Route({
+    getParentRoute: () => indexRoute,
+    path: "/profile",
+    component: () => <Profile/>
+})
+
 const routeTree = rootRoute.addChildren([
     indexRoute.addChildren([
         authRoute.addChildren([
             loginRoute,
             registrationRoute
-        ])
+        ]),
+        profileRoute
     ])
 ])
 
 export const router = new Router({routeTree})
-
 
 declare module '@tanstack/react-router' {
     interface Register {

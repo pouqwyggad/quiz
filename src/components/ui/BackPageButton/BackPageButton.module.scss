@@ -1,0 +1,11 @@
+@import "../../../css/common";
+
+.Back{
+  position: absolute;
+  display: flex;
+  gap: 8px;
+  top: -12px;
+  left: -140px - 157px;
+  font-feature-settings: 'clig' off, 'liga' off;
+  @include create-text($text, 14px, 400, $lineHeight: 24px);
+}

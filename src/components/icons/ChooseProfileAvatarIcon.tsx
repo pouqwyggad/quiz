@@ -5,6 +5,8 @@ interface ChooseProfileAvatarIconProps {
 }
 
 export const ChooseProfileAvatarIcon: FC<PropsWithChildren<ChooseProfileAvatarIconProps>> = ({className}) => {
+
+    console.log(className)
     return (
         <svg className={className} width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="15.5" fill="#808080" stroke="white"/>

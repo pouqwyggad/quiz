@@ -1,0 +1,38 @@
+@import "../../../css/common";
+
+.Wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, .6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Container {
+  z-index: 11;
+  background-color: #fff;
+  width: 395px;
+}
+
+hr {
+  background: $borderColor;
+  padding-bottom: 35px;
+}
+
+.Title {
+  display: flex;
+  justify-content: space-between;
+  padding: 19px 24px;
+  align-items: center;
+  position: relative;
+  @include create-text($text, 18px, 500);
+}
+
+.ContainerSectionTwo {
+  padding: 19px 24px;
+}

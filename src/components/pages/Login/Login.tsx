@@ -1,15 +1,22 @@
 import classes from './Login.module.scss'
 import React, {FC, PropsWithChildren, useState} from "react"
-import {Link} from "@tanstack/react-router";
+import {Link, useNavigate} from "@tanstack/react-router";
 import {TextField} from "../../ui/TextField/TextField";
+import {Button} from "../../ui/Button/Button";
+import {loginAsync} from "../../../store/authSlice";
+import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 
 interface LoginProps {
 
 }
 
 export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
+    const navigate = useNavigate({from: '/auth/login'})
+    const dispatch = useAppDispatch();
+    const userInfo = useAppSelector((state) => state.auth.user);
 
     const [user, setUser] = useState<Record<string, string>>({email: "", password: ""})
+    const [rememberMe, setRememberMe] = useState<boolean>(false)
 
     const handleChangeUserValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
@@ -18,7 +25,14 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
             ...prevState,
             [name]: value,
         }))
+    }
 
+    const handleLogin = async () => {
+        const res = await dispatch(loginAsync({email: user.email, password: user.password, rememberMe}))
+
+        if (res) {
+            navigate({to: '/profile'})
+        }
     }
 
     return (
@@ -28,13 +42,13 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
             <TextField
                 name={"email"}
                 user={user}
-                onChange={(e) => handleChangeUserValue(e)}
+                onChange={handleChangeUserValue}
                 text={"Email"}
             />
             <TextField
                 name={"password"}
                 user={user}
-                onChange={(e) => handleChangeUserValue(e)}
+                onChange={handleChangeUserValue}
                 text={"Password"}
             />
 
@@ -42,26 +56,29 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
                 <input
                     className={classes.HiddenCheckbox}
                     type="checkbox"
+                    checked={rememberMe}
+                    onChange={() => {
+                        setRememberMe(prevState => !prevState)
+                    }}
                 />
                 <span className={classes.Checkmark}></span>
                 Remember me
             </label>
 
-
             <div className={classes.ForgotPass}>Forgot Password?</div>
 
-            <button className={classes.SubmitButton}>Sing In</button>
+            <Button
+                sidePadding={145}
+                type={"blue"}
+                text={"Sing In"}
+                onClick={handleLogin}
+            />
 
             <div className={classes.NoAccount}>Don't you have an account yet?</div>
 
-            {/*<Link */}
-
             <Link
                 to={"/auth/registration"}
-                // activeProps={{
-                //     className: classes.ActiveLink
-                // }}
-               className={classes.SingUpButton}
+                className={classes.SingUpButton}
             >
                 Sing Up
             </Link>

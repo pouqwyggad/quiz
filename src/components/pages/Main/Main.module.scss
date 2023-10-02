@@ -11,11 +11,3 @@
 .PageTitle {
   @include create-text($text, 22px, 600, $lineHeight: 20px);
 }
-
-.ButtonAdd {
-  background: $bb;
-  @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);
-  padding: 8px 28px;
-  box-shadow: $blueShadow;
-  border-radius: 30px;
-}
