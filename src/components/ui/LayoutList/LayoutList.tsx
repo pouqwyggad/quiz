@@ -19,7 +19,10 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({data}) => {
                     <th>Actions</th>
                 </tr>
                 {data.map(item => (
-                    <tr className={classes.DefaultRow}>
+                    <tr
+                        key={item.Name}
+                        className={classes.DefaultRow}
+                    >
                         <td>{item.Name}</td>
                         <td>{item.Cards}</td>
                         <td>{item.LastUpdated}</td>
@@ -32,22 +35,3 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({data}) => {
 
     )
 }
-
-
-//
-// <li className={classes.ListTitle}>
-//     <div>Name</div>
-//     <div>Cards</div>
-//     <div>Last Updated</div>
-//     <div>Created by</div>
-//     <div>Actions</div>
-// </li>
-// {data.map(item => (
-//     <li className={classes.DefaultListItem}>
-//         <div>{item.Name}</div>
-//         <div>{item.Cards}</div>
-//         <div>{item.LastUpdated}</div>
-//         <div>{item.CreatedBy}</div>
-//         <div>{item.Actions}</div>
-//     </li>
-// ))}

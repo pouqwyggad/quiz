@@ -6,14 +6,12 @@ import {Button} from "../../ui/Button/Button";
 import {loginAsync} from "../../../store/authSlice";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 
-interface LoginProps {
-
-}
+interface LoginProps {}
 
 export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
     const navigate = useNavigate({from: '/auth/login'})
     const dispatch = useAppDispatch();
-    const userInfo = useAppSelector((state) => state.auth.user);
+    const data = useAppSelector((state) => state.auth);
 
     const [user, setUser] = useState<Record<string, string>>({email: "", password: ""})
     const [rememberMe, setRememberMe] = useState<boolean>(false)
@@ -28,10 +26,13 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
     }
 
     const handleLogin = async () => {
-        const res = await dispatch(loginAsync({email: user.email, password: user.password, rememberMe}))
+        const res = await dispatch(loginAsync({email: user.email, password: user.password, rememberMe}));
 
-        if (res) {
-            navigate({to: '/profile'})
+        console.log(res)
+        if (res.meta.requestStatus === "fulfilled") {
+            navigate({to: '/profile'});
+        } else {
+            console.error("Authentication failed.");
         }
     }
 
@@ -65,7 +66,13 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
                 Remember me
             </label>
 
-            <div className={classes.ForgotPass}>Forgot Password?</div>
+            <Link
+                to={"/auth/recover"}
+                className={classes.ForgotPass}
+            >
+                Forgot Password?
+            </Link>
+
 
             <Button
                 sidePadding={145}

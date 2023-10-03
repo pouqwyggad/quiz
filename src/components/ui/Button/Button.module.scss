@@ -6,6 +6,7 @@
   width: fit-content;
   gap: 7px;
   border-radius: 30px;
+  cursor: pointer;
 
   &Blue {
     @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);

@@ -5,11 +5,9 @@ interface ChooseProfileAvatarIconProps {
 }
 
 export const ChooseProfileAvatarIcon: FC<PropsWithChildren<ChooseProfileAvatarIconProps>> = ({className}) => {
-
-    console.log(className)
     return (
-        <svg className={className} width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="16" cy="16" r="15.5" fill="#808080" stroke="white"/>
+        <svg width="50" height="50" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle className={className} cx="16" cy="16" r="15.5" fill="#808080" stroke="white"/>
             <path fillRule="evenodd" clipRule="evenodd"
                   d="M16 18.8444C17.3746 18.8444 18.4889 17.7301 18.4889 16.3555C18.4889 14.9809 17.3746 13.8666 16 13.8666C14.6254 13.8666 13.5111 14.9809 13.5111 16.3555C13.5111 17.7301 14.6254 18.8444 16 18.8444ZM16 18.2222C17.031 18.2222 17.8667 17.3865 17.8667 16.3555C17.8667 15.3246 17.031 14.4889 16 14.4889C14.9691 14.4889 14.1334 15.3246 14.1334 16.3555C14.1334 17.3865 14.9691 18.2222 16 18.2222Z"
                   fill="white"/>

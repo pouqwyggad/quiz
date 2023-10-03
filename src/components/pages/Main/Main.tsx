@@ -8,9 +8,7 @@ import {DataType} from "./dataType";
 import {Button} from "../../ui/Button/Button";
 import {AddNewPack} from "../../ui/AddNewPack/AddNewPack";
 
-interface MainProps {
-
-}
+interface MainProps {}
 
 const ROWS_PER_PAGE = 10;
 
@@ -31,16 +29,13 @@ export const Main: FC<PropsWithChildren<MainProps>> = ({}) => {
         const current = page
         const next = current + 1
         const total = dataset ? getTotalPageCount(dataset.length) : current
-
         setPage(next <= total ? next : current);
-
     }, [page, dataset])
 
 
     const handlePrevPageClick = useCallback(() => {
         const current = page
         const prev = current - 1
-
         setPage(prev > 0 ? prev : current);
     }, [page])
 

@@ -5,7 +5,7 @@
   display: flex;
   gap: 8px;
   top: -12px;
-  left: -140px - 157px;
+  left: -140px - 257px;
   font-feature-settings: 'clig' off, 'liga' off;
-  @include create-text($text, 14px, 400, $lineHeight: 24px);
+  @include create-text($text, 20px, 600, $lineHeight: 24px);
 }

@@ -1,31 +1,52 @@
 import classes from './Profile.module.scss'
-import {FC, PropsWithChildren} from "react"
+import React, {FC, PropsWithChildren, useState} from "react"
 import {ChooseProfileAvatarIcon} from "../../icons/ChooseProfileAvatarIcon";
 import {EditIcon} from "../../icons/EditIcon";
 import {Button} from "../../ui/Button/Button";
 import {LogOutIcon} from "../../icons/LogOutIcon";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
-import {ArrowBackIcon} from "../../icons/ArrowBackIcon";
 import {Link} from "@tanstack/react-router";
 import {BackPageButton} from "../../ui/BackPageButton/BackPageButton";
-import {Simulate} from "react-dom/test-utils";
-import load = Simulate.load;
-import {logoutAsync} from "../../../store/authSlice";
+import {changeProfileNameAsync, logoutAsync} from "../../../store/authSlice";
+import {TextField} from "../../ui/TextField/TextField";
 
-interface ProfileProps {
-
-}
+interface ProfileProps {}
 
 export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
     const dispatch = useAppDispatch()
-    const userInfo = useAppSelector((state) => state.auth.user);
-
-    const user = JSON.parse(localStorage.userData)
-
-    console.log(user)
+    const data = useAppSelector((state) => state.auth);
+    const [name, setName] = useState(data.user.name)
+    const [avatar, setAvatar] = useState(data.user.avatar)
+    const [editName, setEditName] = useState(false)
 
     const handleLogout = () => {
-        const res = dispatch(logoutAsync())
+        dispatch(logoutAsync())
+    }
+
+    const edit = () => {
+        setEditName(p => !p)
+    }
+
+    const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setName(e.target.value)
+    }
+
+    const saveNewName = () => {
+        dispatch(changeProfileNameAsync({avatar, name}))
+    }
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedImage = e.target.files?.[0]
+        if (selectedImage) {
+            const reader = new FileReader()
+            reader.onload = () => {
+                if (typeof reader.result === 'string') {
+                    setAvatar(reader.result)
+                    dispatch(changeProfileNameAsync({avatar: reader.result, name}))
+                }
+            }
+            reader.readAsDataURL(selectedImage)
+        }
     }
 
     return (
@@ -37,33 +58,51 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
                 <div className={classes.AvatarContainer}>
                     <img
                         className={classes.AvatarImg}
-                        // @ts-ignore
-                        src={user.avatar} alt=""
+                        src={avatar}
+                        alt="Profile img"
                     />
 
-                    <div className={classes.AvatarChangeIcon}>
-                        <ChooseProfileAvatarIcon/>
-                    </div>
+                    <label className={classes.AvatarChangeIcon}>
+                        <ChooseProfileAvatarIcon className={classes.ChooseProfileAvatarIconHover}/>
+                        <input
+                            accept="image/*"
+                            type="file"
+                            onChange={handleImageChange}
+                        />
+                    </label>
                 </div>
 
-                <div className={classes.NameArea}>
-                    <div
-                        className={classes.Username}
-                    >
-                        {
-                            // @ts-ignore
-                            user.name
-                        }
+                {editName ? (
+                    <div className={classes.EditContainer}>
+                        <TextField onChange={handleChangeName} text={"Nickname"} name={"text"}/>
+                        <button
+                            className={classes.ButtonSave}
+                            onClick={() => {
+                                saveNewName()
+                                edit()
+                            }}
+                        >
+                            save
+                        </button>
                     </div>
-                    <EditIcon/>
-                </div>
+                ) : (
+                    <div className={classes.NameArea}>
+                        <div
+                            className={classes.Username}
+                        >
+                            {data.user.name}
+                        </div>
 
-                <div className={classes.EmailText}>
-                    {
-                        // @ts-ignore
-                        user.email
-                    }
-                </div>
+                        <EditIcon
+                            width={"20"}
+                            height={"20"}
+                            className={classes.Edit}
+                            onClick={edit}
+                        />
+                    </div>
+                )}
+
+                <div className={classes.EmailText}>{data.user.email}</div>
 
                 <BackPageButton
                     src={"/"}

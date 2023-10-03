@@ -3,9 +3,7 @@ import React, {FC, PropsWithChildren, useState} from "react"
 import {TextField} from "../../ui/TextField/TextField";
 import {Link} from "@tanstack/react-router";
 
-interface RecoverPassProps {
-
-}
+interface RecoverPassProps {}
 
 export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
     const [user, setUser] = useState<Record<string, string>>({email: ""})
@@ -41,20 +39,14 @@ export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
                 Remember me
             </label>
 
-
             <div className={classes.ForgotPass}>Forgot Password?</div>
 
             <button className={classes.SubmitButton}>Sing In</button>
 
             <div className={classes.NoAccount}>Don't you have an account yet?</div>
 
-            {/*<Link */}
-
             <Link
                 to={"/auth/registration"}
-                // activeProps={{
-                //     className: classes.ActiveLink
-                // }}
                 className={classes.SingUpButton}
             >
                 Sing Up

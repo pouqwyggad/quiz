@@ -4,6 +4,7 @@
   width: 100%;
   position: relative;
   margin-bottom: 24px;
+  transition: all .2s ease;
 
   &::after {
     content: "";
@@ -12,7 +13,7 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background: $sideText;
+    background: $borderColor;
   }
 }
 

@@ -5,6 +5,7 @@ import {Login} from "../components/pages/Login/Login";
 import {Form} from "../components/global/Form/Form";
 import {Registration} from "../components/pages/Registration/Registration";
 import {Profile} from "../components/pages/Profile/Profile";
+import {RecoverPass} from "../components/pages/RecoverPass/RecoverPass";
 
 const rootRoute = new RootRoute({
     component: () => (
@@ -32,6 +33,12 @@ const loginRoute = new Route({
     component: () => <Login/>
 })
 
+const recoverRoute = new Route({
+    getParentRoute: () => authRoute,
+    path: "/recover",
+    component: () => <RecoverPass/>
+})
+
 const registrationRoute = new Route({
     getParentRoute: () => authRoute,
     path: "/registration",
@@ -48,7 +55,8 @@ const routeTree = rootRoute.addChildren([
     indexRoute.addChildren([
         authRoute.addChildren([
             loginRoute,
-            registrationRoute
+            registrationRoute,
+            recoverRoute
         ]),
         profileRoute
     ])
