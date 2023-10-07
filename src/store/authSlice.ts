@@ -1,19 +1,16 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import {ILogin} from "../interfaces/AuthResponse";
 import api from "../api";
+import {AxiosError} from "axios";
 
 export const loginAsync = createAsyncThunk<ILogin, { email: string; password: string, rememberMe: boolean }, {
-    rejectValue: { message: string }
+    rejectValue: string
 }>(
     "auth/login",
 
     async ({email, password, rememberMe}, {rejectWithValue}) => {
         try {
-            const response = await api.post<ILogin>('/auth/login', {email, password, rememberMe});
-            // if (!(response.statusText === "OK")) {
-            //     return rejectWithValue({message: "Error"});
-            // }
-
+            const response = await api.post<ILogin>('/auth/login', {email, password, rememberMe})
             const userData = {
                 "name": response.data.name,
                 "email": response.data.email,
@@ -21,17 +18,12 @@ export const loginAsync = createAsyncThunk<ILogin, { email: string; password: st
             }
 
             const token = response.data.token
-
             localStorage.setItem("userData", JSON.stringify(userData))
             localStorage.setItem("token", JSON.stringify(token))
 
-            return response.data;
-        } catch (error: any) {
-            if (error.response && error.response.data) {
-                return rejectWithValue(error.response.data);
-            } else {
-                return rejectWithValue({message: "Unknown error occurred."});
-            }
+            return response.data
+        } catch (e: any) {
+            return rejectWithValue(e.response.data.error)
         }
     }
 )
@@ -39,27 +31,23 @@ export const logoutAsync = createAsyncThunk(
     "auth/logout",
 
     async () => {
-        try {
-            localStorage.clear()
-
-            return await api.delete('/auth/me')
-        } catch (error: any) {
-            throw error.response.data
-        }
+        localStorage.clear()
+        return await api.delete('/auth/me')
     }
 )
 
-
-export const changeProfileNameAsync = createAsyncThunk<ILogin, { avatar: string, name: string }, {}>(
+export const changeProfileNameAsync = createAsyncThunk<ILogin, { avatar: string, name: string }, {
+    rejectValue: string
+}>(
     "change/name",
 
-    async ({avatar, name}) => {
+    async ({avatar, name}, {rejectWithValue}) => {
         try {
             const res = await api.put('/auth/me', {name, avatar})
 
             return res.data.updatedUser
-        } catch (error) {
-
+        } catch (e: any) {
+            return rejectWithValue(e.response.data.error)
         }
     }
 )
@@ -102,6 +90,9 @@ const authSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
+            .addCase(loginAsync.rejected, (state, action) => {
+                console.log(action.payload)
+            })
             .addCase(loginAsync.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
@@ -136,6 +127,9 @@ const authSlice = createSlice({
             })
             .addCase(changeProfileNameAsync.fulfilled, (state, action) => {
                 state.user = action.payload
+            })
+            .addCase(changeProfileNameAsync.rejected, (state, action) => {
+                console.log(action.payload)
             })
     }
 })

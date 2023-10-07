@@ -1,11 +1,10 @@
-import {FC, PropsWithChildren, useRef, useLayoutEffect, useEffect, useMemo} from "react";
+import {FC, PropsWithChildren, useRef, useMemo} from "react";
 import classes from './Layout.module.scss';
 import {Header} from "../../ui/Header/Header";
 import {Outlet} from "@tanstack/react-router";
 import {Main} from "../../pages/Main/Main";
 
 interface LayoutProps {
-
 }
 
 export const Layout: FC<PropsWithChildren<LayoutProps>> = ({}) => {
@@ -17,7 +16,9 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = ({}) => {
 
 
     return (
-        <div className={classes.Layout}>
+        <div
+            className={classes.Layout}
+        >
             <Header/>
 
             <main className={classes.Main}>

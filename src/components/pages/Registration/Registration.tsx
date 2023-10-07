@@ -5,6 +5,8 @@ import {Link, useNavigate} from "@tanstack/react-router";
 import {Button} from "../../ui/Button/Button";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
 import {registerAsync} from "../../../store/registerSlice";
+import {pageMotion} from "../../../motions/pageMotion";
+import { motion } from 'framer-motion';
 
 interface RegistrationProps {
 
@@ -43,7 +45,14 @@ export const Registration: FC<PropsWithChildren<RegistrationProps>> = ({}) => {
     }
 
     return (
-        <div className={classes.Login}>
+        <motion.div
+            key={1}
+            initial={'initial'}
+            animate={'animate'}
+            exit={'exit'}
+            variants={pageMotion}
+            className={classes.Login}
+        >
             <div className={classes.Title}>Sing up</div>
 
             <TextField
@@ -82,6 +91,6 @@ export const Registration: FC<PropsWithChildren<RegistrationProps>> = ({}) => {
             >
                 Sing In
             </Link>
-        </div>
+        </motion.div>
     )
 }

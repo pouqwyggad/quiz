@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import {ILogin, IRegister} from "../interfaces/AuthResponse";
+import {IRegister} from "../interfaces/AuthResponse";
 import api from "../api";
 
 export const registerAsync = createAsyncThunk<boolean, { email: string, password: string }, {}>(
@@ -29,16 +29,12 @@ const initialState = {
     user: null,
     loading: false,
     error: null,
-};
+}
 
 const registerSlice = createSlice({
     name: "register",
     initialState,
-    reducers: {
-        // logout: (state) => {
-        //     state.user = null;
-        // },
-    },
+    reducers: {},
     extraReducers: {
         [registerAsync.fulfilled.toString()]: (state, action) => {
             state.user = action.payload

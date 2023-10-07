@@ -4,10 +4,11 @@ import {TextField} from "../../ui/TextField/TextField";
 import {Link} from "@tanstack/react-router";
 import {useAppDispatch} from "../../../hooks/hook";
 import {resetPasswordAsync} from "../../../store/resetPasswordSlice";
+import {Button} from "../../ui/Button/Button";
+import {pageMotion} from "../../../motions/pageMotion";
+import { motion } from 'framer-motion';
 
-interface RecoverPassProps {
-}
-
+interface RecoverPassProps {}
 export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
     const dispatch = useAppDispatch();
     const [email, setEmail] = useState<string>("")
@@ -17,32 +18,38 @@ export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
     }
     console.log(email)
 
-    const resetPass = async () => {
-        const res = await dispatch(resetPasswordAsync({email}))
+    const resetPass = () => {
+        dispatch(resetPasswordAsync({email}))
     }
 
     return (
-        <div className={classes.Login}>
+        <motion.div
+            key={1}
+            initial={'initial'}
+            animate={'animate'}
+            exit={'exit'}
+            variants={pageMotion}
+            className={classes.Container}
+        >
             <div className={classes.Title}>Forgot your password?</div>
 
             <TextField
                 name={"email"}
-                // user={email}
                 onChange={(e) => handleChangeUserValue(e)}
                 text={"Email"}
             />
 
-            <div className={classes.ForgotPass}>Enter your email address and we will send you further instructions</div>
+            <div className={classes.ForgotPass}>
+                Enter your email address and we will send you<br/> further instructions
+            </div>
 
-            <Link
-                to={"/auth/set-new-password"}
-                style={{
-                    color: "red"
-                }}
-                // className={classes.SubmitButton}
-                onClick={resetPass}
-            >
-                Send Instructions
+            <Link to={"/auth/check-mail"}>
+                <Button
+                    sidePadding={100}
+                    type={"blue"}
+                    text={"Send Instructions"}
+                    onClick={resetPass}
+                />
             </Link>
 
             <div className={classes.NoAccount}>Did you remember your password?</div>
@@ -53,6 +60,6 @@ export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
             >
                 Try logging in
             </Link>
-        </div>
+        </motion.div>
     )
 }
