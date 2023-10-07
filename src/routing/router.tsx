@@ -6,6 +6,7 @@ import {Form} from "../components/global/Form/Form";
 import {Registration} from "../components/pages/Registration/Registration";
 import {Profile} from "../components/pages/Profile/Profile";
 import {RecoverPass} from "../components/pages/RecoverPass/RecoverPass";
+import {NewPass} from "../components/pages/newPass/NewPass";
 
 const rootRoute = new RootRoute({
     component: () => (
@@ -35,8 +36,19 @@ const loginRoute = new Route({
 
 const recoverRoute = new Route({
     getParentRoute: () => authRoute,
-    path: "/recover",
+    path: "/forgot-password",
     component: () => <RecoverPass/>
+})
+
+const newPasswordsRoute = new Route({
+    getParentRoute: () => authRoute,
+    path: "/set-new-password",
+    component: () => <NewPass/>
+})
+
+const newPassPoute = new Route({
+    getParentRoute: () => newPasswordsRoute,
+    path: "$token"
 })
 
 const registrationRoute = new Route({
@@ -56,7 +68,8 @@ const routeTree = rootRoute.addChildren([
         authRoute.addChildren([
             loginRoute,
             registrationRoute,
-            recoverRoute
+            recoverRoute,
+            newPasswordsRoute.addChildren([newPassPoute]),
         ]),
         profileRoute
     ])

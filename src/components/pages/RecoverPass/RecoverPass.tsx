@@ -2,54 +2,56 @@ import classes from './RecoverPass.module.scss'
 import React, {FC, PropsWithChildren, useState} from "react"
 import {TextField} from "../../ui/TextField/TextField";
 import {Link} from "@tanstack/react-router";
+import {useAppDispatch} from "../../../hooks/hook";
+import {resetPasswordAsync} from "../../../store/resetPasswordSlice";
 
-interface RecoverPassProps {}
+interface RecoverPassProps {
+}
 
 export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
-    const [user, setUser] = useState<Record<string, string>>({email: ""})
+    const dispatch = useAppDispatch();
+    const [email, setEmail] = useState<string>("")
 
     const handleChangeUserValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target
+        setEmail(e.target.value)
+    }
+    console.log(email)
 
-        setUser((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }))
-
+    const resetPass = async () => {
+        const res = await dispatch(resetPasswordAsync({email}))
     }
 
     return (
         <div className={classes.Login}>
-            <div className={classes.Title}>Sing in</div>
+            <div className={classes.Title}>Forgot your password?</div>
 
             <TextField
                 name={"email"}
-                user={user}
+                // user={email}
                 onChange={(e) => handleChangeUserValue(e)}
                 text={"Email"}
             />
 
-
-            <label className={classes.CustomCheckbox}>
-                <input
-                    className={classes.HiddenCheckbox}
-                    type="checkbox"
-                />
-                <span className={classes.Checkmark}></span>
-                Remember me
-            </label>
-
-            <div className={classes.ForgotPass}>Forgot Password?</div>
-
-            <button className={classes.SubmitButton}>Sing In</button>
-
-            <div className={classes.NoAccount}>Don't you have an account yet?</div>
+            <div className={classes.ForgotPass}>Enter your email address and we will send you further instructions</div>
 
             <Link
-                to={"/auth/registration"}
+                to={"/auth/set-new-password"}
+                style={{
+                    color: "red"
+                }}
+                // className={classes.SubmitButton}
+                onClick={resetPass}
+            >
+                Send Instructions
+            </Link>
+
+            <div className={classes.NoAccount}>Did you remember your password?</div>
+
+            <Link
+                to={"/auth/login"}
                 className={classes.SingUpButton}
             >
-                Sing Up
+                Try logging in
             </Link>
         </div>
     )
