@@ -53,7 +53,6 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
 
     return (
         <motion.div
-            key={1}
             initial={'initial'}
             animate={'animate'}
             exit={'exit'}

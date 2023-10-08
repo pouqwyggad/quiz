@@ -60,7 +60,6 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
 
     return (
         <motion.div
-            key={1}
             initial={'initial'}
             animate={'animate'}
             exit={'exit'}
