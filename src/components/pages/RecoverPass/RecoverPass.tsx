@@ -2,55 +2,64 @@ import classes from './RecoverPass.module.scss'
 import React, {FC, PropsWithChildren, useState} from "react"
 import {TextField} from "../../ui/TextField/TextField";
 import {Link} from "@tanstack/react-router";
+import {useAppDispatch} from "../../../hooks/hook";
+import {resetPasswordAsync} from "../../../store/resetPasswordSlice";
+import {Button} from "../../ui/Button/Button";
+import {pageMotion} from "../../../motions/pageMotion";
+import { motion } from 'framer-motion';
 
 interface RecoverPassProps {}
-
 export const RecoverPass: FC<PropsWithChildren<RecoverPassProps>> = ({}) => {
-    const [user, setUser] = useState<Record<string, string>>({email: ""})
+    const dispatch = useAppDispatch();
+    const [email, setEmail] = useState<string>("")
 
     const handleChangeUserValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target
+        setEmail(e.target.value)
+    }
+    console.log(email)
 
-        setUser((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }))
-
+    const resetPass = () => {
+        dispatch(resetPasswordAsync({email}))
     }
 
     return (
-        <div className={classes.Login}>
-            <div className={classes.Title}>Sing in</div>
+        <motion.div
+            key={1}
+            initial={'initial'}
+            animate={'animate'}
+            exit={'exit'}
+            variants={pageMotion}
+            className={classes.Container}
+        >
+            <div className={classes.Title}>Forgot your password?</div>
 
             <TextField
                 name={"email"}
-                user={user}
                 onChange={(e) => handleChangeUserValue(e)}
                 text={"Email"}
             />
 
+            <div className={classes.ForgotPass}>
+                Enter your email address and we will send you<br/> further instructions
+            </div>
 
-            <label className={classes.CustomCheckbox}>
-                <input
-                    className={classes.HiddenCheckbox}
-                    type="checkbox"
+            <Link to={"/auth/check-mail"}>
+                <Button
+                    sidePadding={100}
+                    type={"blue"}
+                    text={"Send Instructions"}
+                    onClick={resetPass}
                 />
-                <span className={classes.Checkmark}></span>
-                Remember me
-            </label>
+            </Link>
 
-            <div className={classes.ForgotPass}>Forgot Password?</div>
-
-            <button className={classes.SubmitButton}>Sing In</button>
-
-            <div className={classes.NoAccount}>Don't you have an account yet?</div>
+            <div className={classes.NoAccount}>Did you remember your password?</div>
 
             <Link
-                to={"/auth/registration"}
+                to={"/auth/login"}
                 className={classes.SingUpButton}
             >
-                Sing Up
+                Try logging in
             </Link>
-        </div>
+        </motion.div>
     )
 }

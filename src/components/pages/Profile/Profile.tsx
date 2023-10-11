@@ -9,6 +9,8 @@ import {Link} from "@tanstack/react-router";
 import {BackPageButton} from "../../ui/BackPageButton/BackPageButton";
 import {changeProfileNameAsync, logoutAsync} from "../../../store/authSlice";
 import {TextField} from "../../ui/TextField/TextField";
+import {pageMotion} from "../../../motions/pageMotion";
+import { motion } from 'framer-motion';
 
 interface ProfileProps {}
 
@@ -50,7 +52,13 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
     }
 
     return (
-        <div className={classes.Profile}>
+        <motion.div
+            initial={'initial'}
+            animate={'animate'}
+            exit={'exit'}
+            variants={pageMotion}
+            className={classes.Profile}
+        >
             <div className={classes.ProfileCardContainer}>
 
                 <div className={classes.ProfileTitle}>Personal Information</div>
@@ -122,6 +130,6 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
                 </Link>
 
             </div>
-        </div>
+        </motion.div>
     )
 }

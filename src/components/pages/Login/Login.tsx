@@ -5,24 +5,46 @@ import {TextField} from "../../ui/TextField/TextField";
 import {Button} from "../../ui/Button/Button";
 import {loginAsync} from "../../../store/authSlice";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
+import { motion } from 'framer-motion';
+import {pageMotion} from "../../../motions/pageMotion";
 
 interface LoginProps {}
 
 export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
     const navigate = useNavigate({from: '/auth/login'})
     const dispatch = useAppDispatch();
-    const data = useAppSelector((state) => state.auth);
-
     const [user, setUser] = useState<Record<string, string>>({email: "", password: ""})
     const [rememberMe, setRememberMe] = useState<boolean>(false)
+    const [error, setError] = useState<Record<string, boolean>>({})
 
     const handleChangeUserValue = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
-
         setUser((prevState) => ({
             ...prevState,
             [name]: value,
         }))
+
+        checkError(name, value)
+    }
+
+    const checkError = (name: string, value: string) => {
+        if (name === "email") {
+            const re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+            const isValid = re.test(value)
+            setError(prev => ({
+                ...prev,
+                [name]: isValid
+            }))
+        }
+
+        if (name === "password") {
+            const re = /_/
+            const isValid = !re.test(value) && value.length > 7
+            setError((prev) => ({
+                ...prev,
+                [name]: isValid
+            }))
+        }
     }
 
     const handleLogin = async () => {
@@ -30,14 +52,21 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
 
         console.log(res)
         if (res.meta.requestStatus === "fulfilled") {
-            navigate({to: '/profile'});
+            navigate({to: '/profile'})
         } else {
-            console.error("Authentication failed.");
+            console.error("Authentication failed.")
         }
     }
 
     return (
-        <div className={classes.Login}>
+        <motion.div
+            initial={'initial'}
+            animate={'animate'}
+            exit={'exit'}
+            variants={pageMotion}
+            className={classes.Login}
+
+        >
             <div className={classes.Title}>Sing in</div>
 
             <TextField
@@ -67,7 +96,7 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
             </label>
 
             <Link
-                to={"/auth/recover"}
+                to={"/auth/forgot-password"}
                 className={classes.ForgotPass}
             >
                 Forgot Password?
@@ -79,6 +108,7 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
                 type={"blue"}
                 text={"Sing In"}
                 onClick={handleLogin}
+                isFormValid={error}
             />
 
             <div className={classes.NoAccount}>Don't you have an account yet?</div>
@@ -89,6 +119,6 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
             >
                 Sing Up
             </Link>
-        </div>
+        </motion.div>
     )
 }

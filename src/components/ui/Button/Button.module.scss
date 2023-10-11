@@ -12,11 +12,29 @@
     @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);
     background: $bb;
     box-shadow: $blueShadow;
+    transition: all .2s ease-in-out;
+
+    &:hover {
+      background: $bbHover;
+    }
   }
 
   &White {
     @include create-text(#000, 16px, 500, $letterSpacing: 0.16px);
     background: $cleanWhite;
+    box-shadow: $logOutButton;
+
+    transition: all .2s ease-in-out;
+
+    &:hover {
+      //background: $bbHover;
+    }
+
+  }
+
+  &Disabled {
+    @include create-text($text, 16px, 500, $letterSpacing: 0.16px);
+    background: $red;
     box-shadow: $logOutButton;
   }
 }
