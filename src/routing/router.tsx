@@ -1,4 +1,4 @@
-import {Outlet, RouterProvider, Link, Router, Route, RootRoute,} from '@tanstack/react-router';
+import {Outlet, Router, Route, RootRoute, redirect} from '@tanstack/react-router';
 import {Layout} from "../components/global/Layout/Layout";
 import React from 'react';
 import {Login} from "../components/pages/Login/Login";
@@ -67,7 +67,16 @@ const checkEmailRoute = new Route({
 const profileRoute = new Route({
     getParentRoute: () => indexRoute,
     path: "/profile",
-    component: () => <Profile/>
+    component: () => <Profile/>,
+    beforeLoad: async () => {
+        if(localStorage.getItem("isAuth") !== "true") {
+            throw redirect({
+                to:"/auth/login"
+            })
+        } else {
+           console.log("authorized")
+        }
+    }
 })
 
 const routeTree = rootRoute.addChildren([
@@ -83,10 +92,13 @@ const routeTree = rootRoute.addChildren([
     ])
 ])
 
-export const router = new Router({routeTree})
+export const router = new Router({
+    routeTree,
+    defaultPreload: 'intent'
+})
 
-declare module '@tanstack/react-router' {
-    interface Register {
-        router: typeof router
-    }
-}
+// declare module '@tanstack/react-router' {
+//     interface Register {
+//         router: typeof router
+//     }
+// }

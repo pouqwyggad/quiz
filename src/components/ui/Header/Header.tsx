@@ -1,27 +1,45 @@
 import classes from './Header.module.scss'
-import {FC, PropsWithChildren, useEffect, useRef, useState} from "react"
+import React, {FC, PropsWithChildren, useEffect, useRef, useState} from "react"
 import {LogoIcon} from "../../icons/LogoIcon";
 import {Link} from "@tanstack/react-router";
 import {Button} from "../Button/Button";
-import {useAppSelector} from "../../../hooks/hook";
 import {DropDownProfile} from "../DropDownProfile/DropDownProfile";
 import {AnimatePresence, motion} from 'framer-motion';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+import {ILogin} from "../../../interfaces/AuthResponse";
+
 
 interface HeaderProps {
 }
 
+
 export const Header: FC<PropsWithChildren<HeaderProps>> = ({}) => {
-    const [showMenu, setShowMenu] = useState(false)
-    const data = useAppSelector(state => state.auth)
-
-
     const menuRef = useRef<HTMLDivElement | null>(null)
+    const [showMenu, setShowMenu] = useState(false)
+    const [userInfo, setUserInfo] = useState<ILogin>()
+    const isAuth = localStorage.getItem("isAuth")
+    const getUser = localStorage.getItem("userData")
 
-    // const user = data.isAuth ? data.user : null;
-    // const isLogin = localStorage.token
-    // if (data.isAuth) {
-    //     const user = JSON.parse(localStorage.userData)
-    // }
+    const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        if (window.location.href.includes("auth")) e.preventDefault()
+    }
+
+    useEffect(() => {
+        try {
+            if (getUser) {
+                setUserInfo(JSON.parse(getUser))
+            }
+        } catch (e: any) {
+            console.log("Error:" + e.message)
+        }
+    }, [getUser])
+
+    window.history.pushState(null, "", window.location.href)
+    window.addEventListener("popstate", function (event) {
+        window.history.pushState(null, "", window.location.href)
+    })
+
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -29,9 +47,7 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = ({}) => {
                 setShowMenu(false)
             }
         }
-
         if (showMenu) document.addEventListener("click", handleClickOutside)
-
         else document.removeEventListener("click", handleClickOutside)
 
         return () => document.removeEventListener("click", handleClickOutside)
@@ -40,28 +56,30 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = ({}) => {
     return (
         <header className={classes.Header}>
 
-            <Link to={"/"}>
+            <Link
+                to={"/"}
+                onClick={handleRedirect}
+            >
                 <LogoIcon/>
             </Link>
 
-            {data.isAuth ? (
+            {isAuth === "true" ? (
                 <motion.div
                     className={classes.ProfileContainer}
                     onClick={() => setShowMenu((p) => !p)}
                     ref={menuRef}
                 >
-                    <span className={classes.ProfileName}>{data.user.name}</span>
+                    <span className={classes.ProfileName}>{userInfo?.name}</span>
 
                     <img
                         className={classes.ProfileAvatar}
-                        src={data.user.avatar}
+                        src={userInfo?.avatar}
                         alt="profile"
                     />
 
                     <AnimatePresence>
                         {showMenu && <DropDownProfile/>}
                     </AnimatePresence>
-
 
                 </motion.div>
             ) : (

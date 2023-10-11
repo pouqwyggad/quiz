@@ -5,10 +5,11 @@ import {TextField} from "../../ui/TextField/TextField";
 import {Button} from "../../ui/Button/Button";
 import {loginAsync} from "../../../store/authSlice";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import {pageMotion} from "../../../motions/pageMotion";
 
-interface LoginProps {}
+interface LoginProps {
+}
 
 export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
     const navigate = useNavigate({from: '/auth/login'})
@@ -23,7 +24,6 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
             ...prevState,
             [name]: value,
         }))
-
         checkError(name, value)
     }
 
@@ -52,9 +52,7 @@ export const Login: FC<PropsWithChildren<LoginProps>> = ({}) => {
 
         console.log(res)
         if (res.meta.requestStatus === "fulfilled") {
-            navigate({to: '/profile'})
-        } else {
-            console.error("Authentication failed.")
+            await navigate({to: '/profile'})
         }
     }
 
