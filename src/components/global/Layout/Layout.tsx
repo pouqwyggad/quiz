@@ -1,55 +1,53 @@
-import {FC, PropsWithChildren, useRef, useMemo, useEffect, useState} from "react";
+import React, {
+  FC, PropsWithChildren, useRef, useMemo, useEffect,
+} from 'react';
+import { Outlet, useNavigate } from '@tanstack/react-router';
 import classes from './Layout.module.scss';
-import {Header} from "../../ui/Header/Header";
-import {Outlet, useNavigate} from "@tanstack/react-router";
-import {Main} from "../../pages/Main/Main";
-import {checkAuth} from "../../../store/authSlice";
-import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
+import { Header } from '../../ui/Header/Header';
+import { Main } from '../../pages/Main/Main';
+import { checkAuth } from '../../../store/authSlice';
+import { useAppDispatch } from '../../../hooks/hook';
 
 interface LayoutProps {
 }
+export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
+  const navigate = useNavigate({ from: '/' });
+  const dispatch = useAppDispatch();
+  const path = useRef('');
 
-export const Layout: FC<PropsWithChildren<LayoutProps>> = ({}) => {
-    const navigate = useNavigate({from: "/"})
-    const dispatch = useAppDispatch()
-    const path = useRef('')
+  useMemo(() => {
+    path.current = window.location.pathname;
+  }, [window.location.pathname]);
 
-    useMemo(() => {
-        path.current = window.location.pathname
-    }, [window.location.pathname])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (localStorage.getItem('token') && !(window.location.href.includes('auth'))) {
+          const result = await dispatch(checkAuth());
 
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (localStorage.getItem("token") && !(window.location.href.includes("auth"))) {
-                    const result = await dispatch(checkAuth())
-
-                    if (result.payload.error) {
-                        navigate({ to: "/auth/login" })
-                    }
-                }
-            } catch (e) {
-                console.error('Ошибка запроса:', e);
-            }
+          if (result.payload.error) {
+            navigate({ to: '/auth/login' });
+          }
         }
-        fetchData()
-    }, [])
+      } catch (e) {
+        console.error('Ошибка запроса:', e);
+      }
+    };
+    fetchData();
+  }, []);
 
-    return (
-        <div
-            className={classes.Layout}
-        >
-            <Header/>
+  return (
+    <div className={classes.Layout}>
+      <Header />
 
-            <main className={classes.Main}>
-                {path.current === '/' && (
-                    <Main/>
-                )}
+      <main className={classes.Main}>
+        {path.current === '/' && (
+        <Main />
+        )}
 
-                <Outlet/>
-            </main>
+        <Outlet />
+      </main>
 
-        </div>
-    )
-}
+    </div>
+  );
+};
