@@ -4,10 +4,9 @@ import api from '../api';
 export const resetPasswordAsync = createAsyncThunk<{}, { email: string }, {}>(
   'resetPassword/reset',
 
-  async (email) => {
+  async ({ email }) => {
     try {
       await api.post(
-      // const response = await api.post(
         '/auth/forgot',
         {
           email,
@@ -15,8 +14,6 @@ export const resetPasswordAsync = createAsyncThunk<{}, { email: string }, {}>(
           message: "<div> password recovery link: <a href='http://localhost:3000/auth/set-new-password/$token$'>link</a></div>",
         },
       );
-
-      // return response.data;
     } catch (e) {
       console.log(e);
     }
