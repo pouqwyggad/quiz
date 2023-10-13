@@ -31,7 +31,6 @@ export interface ILogin {
     avatar: string;
 }
 
-
 export interface IUser {
     email: string;
     password: string;

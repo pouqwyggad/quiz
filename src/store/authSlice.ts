@@ -11,16 +11,8 @@ export const loginAsync = createAsyncThunk<ILogin, { email: string; password: st
     async ({email, password, rememberMe}, {rejectWithValue}) => {
         try {
             const response = await api.post<ILogin>('/auth/login', {email, password, rememberMe})
-            // const userData = {
-            //     "name": response.data.name,
-            //     "email": response.data.email,
-            //     "avatar": response.data.avatar
-            // }
-
             const token = response.data.token
-            // localStorage.setItem("userData", JSON.stringify(userData))
             localStorage.setItem("token", JSON.stringify(token))
-
             return response.data
         } catch (e: any) {
             return rejectWithValue(e.response.data.error)
@@ -32,7 +24,7 @@ export const logoutAsync = createAsyncThunk(
 
     async () => {
         localStorage.clear()
-        return await api.delete('/auth/me')
+        await api.delete('/auth/me')
     }
 )
 
@@ -52,18 +44,15 @@ export const changeProfileNameAsync = createAsyncThunk<ILogin, { avatar: string,
     }
 )
 
-export const checkAuth = createAsyncThunk(
+export const checkAuth = createAsyncThunk<ILogin, void, { rejectValue: any }>(
     "check/auth",
 
     async (_, {rejectWithValue}) => {
         try {
             const response = await api.post('/auth/me')
-
-            console.log("checkAuth")
-            console.log(response)
             return response.data
         } catch (e: any) {
-            return rejectWithValue(e.response.data.error)
+            return rejectWithValue(e.response.data)
         }
     }
 )
@@ -106,18 +95,17 @@ const authSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(loginAsync.rejected, (state, action) => {
-                console.log(action.payload)
+            .addCase(loginAsync.rejected, () => {
+                console.log('НЕ ЗАЛОГИНЕН')
             })
             .addCase(loginAsync.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
                 state.isAuth = true;
                 localStorage.setItem("isAuth", JSON.stringify(state.isAuth))
-                localStorage.setItem("userData", JSON.stringify(action.payload))
                 state.user = action.payload
+                console.log("ДАННЫЕ ПРИ ВХОДЕ СОХРАНЕНЫ В REDUX")
             })
-
             .addCase(logoutAsync.fulfilled, (state) => {
                 state.isAuth = false
                 state.error = null
@@ -135,38 +123,30 @@ const authSlice = createSlice({
                     token: "",
                     tokenDeathTime: 0,
                     avatar: "",
-                };
-            })
+                }
 
+                console.log("ДАННЫЕ ИЗ REDUX УДАЛЕНЫ")
+            })
             .addCase(changeProfileNameAsync.fulfilled, (state, action) => {
-               console.log(action.payload)
-                localStorage.setItem("userData", JSON.stringify(action.payload))
                 state.user = action.payload
             })
-            .addCase(changeProfileNameAsync.rejected, (state, action) => {
-                console.log(action.payload)
-            })
-
-            .addCase(checkAuth.pending, (state, action) => {
+            .addCase(checkAuth.pending, (state) => {
                 state.loading = true
                 state.error = null
             })
-            .addCase(checkAuth.rejected, (state, action) => {
+            .addCase(checkAuth.rejected, (state) => {
                 state.loading = false
                 state.error = true
                 state.isAuth = false
-                console.log(action)
+                console.log("ОТМЕНА ПРОВЕРКИ AuthMe")
                 localStorage.setItem("isAuth", JSON.stringify(state.isAuth))
             })
             .addCase(checkAuth.fulfilled, (state, action) => {
                 state.loading = false
                 state.isAuth = true
-                console.log(action.payload)
-                // console.log(action.payload.token)
                 state.user = action.payload
                 localStorage.setItem("token", action.payload.token)
-                localStorage.setItem("userData", JSON.stringify(action.payload))
-                // console.log(action.payload)
+                console.log("ПРОВЕРКА AuthMe УСПЕШНА")
             })
     }
 })

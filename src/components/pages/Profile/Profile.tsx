@@ -16,27 +16,11 @@ interface ProfileProps {
 }
 
 export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
-    // const navigate = useNavigate({from: "/"})
     const dispatch = useAppDispatch()
     const data = useAppSelector((state) => state.auth);
     const [name, setName] = useState(data.user.name)
     const [avatar, setAvatar] = useState(data.user.avatar)
     const [editName, setEditName] = useState(false)
-
-    const getUser = localStorage.getItem("userData")
-
-
-    useEffect(() => {
-        try {
-            if (getUser) {
-                const user = JSON.parse(getUser)
-                setName(user.name)
-                setAvatar(user.avatar)
-            }
-        } catch (e: any) {
-            console.log("Error:" + e.message)
-        }
-    }, [getUser])
 
     const handleLogout = () => {
         dispatch(logoutAsync())
@@ -68,28 +52,6 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
         }
     }
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             if (localStorage.getItem("token")) {
-    //                 const result = await dispatch(checkAuth());
-    //
-    //                 console.log(result)
-    //                 if (result.payload === "you are not authorized /ᐠ-ꞈ-ᐟ\\") {
-    //                     console.log("redirect")
-    //                     navigate({to: '/auth/login'})
-    //                 } else {
-    //                     console.log("LOGINNED")
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.error('Ошибка запроса:', error);
-    //         }
-    //     };
-    //
-    //     fetchData();
-    // }, []);
-
     return (
         <motion.div
             initial={'initial'}
@@ -105,7 +67,7 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = ({}) => {
                 <div className={classes.AvatarContainer}>
                     <img
                         className={classes.AvatarImg}
-                        src={avatar}
+                        src={data.user.avatar}
                         alt="Profile img"
                     />
 

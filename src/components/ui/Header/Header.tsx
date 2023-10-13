@@ -8,6 +8,7 @@ import {AnimatePresence, motion} from 'framer-motion';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import {ILogin} from "../../../interfaces/AuthResponse";
+import {useAppSelector} from "../../../hooks/hook";
 
 
 interface HeaderProps {
@@ -17,29 +18,17 @@ interface HeaderProps {
 export const Header: FC<PropsWithChildren<HeaderProps>> = ({}) => {
     const menuRef = useRef<HTMLDivElement | null>(null)
     const [showMenu, setShowMenu] = useState(false)
-    const [userInfo, setUserInfo] = useState<ILogin>()
+    const data = useAppSelector((state) => state.auth);
     const isAuth = localStorage.getItem("isAuth")
-    const getUser = localStorage.getItem("userData")
 
     const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (window.location.href.includes("auth")) e.preventDefault()
     }
 
-    useEffect(() => {
-        try {
-            if (getUser) {
-                setUserInfo(JSON.parse(getUser))
-            }
-        } catch (e: any) {
-            console.log("Error:" + e.message)
-        }
-    }, [getUser])
-
     window.history.pushState(null, "", window.location.href)
     window.addEventListener("popstate", function (event) {
         window.history.pushState(null, "", window.location.href)
     })
-
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -69,11 +58,11 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = ({}) => {
                     onClick={() => setShowMenu((p) => !p)}
                     ref={menuRef}
                 >
-                    <span className={classes.ProfileName}>{userInfo?.name}</span>
+                    <span className={classes.ProfileName}>{data.user.name}</span>
 
                     <img
                         className={classes.ProfileAvatar}
-                        src={userInfo?.avatar}
+                        src={data.user.avatar}
                         alt="profile"
                     />
 

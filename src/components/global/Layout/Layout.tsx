@@ -1,11 +1,10 @@
-import {FC, PropsWithChildren, useRef, useMemo, useEffect} from "react";
+import {FC, PropsWithChildren, useRef, useMemo, useEffect, useState} from "react";
 import classes from './Layout.module.scss';
 import {Header} from "../../ui/Header/Header";
 import {Outlet, useNavigate} from "@tanstack/react-router";
 import {Main} from "../../pages/Main/Main";
 import {checkAuth} from "../../../store/authSlice";
 import {useAppDispatch, useAppSelector} from "../../../hooks/hook";
-// import {router} from "../../../routing/router";
 
 interface LayoutProps {
 }
@@ -19,25 +18,21 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = ({}) => {
         path.current = window.location.pathname
     }, [window.location.pathname])
 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (localStorage.getItem("token")) {
-                    const result = await dispatch(checkAuth());
+                if (localStorage.getItem("token") && !(window.location.href.includes("auth"))) {
+                    const result = await dispatch(checkAuth())
 
-                    console.log(result)
-                    if (result.payload === "you are not authorized /ᐠ-ꞈ-ᐟ\\") {
-                        console.log("redirect")
-                         navigate({to: "/auth/login"})
-                    }  else {
-                        console.log("LOGINNED")
+                    if (result.payload.error) {
+                        navigate({ to: "/auth/login" })
                     }
                 }
-            } catch (error) {
-                console.error('Ошибка запроса:', error)
+            } catch (e) {
+                console.error('Ошибка запроса:', e);
             }
-        };
-
+        }
         fetchData()
     }, [])
 
