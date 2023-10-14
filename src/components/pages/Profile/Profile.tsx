@@ -10,7 +10,6 @@ import { EditIcon } from '../../icons/EditIcon';
 import { Button } from '../../ui/Button/Button';
 import { LogOutIcon } from '../../icons/LogOutIcon';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
-import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
 import { changeProfileNameAsync, logoutAsync } from '../../../store/authSlice';
 import { TextField } from '../../ui/TextField/TextField';
 import { pageMotion } from '../../../motions/pageMotion';
@@ -128,8 +127,6 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
         <div className={classes.EmailText}>
           {data.user.email ? data.user.email : <Skeleton animation="wave" variant="text" width={150} height={20} />}
         </div>
-
-        <BackPageButton src="/" />
 
         <Link to="/auth/login">
           <Button

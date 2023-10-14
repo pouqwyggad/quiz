@@ -7,6 +7,7 @@ import { Header } from '../../ui/Header/Header';
 import { Main } from '../../pages/Main/Main';
 import { checkAuth } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
+import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
 
 interface LayoutProps {
 }
@@ -39,6 +40,10 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
   return (
     <div className={classes.Layout}>
       <Header />
+
+      {path.current !== '/' && (
+      <BackPageButton src="/" />
+      )}
 
       <main className={classes.Main}>
         {path.current === '/' && (

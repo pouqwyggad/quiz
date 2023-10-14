@@ -1,25 +1,35 @@
 import React, {
-  FC, PropsWithChildren, useEffect, useRef, useState,
+  FC, PropsWithChildren, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
-// import Skeleton from '@mui/material/Skeleton';
 import classes from './Header.module.scss';
 import { LogoIcon } from '../../icons/LogoIcon';
 import { Button } from '../Button/Button';
 import { DropDownProfile } from '../DropDownProfile/DropDownProfile';
-// import 'react-loading-skeleton/dist/skeleton.css';
 import { useAppSelector } from '../../../hooks/hook';
-import { SkeletonAvatar } from '../SkeletonAvatar';
+import { SkeletonAvatar } from '../SkeletonAvatar/SkeletonAvatar';
 
 interface HeaderProps {
 }
 
 export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const [showMenu, setShowMenu] = useState(false);
   const data = useAppSelector((state) => state.auth);
   const isAuth = localStorage.getItem('isAuth');
+  // const path = useRef('');
+  const [showMenu, setShowMenu] = useState(false);
+  const [showBackButton, setShowBackButton] = useState(true);
+
+  useMemo(() => {
+    const currentPath = window.location.pathname;
+
+    if (currentPath.includes('profile')) {
+      setShowBackButton(false);
+    } else {
+      setShowBackButton(true);
+    }
+  }, [window.location.pathname]);
 
   const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (window.location.href.includes('auth')) e.preventDefault();
@@ -70,7 +80,7 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
               />
 
               <AnimatePresence>
-                {showMenu && <DropDownProfile />}
+                {(showMenu && showBackButton) && <DropDownProfile />}
               </AnimatePresence>
 
             </motion.div>
