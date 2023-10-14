@@ -1,9 +1,16 @@
 {
   "extends": [
-    "react-app",
-    "react-app/jest"
+    "airbnb",
+    "airbnb-typescript"
   ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "rules": {
-
-  }
+    "import/prefer-default-export": "off",
+    "react/function-component-definition": "off",
+    "eslint-disable-next-line no-empty-pattern": "off",
+    "no-param-reassign": ["error", { "props": false }]
+  },
+  "ignorePatterns": ["tailwind.config.js"]
 }

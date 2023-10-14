@@ -1,47 +1,48 @@
-import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import {IRegister} from "../interfaces/AuthResponse";
-import api from "../api";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { IRegister } from '../interfaces/AuthResponse';
+import api from '../api';
 
 export const registerAsync = createAsyncThunk<boolean, { email: string, password: string }, {}>(
-    "auth/register",
+  'auth/register',
 
-    async ({email, password}) => {
-        try {
-            console.log({email, password})
-            const response = await api.post<IRegister>('/auth/register', {email, password});
-            console.log(response)
-            console.log(response.data)
+  async ({ email, password }) => {
+    try {
+      const response = await api.post<IRegister>('/auth/register', { email, password });
 
-            if (response) {
-                return true
-            }
+      return !!response;
 
-            return false
-
-        } catch (error) {
-            // @ts-ignore
-            throw error.response.data;
-        }
+      //   if (response) {
+      //     return true;
+      //   }
+      //
+      //   return false;
+      // } catch (error) {
+      //   // @ts-ignore
+      //   throw error.response.data;
+      // }
+    } catch (error) {
+      // @ts-ignore
+      throw error.response.data;
     }
-)
+  },
+);
 
 const initialState = {
-    user: null,
-    loading: false,
-    error: null,
-}
+  user: null,
+  loading: false,
+  error: null,
+};
 
 const registerSlice = createSlice({
-    name: "register",
-    initialState,
-    reducers: {},
-    extraReducers: {
-        [registerAsync.fulfilled.toString()]: (state, action) => {
-            state.user = action.payload
-            // state.status = "resolved"
-            state.error = null
-        }
-    }
-})
-export const {} = registerSlice.actions
-export default registerSlice.reducer
+  name: 'register',
+  initialState,
+  reducers: {},
+  extraReducers: {
+    [registerAsync.fulfilled.toString()]: (state, action) => {
+      state.user = action.payload;
+      state.error = null;
+    },
+  },
+});
+// export const {} = registerSlice.actions;
+export default registerSlice.reducer;

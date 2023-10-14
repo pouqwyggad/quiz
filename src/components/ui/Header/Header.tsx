@@ -1,75 +1,79 @@
-import classes from './Header.module.scss'
-import {FC, PropsWithChildren, useEffect, useRef, useState} from "react"
-import {LogoIcon} from "../../icons/LogoIcon";
-import {Link} from "@tanstack/react-router";
-import {Button} from "../Button/Button";
-import {useAppSelector} from "../../../hooks/hook";
-import {DropDownProfile} from "../DropDownProfile/DropDownProfile";
-import {AnimatePresence, motion} from 'framer-motion';
+import React, {
+  FC, PropsWithChildren, useEffect, useRef, useState,
+} from 'react';
+import { Link } from '@tanstack/react-router';
+import { AnimatePresence, motion } from 'framer-motion';
+import classes from './Header.module.scss';
+import { LogoIcon } from '../../icons/LogoIcon';
+import { Button } from '../Button/Button';
+import { DropDownProfile } from '../DropDownProfile/DropDownProfile';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { useAppSelector } from '../../../hooks/hook';
 
 interface HeaderProps {
 }
 
-export const Header: FC<PropsWithChildren<HeaderProps>> = ({}) => {
-    const [showMenu, setShowMenu] = useState(false)
-    const data = useAppSelector(state => state.auth)
+export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
+  const data = useAppSelector((state) => state.auth);
+  const isAuth = localStorage.getItem('isAuth');
 
+  const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.location.href.includes('auth')) e.preventDefault();
+  };
 
-    const menuRef = useRef<HTMLDivElement | null>(null)
+  window.history.pushState(null, '', window.location.href);
+  window.addEventListener('popstate', () => {
+    window.history.pushState(null, '', window.location.href);
+  });
 
-    // const user = data.isAuth ? data.user : null;
-    // const isLogin = localStorage.token
-    // if (data.isAuth) {
-    //     const user = JSON.parse(localStorage.userData)
-    // }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    if (showMenu) document.addEventListener('click', handleClickOutside);
+    else document.removeEventListener('click', handleClickOutside);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setShowMenu(false)
-            }
-        }
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showMenu]);
 
-        if (showMenu) document.addEventListener("click", handleClickOutside)
+  return (
+    <header className={classes.Header}>
 
-        else document.removeEventListener("click", handleClickOutside)
+      <Link
+        to="/"
+        onClick={handleRedirect}
+      >
+        <LogoIcon />
+      </Link>
 
-        return () => document.removeEventListener("click", handleClickOutside)
-    }, [showMenu])
+      {isAuth === 'true' ? (
+        <motion.div
+          className={classes.ProfileContainer}
+          onClick={() => setShowMenu((p) => !p)}
+          ref={menuRef}
+        >
+          <span className={classes.ProfileName}>{data.user.name}</span>
 
-    return (
-        <header className={classes.Header}>
+          <img
+            className={classes.ProfileAvatar}
+            src={data.user.avatar}
+            alt="profile"
+          />
 
-            <Link to={"/"}>
-                <LogoIcon/>
-            </Link>
+          <AnimatePresence>
+            {showMenu && <DropDownProfile />}
+          </AnimatePresence>
 
-            {data.isAuth ? (
-                <motion.div
-                    className={classes.ProfileContainer}
-                    onClick={() => setShowMenu((p) => !p)}
-                    ref={menuRef}
-                >
-                    <span className={classes.ProfileName}>{data.user.name}</span>
-
-                    <img
-                        className={classes.ProfileAvatar}
-                        src={data.user.avatar}
-                        alt="profile"
-                    />
-
-                    <AnimatePresence>
-                        {showMenu && <DropDownProfile/>}
-                    </AnimatePresence>
-
-
-                </motion.div>
-            ) : (
-                <Link to={"/auth/login"}>
-                    <Button sidePadding={28} type={"blue"} text={"Sing in"}/>
-                </Link>
-            )}
-        </header>
-    )
-}
-
+        </motion.div>
+      ) : (
+        <Link to="/auth/login">
+          <Button sidePadding={28} type="blue" text="Sing in" />
+        </Link>
+      )}
+    </header>
+  );
+};
