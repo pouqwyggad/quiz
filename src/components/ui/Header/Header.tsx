@@ -3,12 +3,14 @@ import React, {
 } from 'react';
 import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
+// import Skeleton from '@mui/material/Skeleton';
 import classes from './Header.module.scss';
 import { LogoIcon } from '../../icons/LogoIcon';
 import { Button } from '../Button/Button';
 import { DropDownProfile } from '../DropDownProfile/DropDownProfile';
-import 'react-loading-skeleton/dist/skeleton.css';
+// import 'react-loading-skeleton/dist/skeleton.css';
 import { useAppSelector } from '../../../hooks/hook';
+import { SkeletonAvatar } from '../SkeletonAvatar';
 
 interface HeaderProps {
 }
@@ -51,24 +53,31 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
       </Link>
 
       {isAuth === 'true' ? (
-        <motion.div
-          className={classes.ProfileContainer}
-          onClick={() => setShowMenu((p) => !p)}
-          ref={menuRef}
-        >
-          <span className={classes.ProfileName}>{data.user.name}</span>
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+        <>
+          {data.user.avatar ? (
+            <motion.div
+              className={classes.ProfileContainer}
+              onClick={() => setShowMenu((p) => !p)}
+              ref={menuRef}
+            >
+              <span className={classes.ProfileName}>{data.user.name}</span>
 
-          <img
-            className={classes.ProfileAvatar}
-            src={data.user.avatar}
-            alt="profile"
-          />
+              <img
+                className={classes.ProfileAvatar}
+                src={data.user.avatar}
+                alt="profile"
+              />
 
-          <AnimatePresence>
-            {showMenu && <DropDownProfile />}
-          </AnimatePresence>
+              <AnimatePresence>
+                {showMenu && <DropDownProfile />}
+              </AnimatePresence>
 
-        </motion.div>
+            </motion.div>
+          ) : (
+            <SkeletonAvatar />
+          )}
+        </>
       ) : (
         <Link to="/auth/login">
           <Button sidePadding={28} type="blue" text="Sing in" />
