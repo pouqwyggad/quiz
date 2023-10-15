@@ -17,17 +17,16 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const data = useAppSelector((state) => state.auth);
   const isAuth = localStorage.getItem('isAuth');
-  // const path = useRef('');
   const [showMenu, setShowMenu] = useState(false);
-  const [showBackButton, setShowBackButton] = useState(true);
+  const [notShowMenu, setNotShowMenu] = useState(true);
 
   useMemo(() => {
     const currentPath = window.location.pathname;
 
     if (currentPath.includes('profile')) {
-      setShowBackButton(false);
+      setNotShowMenu(false);
     } else {
-      setShowBackButton(true);
+      setNotShowMenu(true);
     }
   }, [window.location.pathname]);
 
@@ -80,7 +79,7 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
               />
 
               <AnimatePresence>
-                {(showMenu && showBackButton) && <DropDownProfile />}
+                {(showMenu && notShowMenu) && <DropDownProfile />}
               </AnimatePresence>
 
             </motion.div>

@@ -1,5 +1,5 @@
 import React, {
-  FC, PropsWithChildren, useRef, useMemo, useEffect,
+  FC, PropsWithChildren, useRef, useMemo, useEffect, useState,
 } from 'react';
 import { Outlet, useNavigate } from '@tanstack/react-router';
 import classes from './Layout.module.scss';
@@ -15,9 +15,15 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
   const navigate = useNavigate({ from: '/' });
   const dispatch = useAppDispatch();
   const path = useRef('');
+  const [isButtonShow, setIsButtonShow] = useState(false);
 
   useMemo(() => {
     path.current = window.location.pathname;
+    if (path.current.includes('auth') || path.current === '/') {
+      setIsButtonShow(false);
+    } else {
+      setIsButtonShow(true);
+    }
   }, [window.location.pathname]);
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
     <div className={classes.Layout}>
       <Header />
 
-      {path.current !== '/' && (
+      {isButtonShow && (
       <BackPageButton src="/" />
       )}
 
