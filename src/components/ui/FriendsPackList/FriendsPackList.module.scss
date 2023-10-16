@@ -1,6 +1,7 @@
-@import '../../../css/common.scss';
+@import "../../../css/common";
 
 .Container {
+  margin-top: 24px;
   box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.10), 1px 1px 2px rgba(0, 0, 0, 0.10);
   border-radius: 2px;
   overflow: hidden;
@@ -14,11 +15,13 @@
 }
 
 .TitleRow {
+  @include create-text($text, 14px, 500, $lineHeight: 17.07px);
   background: $bgGrey;
   border-bottom: 1px solid $borderColor;
 }
 
 .DefaultRow {
+  @include create-text($text, 13px, 400, $lineHeight: 15.85px);
   border-bottom: 1px solid $borderColor;
 
   &:last-child {
@@ -46,10 +49,17 @@ td:last-child {
 
 td:first-child {
   padding-left: 36px;
+
 }
 
-.ActionsContainer {
+.StarsContainer {
+  display: flex;
+  gap: 4px;
+}
+
+.FilterDate {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  cursor: pointer;
 }
