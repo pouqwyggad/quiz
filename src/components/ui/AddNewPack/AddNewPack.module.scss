@@ -17,11 +17,13 @@
   z-index: 11;
   background-color: #fff;
   width: 395px;
+  border-radius: 2px;
+  filter: drop-shadow(0 0 30px #343D40);
 }
 
 hr {
   background: $borderColor;
-  padding-bottom: 35px;
+  margin-bottom:  35px;
 }
 
 .Title {
@@ -34,5 +36,15 @@ hr {
 }
 
 .ContainerSectionTwo {
-  padding: 19px 24px;
+  padding: 0 24px;
+}
+
+.ButtonsContainer {
+  padding: 35px 24px 47px 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.CheckBox {
+  padding-left: 24px;
 }

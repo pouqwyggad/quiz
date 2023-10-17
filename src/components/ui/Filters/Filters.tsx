@@ -5,7 +5,6 @@ import { SearchIcon } from '../../icons/SearchIcon';
 import { DoubleRange } from '../multiRangeSlider/DoubleRange';
 
 interface FiltersProps {
-
 }
 
 interface RangeValues {

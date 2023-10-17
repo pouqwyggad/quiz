@@ -2,18 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/global.css';
 import { Provider } from 'react-redux';
-import { SkeletonTheme } from 'react-loading-skeleton';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { App } from './App';
+
 import store from './store/store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
+const theme = createTheme({
+  typography: {
+    allVariants: {
+      fontFamily: 'Montserrat',
+    },
+  },
+});
+
 root.render(
-  <SkeletonTheme baseColor="#202020" highlightColor="#444">
+  <ThemeProvider theme={theme}>
     <Provider store={store}>
       <App />
     </Provider>
-  </SkeletonTheme>,
+  </ThemeProvider>,
+
 );

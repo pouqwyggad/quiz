@@ -14,6 +14,7 @@
 }
 
 .TitleRow {
+  padding: 0 20px;
   background: $bgGrey;
   border-bottom: 1px solid $borderColor;
 }
@@ -52,4 +53,8 @@ td:first-child {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.LastTd {
+  width: 120px;
 }

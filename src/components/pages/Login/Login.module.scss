@@ -96,3 +96,9 @@
     text-decoration-line: none;
   }
 }
+
+.CheckBox {
+  width: 100%;
+  justify-content: left;
+  @include create-text(#000, 23px, 500, $lineHeight: 17.07px);
+}
