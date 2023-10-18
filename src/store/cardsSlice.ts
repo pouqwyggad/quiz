@@ -11,7 +11,7 @@ export const getCardsAsync = createAsyncThunk(
   },
 );
 
-export const addNewPack = createAsyncThunk<Packs,
+export const addNewPackAsync = createAsyncThunk<Packs,
 { name: string, privatePack: boolean }, { rejectValue: any }
 >(
   'cards/addNewPack',
@@ -24,6 +24,21 @@ export const addNewPack = createAsyncThunk<Packs,
         },
       };
       const response = await api.post('/cards/pack', cardsPack);
+      return response.data;
+    } catch (e: any) {
+      return rejectWithValue(e.response.data);
+    }
+  },
+);
+
+export const deletePackAsync = createAsyncThunk<Packs,
+{ id: string }, { rejectValue: any }
+>(
+  'cards/deletePack',
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete('/cards/pack', { params: { id } });
+      console.log(response);
       return response.data;
     } catch (e: any) {
       return rejectWithValue(e.response.data);
@@ -52,7 +67,11 @@ const cardsSlice = createSlice({
         Object.assign(state, action.payload);
         console.log(action.payload);
       })
-      .addCase(addNewPack.fulfilled, (state, action) => {
+      .addCase(addNewPackAsync.fulfilled, (state, action) => {
+        console.log(action.payload);
+        Object.assign(state, action.payload);
+      })
+      .addCase(deletePackAsync.fulfilled, (state, action) => {
         console.log(action.payload);
         Object.assign(state, action.payload);
       });

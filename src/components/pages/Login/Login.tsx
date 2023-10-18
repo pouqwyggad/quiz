@@ -54,7 +54,7 @@ export const Login: FC<PropsWithChildren<LoginProps>> = () => {
       loginAsync({ email: user.email, password: user.password, rememberMe }),
     );
     if (res.meta.requestStatus === 'fulfilled') {
-      await dispatch(getCardsAsync());
+      dispatch(getCardsAsync());
       await navigate({ to: '/profile' });
     }
   };

@@ -6,7 +6,7 @@ import { CloseIcon } from '../../icons/CloseIcon';
 import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
 import { useAppDispatch } from '../../../hooks/hook';
-import { addNewPack, getCardsAsync } from '../../../store/cardsSlice';
+import { addNewPackAsync, getCardsAsync } from '../../../store/cardsSlice';
 
 interface AddNewPackProps {
   onClick: () => void
@@ -21,7 +21,7 @@ export const AddNewPack: FC<PropsWithChildren<AddNewPackProps>> = ({ onClick }) 
     setName(e.target.value);
   };
   const addCardHandler = () => {
-    dispatch(addNewPack({ name, privatePack }));
+    dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
     dispatch(getCardsAsync());
   };
