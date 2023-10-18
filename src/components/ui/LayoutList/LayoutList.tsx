@@ -19,7 +19,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
     // navigate({ to: '/pack' });
   };
 
-  const deletePack = (id: string) => {
+  const deletePack = async (id: string) => {
     dispatch(deletePackAsync({ id }));
     dispatch(getCardsAsync());
   };
@@ -59,8 +59,12 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
                   <Link to="/pack">
                     <HatIcon />
                   </Link>
-                  {item.private && (<EditIcon onClick={handleClick} width="22" height="22" />)}
-                  {item.private && (<TrashCanIcon onClick={() => { deletePack(item._id); }} />)}
+                  {/* {item.private && (<EditIcon
+                  onClick={handleClick} width="22" height="22" />)} */}
+                  {/* {item.private && (<TrashCanIcon
+                  onClick={() => { deletePack(item._id); }} />)} */}
+                  <EditIcon onClick={handleClick} width="22" height="22" />
+                  <TrashCanIcon onClick={() => { deletePack(item._id); }} />
                 </div>
               </td>
             </tr>

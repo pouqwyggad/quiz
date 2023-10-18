@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren, useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Checkbox } from '@mui/material';
-import classes from './AddNewPack.module.scss';
+import classes from './PackActions.module.scss';
 import { CloseIcon } from '../../icons/CloseIcon';
 import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
@@ -12,7 +12,7 @@ interface AddNewPackProps {
   onClick: () => void
 }
 
-export const AddNewPack: FC<PropsWithChildren<AddNewPackProps>> = ({ onClick }) => {
+export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({ onClick }) => {
   const dispatch = useAppDispatch();
   const [name, setName] = useState('');
   const [privatePack, setPrivatePack] = useState(false);
@@ -20,9 +20,10 @@ export const AddNewPack: FC<PropsWithChildren<AddNewPackProps>> = ({ onClick }) 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
-  const addCardHandler = () => {
+  const addCardHandler = async () => {
     dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
+    await new Promise((resolve) => { setTimeout(resolve, 1000); });
     dispatch(getCardsAsync());
   };
 

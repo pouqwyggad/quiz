@@ -6,7 +6,7 @@ import { Filters } from '../../ui/Filters/Filters';
 import { LayoutList } from '../../ui/LayoutList/LayoutList';
 import { Pagination } from '../../ui/Pagination/Pagination';
 import { Button } from '../../ui/Button/Button';
-import { AddNewPack } from '../../ui/AddNewPack/AddNewPack';
+import { PackActions } from '../../ui/AddNewPack/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { Pack } from '../../../interfaces/Packs';
 
@@ -53,7 +53,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         />
 
         {newPackStatus && (
-          <AddNewPack
+          <PackActions
             onClick={addCardHandler}
           />
         )}

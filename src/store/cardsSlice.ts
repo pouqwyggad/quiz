@@ -65,14 +65,11 @@ const cardsSlice = createSlice({
     builder
       .addCase(getCardsAsync.fulfilled, (state, action) => {
         Object.assign(state, action.payload);
-        console.log(action.payload);
       })
       .addCase(addNewPackAsync.fulfilled, (state, action) => {
-        console.log(action.payload);
         Object.assign(state, action.payload);
       })
       .addCase(deletePackAsync.fulfilled, (state, action) => {
-        console.log(action.payload);
         Object.assign(state, action.payload);
       });
   },
