@@ -1,27 +1,30 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import classes from './LayoutList.module.scss';
 import { HatIcon } from '../../icons/HatIcon';
 import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { Pack } from '../../../interfaces/Packs';
-import { useAppDispatch } from '../../../hooks/hook';
-import { deletePackAsync, getCardsAsync } from '../../../store/cardsSlice';
+import { PackActions } from '../AddNewPack/PackActions';
 
 interface LayoutListProps {
   data: Pack[]
 }
 
 export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => {
-  // const navigate = useNavigate({ from: '/' });
-  const dispatch = useAppDispatch();
-  const handleClick = () => {
-    // navigate({ to: '/pack' });
+  const [selectedItemId, setSelectedItemId] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleEditClick = () => {
+    setShowEditModal((p) => !p);
+  };
+  const handleDeleteClick = () => {
+    setShowDeleteModal((p) => !p);
   };
 
-  const deletePack = async (id: string) => {
-    dispatch(deletePackAsync({ id }));
-    dispatch(getCardsAsync());
+  const currentSelectedModal = (id: string) => {
+    setSelectedItemId(id);
   };
 
   const formatDate = (dateString: string) => {
@@ -44,6 +47,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
             <th className={classes.LastTd}>Actions</th>
           </tr>
         </thead>
+
         <tbody>
           {data.map((item) => (
             <tr
@@ -54,19 +58,40 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
               <td>{item.cardsCount}</td>
               <td>{formatDate(item.updated)}</td>
               <td>{item.user_name}</td>
+
               <td>
                 <div className={classes.ActionsContainer}>
                   <Link to="/pack">
                     <HatIcon />
                   </Link>
-                  {/* {item.private && (<EditIcon
-                  onClick={handleClick} width="22" height="22" />)} */}
-                  {/* {item.private && (<TrashCanIcon
-                  onClick={() => { deletePack(item._id); }} />)} */}
-                  <EditIcon onClick={handleClick} width="22" height="22" />
-                  <TrashCanIcon onClick={() => { deletePack(item._id); }} />
+
+                  <EditIcon
+                    onClick={() => {
+                      handleEditClick();
+                      currentSelectedModal(item._id);
+                    }}
+                    width="22"
+                    height="22"
+                  />
+
+                  <TrashCanIcon
+                    onClick={() => {
+                      handleDeleteClick();
+                      currentSelectedModal(item._id);
+                    }}
+                  />
+
+                  {showEditModal && selectedItemId === item._id && (
+                    <PackActions onClick={handleEditClick} type="edit" id={item._id} />
+                  )}
+
+                  {showDeleteModal && selectedItemId === item._id && (
+                    <PackActions onClick={handleDeleteClick} type="delete" id={item._id} packName={item.name} />
+                  )}
+
                 </div>
               </td>
+
             </tr>
           ))}
         </tbody>

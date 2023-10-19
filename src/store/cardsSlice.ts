@@ -5,7 +5,7 @@ import { Packs } from '../interfaces/Packs';
 export const getCardsAsync = createAsyncThunk(
   'cards/getCards',
   async () => {
-    const response = await api.get('/cards/pack');
+    const response = await api.get('/cards/pack?pageCount=10');
 
     return response.data;
   },
@@ -46,6 +46,30 @@ export const deletePackAsync = createAsyncThunk<Packs,
   },
 );
 
+export const editPackNameAsync = createAsyncThunk<Packs,
+{ id: string, name: string }, { rejectValue: any }
+>(
+  'cards/edit',
+  async ({ id, name }, { rejectWithValue }) => {
+    try {
+      const cardsPack = {
+        cardsPack: {
+          _id: id,
+          name,
+        },
+      };
+
+      console.log(cardsPack);
+
+      const response = await api.put('/cards/pack', cardsPack);
+      console.log(response);
+      return response.data;
+    } catch (e: any) {
+      return rejectWithValue(e.response.data);
+    }
+  },
+);
+
 const initialState: Packs = {
   cardPacks: [],
   page: 0,
@@ -70,6 +94,9 @@ const cardsSlice = createSlice({
         Object.assign(state, action.payload);
       })
       .addCase(deletePackAsync.fulfilled, (state, action) => {
+        Object.assign(state, action.payload);
+      })
+      .addCase(editPackNameAsync.fulfilled, (state, action) => {
         Object.assign(state, action.payload);
       });
   },

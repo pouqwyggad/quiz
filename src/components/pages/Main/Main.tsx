@@ -55,6 +55,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         {newPackStatus && (
           <PackActions
             onClick={addCardHandler}
+            type="add"
           />
         )}
 

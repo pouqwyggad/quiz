@@ -25,7 +25,8 @@ export const Button: FC<PropsWithChildren<ButtonProps>> = ({
       style={{
         padding: `8px ${sidePadding}px`,
       }}
-      className={`${classes.Button} ${type === 'blue' ? classes.ButtonBlue : classes.ButtonWhite}`}
+        // @ts-ignore
+      className={`${classes.Button} ${type === 'blue' && classes.ButtonBlue} ${type === 'white' && classes.ButtonWhite} ${type === 'red' && classes.ButtonRed}`}
       onClick={changeHandler}
     >
       {children}
