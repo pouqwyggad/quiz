@@ -1,11 +1,14 @@
 import React, { FC, PropsWithChildren, useState } from 'react';
 import { Link } from '@tanstack/react-router';
+import Skeleton from '@mui/material/Skeleton';
 import classes from './LayoutList.module.scss';
 import { HatIcon } from '../../icons/HatIcon';
 import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { Pack } from '../../../interfaces/Packs';
 import { PackActions } from '../AddNewPack/PackActions';
+import { useAppSelector } from '../../../hooks/hook';
+import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 
 interface LayoutListProps {
   data: Pack[]
@@ -15,6 +18,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const isLoading = useAppSelector((state) => state.cards.loading);
 
   const handleEditClick = () => {
     setShowEditModal((p) => !p);
@@ -37,29 +41,37 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
 
   return (
     <div className={classes.Container}>
-      <table className={classes.Table}>
-        <thead>
-          <tr className={classes.TitleRow}>
-            <th>Name</th>
-            <th>Cards</th>
-            <th>Last Updated</th>
-            <th>Created by</th>
-            <th className={classes.LastTd}>Actions</th>
-          </tr>
-        </thead>
+      <div className={classes.Table}>
+        <div className={classes.TitleRow}>
+          <div className={classes.CellOne}>Name</div>
+          <div className={classes.CellTwo}>Cards</div>
+          <div className={classes.CellThree}>
+            <span className={classes.ClickArea}>
+              Last Updated
+              <DropDownArrowIcon />
+            </span>
+          </div>
+          <div className={classes.CellFour}>Created by</div>
+          <div className={classes.CellFive}>Actions</div>
+        </div>
 
-        <tbody>
-          {data.map((item) => (
-            <tr
-              key={item._id}
-              className={classes.DefaultRow}
-            >
-              <td>{item.name}</td>
-              <td>{item.cardsCount}</td>
-              <td>{formatDate(item.updated)}</td>
-              <td>{item.user_name}</td>
+        {isLoading && (
+          Array.from(Array(8).keys()).map(() => (
+            <div className={classes.SkeletonRow}>
+              <Skeleton className={classes.Skeleton} animation="wave" variant="rectangular" width="98%" />
+            </div>
+          ))
+        )}
 
-              <td>
+        {data && !isLoading && (
+          data.map((item: Pack) => (
+            <div key={item._id} className={classes.DefaultRow}>
+              <div className={classes.CellOneD}>{item.name}</div>
+              <div className={classes.CellTwoD}>{item.cardsCount}</div>
+              <div className={classes.CellThreeD}>{formatDate(item.updated)}</div>
+              <div className={classes.CellFourD}>{item.user_name}</div>
+
+              <div className={classes.CellFiveD}>
                 <div className={classes.ActionsContainer}>
                   <Link to="/pack">
                     <HatIcon />
@@ -70,8 +82,8 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
                       handleEditClick();
                       currentSelectedModal(item._id);
                     }}
-                    width="22"
-                    height="22"
+                    width="16"
+                    height="16"
                   />
 
                   <TrashCanIcon
@@ -88,14 +100,13 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
                   {showDeleteModal && selectedItemId === item._id && (
                     <PackActions onClick={handleDeleteClick} type="delete" id={item._id} packName={item.name} />
                   )}
-
                 </div>
-              </td>
+              </div>
+            </div>
+          ))
+        )}
 
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      </div>
     </div>
   );
 };

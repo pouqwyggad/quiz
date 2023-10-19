@@ -7,46 +7,31 @@
 }
 
 .Table {
-
   width: 100%;
   border: 1px solid $borderColor;
   text-align: left;
 }
 
 .TitleRow {
-  padding: 0 20px;
+  display: flex;
+  padding: 0 36px;
   background: $bgGrey;
   border-bottom: 1px solid $borderColor;
 }
 
 .DefaultRow {
+  padding: 0 36px;
+  display: flex;
   border-bottom: 1px solid $borderColor;
-
-  &:last-child {
-    border: none;
-  }
-
 }
 
-tr {
+.SkeletonRow {
+  border-bottom: 1px solid $borderColor;
+  width: 100%;
   height: 48px;
-  //padding: 0 36px;
-}
-
-th:last-child {
-  padding-right: 36px;
-}
-
-th:first-child {
-  padding-left: 36px;
-}
-
-td:last-child {
-  padding-right: 36px;
-}
-
-td:first-child {
-  padding-left: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ActionsContainer {
@@ -55,6 +40,50 @@ td:first-child {
   gap: 12px;
 }
 
-.LastTd {
-  width: 120px;
+.CellOne, .CellTwo, .CellFour {
+ display: flex;
+  min-width: 23.5%;
+  align-items: center;
+  @include create-text(#000, 14px, 500, $lineHeight: 17px);
+}
+
+.CellThree {
+  display: flex;
+  min-width: 23.5%;
+  align-items: center;
+  gap: 6px;
+  @include create-text(#000, 14px, 500, $lineHeight: 17px);
+}
+
+.ClickArea {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.CellOneD, .CellTwoD, .CellThreeD, .CellFourD {
+  display: flex;
+  min-width: 23.5%;
+  align-items: center;
+  @include create-text(#000, 13px, 400, $lineHeight: 17px);
+}
+
+.CellFive {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  min-width: 6%;
+}
+
+.CellFiveD {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  min-width: 6%;
+}
+
+.Skeleton {
+  border-radius: 8px;
 }

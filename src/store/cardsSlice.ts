@@ -5,7 +5,7 @@ import { Packs } from '../interfaces/Packs';
 export const getCardsAsync = createAsyncThunk(
   'cards/getCards',
   async () => {
-    const response = await api.get('/cards/pack?pageCount=10');
+    const response = await api.get('/cards/pack?pageCount=8');
 
     return response.data;
   },
@@ -54,7 +54,7 @@ export const editPackNameAsync = createAsyncThunk<Packs,
     try {
       const cardsPack = {
         cardsPack: {
-          _id: id,
+          id,
           name,
         },
       };
@@ -70,15 +70,27 @@ export const editPackNameAsync = createAsyncThunk<Packs,
   },
 );
 
-const initialState: Packs = {
-  cardPacks: [],
-  page: 0,
-  pageCount: 0,
-  cardPacksTotalCount: 0,
-  minCardsCount: 0,
-  maxCardsCount: 0,
-  token: '',
-  tokenDeathTime: 0,
+interface CardsState {
+  cardsInfo: Packs;
+  loading: boolean;
+  error: any;
+  isAuth: boolean;
+}
+
+const initialState: CardsState = {
+  cardsInfo: {
+    cardPacks: [],
+    page: 0,
+    pageCount: 0,
+    cardPacksTotalCount: 0,
+    minCardsCount: 0,
+    maxCardsCount: 0,
+    token: '',
+    tokenDeathTime: 0,
+  },
+  loading: false,
+  error: null,
+  isAuth: false,
 };
 
 const cardsSlice = createSlice({
@@ -87,17 +99,21 @@ const cardsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(getCardsAsync.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+        Object.assign(state.cardsInfo, action.payload);
+        state.loading = false;
       })
       .addCase(addNewPackAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+        Object.assign(state.cardsInfo, action.payload);
       })
       .addCase(deletePackAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+        Object.assign(state.cardsInfo, action.payload);
       })
       .addCase(editPackNameAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+        Object.assign(state.cardsInfo, action.payload);
       });
   },
 });

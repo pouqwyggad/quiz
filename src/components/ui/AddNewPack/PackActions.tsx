@@ -123,7 +123,7 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
           <Button
             sidePadding={44}
             type="blue"
-            text="Save"
+            text="Edit"
             onClick={editPackHandler}
           />
           )}
@@ -132,7 +132,7 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
           <Button
             sidePadding={44}
             type="red"
-            text="Save"
+            text="Delete"
             onClick={deleteCardHandler}
           />
           )}
