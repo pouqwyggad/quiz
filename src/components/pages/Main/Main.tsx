@@ -17,11 +17,12 @@ const ROWS_PER_PAGE = 10;
 const getTotalPageCount = (rowCount: number): number => Math.ceil(rowCount / ROWS_PER_PAGE);
 
 export const Main: FC<PropsWithChildren<MainProps>> = () => {
-  const cards = useAppSelector((state) => state.cards.cardPacks);
+  const cards = useAppSelector((state) => state.cards.cardsInfo.cardPacks);
   const [dataset] = useState<Pack[]>(cards);
   const [page, setPage] = useState(1);
   const [newPackStatus, setNewPackStatus] = useState<boolean>(false);
 
+  console.log(cards);
   const addCardHandler = () => {
     setNewPackStatus((n) => !n);
   };
@@ -55,6 +56,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         {newPackStatus && (
           <PackActions
             onClick={addCardHandler}
+            type="add"
           />
         )}
 

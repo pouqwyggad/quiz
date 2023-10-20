@@ -13,8 +13,8 @@ export const TrashCanIcon: FC<PropsWithChildren<TrashCanIconProps>> = ({ classNa
     <svg
       className={className}
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="20"
+      width="14"
+      height="16"
       viewBox="0 0 20 22"
       fill="none"
     >

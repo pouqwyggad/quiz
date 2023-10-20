@@ -31,9 +31,9 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
     const fetchData = async () => {
       try {
         if (localStorage.getItem('token') && !(window.location.href.includes('auth'))) {
-          await new Promise((resolve) => { setTimeout(resolve, 1000); });
-          const result = await dispatch(checkAuth());
+          // await new Promise((resolve) => { setTimeout(resolve, 500); });
           await dispatch(getCardsAsync());
+          const result = await dispatch(checkAuth());
 
           if (result.payload.error) {
             navigate({ to: '/auth/login' });
