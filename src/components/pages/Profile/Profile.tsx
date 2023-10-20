@@ -3,13 +3,13 @@ import React, {
 } from 'react';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import Skeleton from '@mui/material/Skeleton';
 import classes from './Profile.module.scss';
 import { ChooseProfileAvatarIcon } from '../../icons/ChooseProfileAvatarIcon';
 import { EditIcon } from '../../icons/EditIcon';
 import { Button } from '../../ui/Button/Button';
 import { LogOutIcon } from '../../icons/LogOutIcon';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
-import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
 import { changeProfileNameAsync, logoutAsync } from '../../../store/authSlice';
 import { TextField } from '../../ui/TextField/TextField';
 import { pageMotion } from '../../../motions/pageMotion';
@@ -67,11 +67,15 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
         <div className={classes.ProfileTitle}>Personal Information</div>
 
         <div className={classes.AvatarContainer}>
-          <img
-            className={classes.AvatarImg}
-            src={data.user.avatar}
-            alt="Profile img"
-          />
+          {data.user.avatar ? (
+            <img
+              className={classes.AvatarImg}
+              src={data.user.avatar}
+              alt="Profile img"
+            />
+          ) : (
+            <Skeleton animation="wave" variant="circular" width={196} height={196} />
+          )}
 
           <label htmlFor="hangeImage" className={classes.AvatarChangeIcon}>
             <ChooseProfileAvatarIcon className={classes.ChooseProfileAvatarIconHover} />
@@ -100,30 +104,31 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
           </div>
         ) : (
           <div className={classes.NameArea}>
-            <div
-              className={classes.Username}
-            >
-              {data.user.name}
-            </div>
-
-            <EditIcon
-              width="20"
-              height="20"
-              className={classes.Edit}
-              onClick={edit}
-            />
+            {
+              data.user.name ? (
+                <>
+                  <div className={classes.Username}>
+                    {data.user.name}
+                  </div>
+                  <EditIcon
+                    width="20"
+                    height="20"
+                    className={classes.Edit}
+                    onClick={edit}
+                  />
+                </>
+              ) : (
+                <Skeleton animation="wave" variant="text" width={200} height={30} />
+              )
+            }
           </div>
         )}
 
-        <div className={classes.EmailText}>{data.user.email}</div>
+        <div className={classes.EmailText}>
+          {data.user.email ? data.user.email : <Skeleton animation="wave" variant="text" width={150} height={20} />}
+        </div>
 
-        <BackPageButton
-          src="/"
-        />
-
-        <Link
-          to="/auth/login"
-        >
+        <Link to="/auth/login">
           <Button
             sidePadding={20}
             type="white"

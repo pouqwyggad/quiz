@@ -10,7 +10,8 @@
     "import/prefer-default-export": "off",
     "react/function-component-definition": "off",
     "eslint-disable-next-line no-empty-pattern": "off",
-    "no-param-reassign": ["error", { "props": false }]
+    "no-param-reassign": ["error", { "props": false }],
+    "no-underscore-dangle":  ["error", { "allow": ["_id"] }]
   },
   "ignorePatterns": ["tailwind.config.js"]
 }

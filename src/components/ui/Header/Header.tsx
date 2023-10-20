@@ -1,5 +1,5 @@
 import React, {
-  FC, PropsWithChildren, useEffect, useRef, useState,
+  FC, PropsWithChildren, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { Link } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -7,17 +7,28 @@ import classes from './Header.module.scss';
 import { LogoIcon } from '../../icons/LogoIcon';
 import { Button } from '../Button/Button';
 import { DropDownProfile } from '../DropDownProfile/DropDownProfile';
-import 'react-loading-skeleton/dist/skeleton.css';
 import { useAppSelector } from '../../../hooks/hook';
+import { SkeletonAvatar } from '../SkeletonAvatar/SkeletonAvatar';
 
 interface HeaderProps {
 }
 
 export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const [showMenu, setShowMenu] = useState(false);
   const data = useAppSelector((state) => state.auth);
   const isAuth = localStorage.getItem('isAuth');
+  const [showMenu, setShowMenu] = useState(false);
+  const [notShowMenu, setNotShowMenu] = useState(true);
+
+  useMemo(() => {
+    const currentPath = window.location.pathname;
+
+    if (currentPath.includes('profile')) {
+      setNotShowMenu(false);
+    } else {
+      setNotShowMenu(true);
+    }
+  }, [window.location.pathname]);
 
   const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (window.location.href.includes('auth')) e.preventDefault();
@@ -51,24 +62,31 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
       </Link>
 
       {isAuth === 'true' ? (
-        <motion.div
-          className={classes.ProfileContainer}
-          onClick={() => setShowMenu((p) => !p)}
-          ref={menuRef}
-        >
-          <span className={classes.ProfileName}>{data.user.name}</span>
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+        <>
+          {data.user.avatar ? (
+            <motion.div
+              className={classes.ProfileContainer}
+              onClick={() => setShowMenu((p) => !p)}
+              ref={menuRef}
+            >
+              <span className={classes.ProfileName}>{data.user.name}</span>
 
-          <img
-            className={classes.ProfileAvatar}
-            src={data.user.avatar}
-            alt="profile"
-          />
+              <img
+                className={classes.ProfileAvatar}
+                src={data.user.avatar}
+                alt="profile"
+              />
 
-          <AnimatePresence>
-            {showMenu && <DropDownProfile />}
-          </AnimatePresence>
+              <AnimatePresence>
+                {(showMenu && notShowMenu) && <DropDownProfile />}
+              </AnimatePresence>
 
-        </motion.div>
+            </motion.div>
+          ) : (
+            <SkeletonAvatar />
+          )}
+        </>
       ) : (
         <Link to="/auth/login">
           <Button sidePadding={28} type="blue" text="Sing in" />

@@ -4,8 +4,9 @@
   position: absolute;
   display: flex;
   gap: 8px;
-  top: -12px;
-  left: -140px - 257px;
-  font-feature-settings: 'clig' off, 'liga' off;
-  @include create-text($text, 20px, 600, $lineHeight: 24px);
+  top: 84px;
+  left: 136px;
+  z-index: 200;
+  cursor: pointer;
+  @include create-text($text, 14px, 400, $lineHeight: 24px);
 }

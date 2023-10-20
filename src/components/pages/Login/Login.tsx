@@ -1,12 +1,15 @@
 import React, { FC, PropsWithChildren, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import classes from './Login.module.scss';
 import { TextField } from '../../ui/TextField/TextField';
 import { Button } from '../../ui/Button/Button';
 import { loginAsync } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
 import { pageMotion } from '../../../motions/pageMotion';
+import { getCardsAsync } from '../../../store/cardsSlice';
 
 interface LoginProps {
 }
@@ -51,6 +54,7 @@ export const Login: FC<PropsWithChildren<LoginProps>> = () => {
       loginAsync({ email: user.email, password: user.password, rememberMe }),
     );
     if (res.meta.requestStatus === 'fulfilled') {
+      dispatch(getCardsAsync());
       await navigate({ to: '/profile' });
     }
   };
@@ -78,22 +82,19 @@ export const Login: FC<PropsWithChildren<LoginProps>> = () => {
         text="Password"
       />
 
-      <label
-        htmlFor="rememberMeCheckbox"
-        className={classes.CustomCheckbox}
-      >
-        <input
-          className={classes.HiddenCheckbox}
-          id="rememberMeCheckbox"
-          type="checkbox"
-          checked={rememberMe}
-          onChange={() => {
-            setRememberMe((prevState) => !prevState);
-          }}
-        />
-        <span className={classes.Checkmark} />
-        Remember me
-      </label>
+      <FormControlLabel
+        className={classes.CheckBox}
+        label="Remember me"
+        control={(
+          <Checkbox
+            checked={rememberMe}
+            onChange={() => {
+              setRememberMe((prevState) => !prevState);
+            }}
+            inputProps={{ 'aria-label': 'controlled' }}
+          />
+          )}
+      />
 
       <Link
         to="/auth/forgot-password"
