@@ -8,5 +8,5 @@
   left: 136px;
   z-index: 200;
   cursor: pointer;
-  @include create-text($text, 14  px, 600, $lineHeight: 24px);
+  @include create-text($text, 14px, 400, $lineHeight: 24px);
 }

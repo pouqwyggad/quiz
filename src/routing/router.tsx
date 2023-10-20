@@ -10,6 +10,7 @@ import { Profile } from '../components/pages/Profile/Profile';
 import { RecoverPass } from '../components/pages/RecoverPass/RecoverPass';
 import { NewPass } from '../components/pages/newPass/NewPass';
 import { CheckEmail } from '../components/pages/CheckEmail/CheckEmail';
+import { PackPage } from '../components/pages/PackPage/PackPage';
 
 const rootRoute = new RootRoute({
   component: () => (
@@ -64,6 +65,12 @@ const checkEmailRoute = new Route({
   component: () => <CheckEmail />,
 });
 
+const packRoute = new Route({
+  getParentRoute: () => indexRoute,
+  path: '/pack',
+  component: () => <PackPage />,
+});
+
 const profileRoute = new Route({
   getParentRoute: () => indexRoute,
   path: '/profile',
@@ -90,6 +97,7 @@ const routeTree = rootRoute.addChildren([
       checkEmailRoute,
     ]),
     profileRoute,
+    packRoute,
   ]),
 ]);
 

@@ -11,10 +11,6 @@ export const BackPageButton: FC<PropsWithChildren<BackPageButtonProps>> = ({ src
   <Link
     className={classes.Back}
     to={src}
-    search={{
-      // @ts-ignore
-      query: 'tanstack',
-    }}
   >
     <ArrowBackIcon />
     Back to Packs List
