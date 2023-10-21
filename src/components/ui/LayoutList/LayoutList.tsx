@@ -20,6 +20,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const isLoading = useAppSelector((state) => state.packs.loading);
+  const USER_ID = useAppSelector((state) => state.auth.user._id);
 
   const handleEditClick = () => {
     setShowEditModal((p) => !p);
@@ -63,7 +64,6 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
               <div className={classes.CellTwoD}>{item.cardsCount}</div>
               <div className={classes.CellThreeD}>{formatDate(item.updated)}</div>
               <div className={classes.CellFourD}>{item.user_name}</div>
-
               <div className={classes.CellFiveD}>
                 <div className={classes.ActionsContainer}>
                   <Link
@@ -75,28 +75,41 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
                     <HatIcon />
                   </Link>
 
-                  <EditIcon
-                    onClick={() => {
-                      handleEditClick();
-                      currentSelectedModal(item._id);
-                    }}
-                    width="16"
-                    height="16"
-                  />
+                  {(item.user_id === USER_ID) && (
+                  <>
+                    <EditIcon
+                      onClick={() => {
+                        handleEditClick();
+                        currentSelectedModal(item._id);
+                      }}
+                      width="16"
+                      height="16"
+                    />
 
-                  <TrashCanIcon
-                    onClick={() => {
-                      handleDeleteClick();
-                      currentSelectedModal(item._id);
-                    }}
-                  />
+                    <TrashCanIcon
+                      onClick={() => {
+                        handleDeleteClick();
+                        currentSelectedModal(item._id);
+                      }}
+                    />
+                  </>
+                  )}
 
                   {showEditModal && selectedItemId === item._id && (
-                    <PackActions onClick={handleEditClick} type="edit" id={item._id} />
+                    <PackActions
+                      onClick={handleEditClick}
+                      type="edit"
+                      id={item._id}
+                    />
                   )}
 
                   {showDeleteModal && selectedItemId === item._id && (
-                    <PackActions onClick={handleDeleteClick} type="delete" id={item._id} packName={item.name} />
+                    <PackActions
+                      onClick={handleDeleteClick}
+                      type="delete"
+                      id={item._id}
+                      packName={item.name}
+                    />
                   )}
                 </div>
               </div>

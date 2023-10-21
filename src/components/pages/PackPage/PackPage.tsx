@@ -9,6 +9,7 @@ import { CardsList } from '../../ui/FriendsPackList/CardsList';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { getCardsAsync } from '../../../store/cardsSlice';
 import { Card } from '../../../interfaces/Cards';
+import { PackEditConfIcon } from '../../icons/PackEditConfIcon';
 
 interface PackPageProps {
 
@@ -16,7 +17,7 @@ interface PackPageProps {
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
-
+  const USER_ID = useAppSelector((state) => state.auth.user._id);
   const packInfo = useAppSelector((state) => state.cards);
   const [cards, setCards] = useState<Card[]>(packInfo.packCards.cards);
   const path = useRef('');
@@ -45,7 +46,12 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
             <Skeleton animation="wave" variant="text" width="100%" height="30px" />
           </span>
         ) : (
-          <span className={classes.PackTitle}>{packInfo.packCards.packName}</span>
+          <span className={classes.PackTitle}>
+            {packInfo.packCards.packName}
+            {USER_ID === packInfo.packCards.packUserId && (
+              <PackEditConfIcon />
+            )}
+          </span>
         )}
         <Button text="Add new card" sidePadding={35} type="blue" />
       </div>
