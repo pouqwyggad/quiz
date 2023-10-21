@@ -4,6 +4,7 @@
   box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.10), 1px 1px 2px rgba(0, 0, 0, 0.10);
   border-radius: 2px;
   overflow: hidden;
+  margin-top: 24px;
 }
 
 .Table {
@@ -13,16 +14,20 @@
 }
 
 .TitleRow {
+  @include create-text(#000, 14px, 500, $lineHeight: 17px);
   display: flex;
   padding: 0 36px;
+  height: 48px;
   background: $bgGrey;
   border-bottom: 1px solid $borderColor;
 }
 
 .DefaultRow {
+  @include create-text(#000, 13px, 400, $lineHeight: 15.85px);
   padding: 0 36px;
   display: flex;
   border-bottom: 1px solid $borderColor;
+  height: 48px;
 }
 
 .SkeletonRow {
@@ -34,24 +39,11 @@
   justify-content: center;
 }
 
-.ActionsContainer {
+.CellOne, .CellTwo, .CellThree {
   display: flex;
+  min-width: 31%;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-}
-
-.CellOne, .CellTwo, .CellFour {
- display: flex;
-  min-width: 23.5%;
-  align-items: center;
-  @include create-text(#000, 14px, 500, $lineHeight: 17px);
-}
-
-.CellThree {
-  display: flex;
-  min-width: 23.5%;
-  align-items: center;
-  gap: 6px;
   @include create-text(#000, 14px, 500, $lineHeight: 17px);
 }
 
@@ -63,27 +55,31 @@
   cursor: pointer;
 }
 
-.CellOneD, .CellTwoD, .CellThreeD, .CellFourD {
+.CellOneD, .CellTwoD, .CellThreeD {
   display: flex;
-  min-width: 23.5%;
+  min-width: 31%;
+  justify-content: space-between;
   align-items: center;
-  @include create-text(#000, 13px, 400, $lineHeight: 17px);
 }
 
-.CellFive {
+.CellFourD {
   display: flex;
   align-items: center;
   height: 48px;
-  min-width: 6%;
+  min-width: 7%;
 }
 
-.CellFiveD {
+.CellFour {
   display: flex;
   align-items: center;
   height: 48px;
-  min-width: 6%;
+  min-width: 7%;
 }
 
 .Skeleton {
   border-radius: 6px;
+}
+
+.Star {
+  fill: #FFC700;
 }

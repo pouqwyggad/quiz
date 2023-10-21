@@ -7,8 +7,8 @@ import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
 import { useAppDispatch } from '../../../hooks/hook';
 import {
-  addNewPackAsync, deletePackAsync, editPackNameAsync, getCardsAsync,
-} from '../../../store/cardsSlice';
+  addNewPackAsync, deletePackAsync, editPackNameAsync, getPacksAsync,
+} from '../../../store/packsSlice';
 
 interface AddNewPackProps {
   onClick: () => void
@@ -31,21 +31,21 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
     await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync());
+    dispatch(getPacksAsync());
   };
 
   const editPackHandler = async () => {
     dispatch(editPackNameAsync({ id, name }));
     onClick();
     await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync());
+    dispatch(getPacksAsync());
   };
 
   const deleteCardHandler = async () => {
     dispatch(deletePackAsync({ id }));
     onClick();
     // await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync());
+    dispatch(getPacksAsync());
   };
 
   return (

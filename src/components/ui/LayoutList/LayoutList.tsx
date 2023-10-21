@@ -9,6 +9,7 @@ import { Pack } from '../../../interfaces/Packs';
 import { PackActions } from '../AddNewPack/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
+import { formatDate } from '../../../utils/dataHelper';
 
 interface LayoutListProps {
   data: Pack[]
@@ -18,7 +19,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const isLoading = useAppSelector((state) => state.cards.loading);
+  const isLoading = useAppSelector((state) => state.packs.loading);
 
   const handleEditClick = () => {
     setShowEditModal((p) => !p);
@@ -29,14 +30,6 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
 
   const currentSelectedModal = (id: string) => {
     setSelectedItemId(id);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear().toString().slice(-2);
-    return `${day < 10 ? '0' : ''}${day}.${month < 10 ? '0' : ''}${month}.${year}`;
   };
 
   return (
@@ -73,7 +66,12 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
 
               <div className={classes.CellFiveD}>
                 <div className={classes.ActionsContainer}>
-                  <Link to="/pack">
+                  <Link
+                    to="/pack/$id"
+                    params={{
+                      id: item._id,
+                    }}
+                  >
                     <HatIcon />
                   </Link>
 
@@ -105,7 +103,6 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
             </div>
           ))
         )}
-
       </div>
     </div>
   );

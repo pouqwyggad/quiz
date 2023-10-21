@@ -1,90 +1,42 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
-import { Packs } from '../interfaces/Packs';
+import { Cards } from '../interfaces/Cards';
 
-export const getCardsAsync = createAsyncThunk(
+export const getCardsAsync = createAsyncThunk<Cards, { id: string }, {}>(
   'cards/getCards',
-  async () => {
-    const response = await api.get('/cards/pack?pageCount=8');
-
-    return response.data;
-  },
-);
-
-export const addNewPackAsync = createAsyncThunk<Packs,
-{ name: string, privatePack: boolean }, { rejectValue: any }
->(
-  'cards/addNewPack',
-  async ({ name, privatePack }, { rejectWithValue }) => {
+  async ({ id }) => {
     try {
-      const cardsPack = {
-        cardsPack: {
-          name,
-          private: privatePack,
-        },
-      };
-      const response = await api.post('/cards/pack', cardsPack);
-      return response.data;
-    } catch (e: any) {
-      return rejectWithValue(e.response.data);
-    }
-  },
-);
-
-export const deletePackAsync = createAsyncThunk<Packs,
-{ id: string }, { rejectValue: any }
->(
-  'cards/deletePack',
-  async ({ id }, { rejectWithValue }) => {
-    try {
-      const response = await api.delete('/cards/pack', { params: { id } });
+      console.log(id);
+      const response = await api.get(`/cards/card?cardsPack_id=${id}`);
       console.log(response);
-      return response.data;
+      return response.data as Cards;
     } catch (e: any) {
-      return rejectWithValue(e.response.data);
-    }
-  },
-);
-
-export const editPackNameAsync = createAsyncThunk<Packs,
-{ id: string, name: string }, { rejectValue: any }
->(
-  'cards/edit',
-  async ({ id, name }, { rejectWithValue }) => {
-    try {
-      const cardsPack = {
-        cardsPack: {
-          id,
-          name,
-        },
-      };
-
-      console.log(cardsPack);
-
-      const response = await api.put('/cards/pack', cardsPack);
-      console.log(response);
-      return response.data;
-    } catch (e: any) {
-      return rejectWithValue(e.response.data);
+      console.log(e);
+      throw e; // Выбросить ошибку, чтобы она была видна как reject в action
     }
   },
 );
 
 interface CardsState {
-  cardsInfo: Packs;
+  packCards: Cards;
   loading: boolean;
   error: any;
   isAuth: boolean;
 }
 
 const initialState: CardsState = {
-  cardsInfo: {
-    cardPacks: [],
+  packCards: {
+    cards: [],
+    packUserId: '',
+    packName: '',
+    packPrivate: false,
+    packCreated: '',
+    packUpdated: '',
     page: 0,
     pageCount: 0,
-    cardPacksTotalCount: 0,
-    minCardsCount: 0,
-    maxCardsCount: 0,
+    cardsTotalCount: 0,
+    minGrade: 0,
+    maxGrade: 0,
     token: '',
     tokenDeathTime: 0,
   },
@@ -103,17 +55,9 @@ const cardsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
+        Object.assign(state.packCards, action.payload);
+        console.log(state.packCards);
         state.loading = false;
-      })
-      .addCase(addNewPackAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
-      })
-      .addCase(deletePackAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
-      })
-      .addCase(editPackNameAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
       });
   },
 });

@@ -8,7 +8,7 @@ import { Main } from '../../pages/Main/Main';
 import { checkAuth } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
 import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
-import { getCardsAsync } from '../../../store/cardsSlice';
+import { getPacksAsync } from '../../../store/packsSlice';
 
 interface LayoutProps {
 }
@@ -32,8 +32,9 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
       try {
         if (localStorage.getItem('token') && !(window.location.href.includes('auth'))) {
           // await new Promise((resolve) => { setTimeout(resolve, 500); });
-          await dispatch(getCardsAsync());
+          await dispatch(getPacksAsync());
           const result = await dispatch(checkAuth());
+          console.log('cards');
 
           if (result.payload.error) {
             navigate({ to: '/auth/login' });

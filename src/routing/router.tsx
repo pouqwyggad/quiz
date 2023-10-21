@@ -71,6 +71,11 @@ const packRoute = new Route({
   component: () => <PackPage />,
 });
 
+const currentPackRoute = new Route({
+  getParentRoute: () => packRoute,
+  path: '$pack-id',
+});
+
 const profileRoute = new Route({
   getParentRoute: () => indexRoute,
   path: '/profile',
@@ -81,8 +86,6 @@ const profileRoute = new Route({
       throw redirect({
         to: '/auth/login',
       });
-    } else {
-      console.log('authorized');
     }
   },
 });
@@ -97,7 +100,7 @@ const routeTree = rootRoute.addChildren([
       checkEmailRoute,
     ]),
     profileRoute,
-    packRoute,
+    packRoute.addChildren([currentPackRoute]),
   ]),
 ]);
 

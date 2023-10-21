@@ -1,14 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
+import cardsReducer from './cardsSlice';
 import authReducer from './authSlice';
 import registerReducer from './registerSlice';
 import resetPasswordReducer from './resetPasswordSlice';
-import cardsReducer from './cardsSlice';
+import packsReducer from './packsSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     register: registerReducer,
     resetPassword: resetPasswordReducer,
+    packs: packsReducer,
     cards: cardsReducer,
   },
 });
