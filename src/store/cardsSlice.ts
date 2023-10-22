@@ -1,18 +1,36 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
-import { Cards } from '../interfaces/Cards';
+import { Card, Cards } from '../interfaces/Cards';
 
-export const getCardsAsync = createAsyncThunk<Cards, { id: string }, {}>(
+export const getCardsAsync = createAsyncThunk<Cards, { id: string }, { rejectValue: any }>(
   'cards/getCards',
-  async ({ id }) => {
+  async ({ id }, { rejectWithValue }) => {
     try {
-      console.log(id);
-      const response = await api.get(`/cards/card?cardsPack_id=${id}`);
-      console.log(response);
+      const response = await api.get(`/cards/card?cardsPack_id=${id}&pageCount=8`);
       return response.data as Cards;
     } catch (e: any) {
-      console.log(e);
-      throw e; // Выбросить ошибку, чтобы она была видна как reject в action
+      return rejectWithValue(e);
+    }
+  },
+);
+
+export const addCardAsync = createAsyncThunk<Card, { question: string, answer: string, id: string },
+{ rejectValue: any }>(
+  'cards/edit',
+  async ({ question, answer, id }, { rejectWithValue }) => {
+    try {
+      const card = {
+        card: {
+          cardsPack_id: id,
+          question,
+          answer,
+          grade: 4,
+        },
+      };
+      const response = await api.post('cards/card', card);
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e);
     }
   },
 );
@@ -55,6 +73,14 @@ const cardsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
+        Object.assign(state.packCards, action.payload);
+        console.log(state.packCards);
+        state.loading = false;
+      })
+      .addCase(addCardAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addCardAsync.fulfilled, (state, action) => {
         Object.assign(state.packCards, action.payload);
         console.log(state.packCards);
         state.loading = false;

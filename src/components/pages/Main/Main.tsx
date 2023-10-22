@@ -5,7 +5,7 @@ import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
 import { Pagination } from '../../ui/Pagination/Pagination';
 import { Button } from '../../ui/Button/Button';
-import { PackActions } from '../../ui/AddNewPack/PackActions';
+import { PackActions } from '../../ui/PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { Pack } from '../../../interfaces/Packs';
 import { LayoutList } from '../../ui/LayoutList/LayoutList';

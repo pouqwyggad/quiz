@@ -39,9 +39,17 @@
   justify-content: center;
 }
 
-.CellOne, .CellTwo, .CellThree {
+.CellOne, .CellTwo {
   display: flex;
-  min-width: 31%;
+  min-width: 30%;
+  justify-content: space-between;
+  align-items: center;
+  @include create-text(#000, 14px, 500, $lineHeight: 17px);
+}
+
+.CellThree {
+  display: flex;
+  min-width: 20%;
   justify-content: space-between;
   align-items: center;
   @include create-text(#000, 14px, 500, $lineHeight: 17px);
@@ -55,9 +63,16 @@
   cursor: pointer;
 }
 
-.CellOneD, .CellTwoD, .CellThreeD {
+.CellOneD, .CellTwoD {
   display: flex;
-  min-width: 31%;
+  min-width: 30%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.CellThreeD {
+  display: flex;
+  min-width: 20%;
   justify-content: space-between;
   align-items: center;
 }
@@ -66,14 +81,15 @@
   display: flex;
   align-items: center;
   height: 48px;
-  min-width: 7%;
+  justify-content: space-between;
+  min-width: 20%;
 }
 
 .CellFour {
   display: flex;
   align-items: center;
   height: 48px;
-  min-width: 7%;
+  min-width: 10%;
 }
 
 .Skeleton {
@@ -82,4 +98,9 @@
 
 .Star {
   fill: #FFC700;
+}
+
+.ActionsContainer {
+  display: flex;
+  gap: 12px;
 }

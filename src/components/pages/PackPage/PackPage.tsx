@@ -5,11 +5,12 @@ import Skeleton from '@mui/material/Skeleton';
 import classes from './PackPage.module.scss';
 import { Button } from '../../ui/Button/Button';
 import { SearchIcon } from '../../icons/SearchIcon';
-import { CardsList } from '../../ui/FriendsPackList/CardsList';
+import { CardsList } from '../../ui/CardsList/CardsList';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { getCardsAsync } from '../../../store/cardsSlice';
 import { Card } from '../../../interfaces/Cards';
-import { PackEditConfIcon } from '../../icons/PackEditConfIcon';
+import { PackActionsInside } from '../../ui/PackAnctionsInside/PackActionsInside';
+import { CardActions } from '../../ui/CardActions/CardActions';
 
 interface PackPageProps {
 
@@ -17,9 +18,9 @@ interface PackPageProps {
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
-  const USER_ID = useAppSelector((state) => state.auth.user._id);
   const packInfo = useAppSelector((state) => state.cards);
-  const [cards, setCards] = useState<Card[]>(packInfo.packCards.cards);
+  const [, setCards] = useState<Card[]>(packInfo.packCards.cards);
+  const [show, setShow] = useState(false);
   const path = useRef('');
 
   useEffect(() => {
@@ -40,21 +41,39 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
 
   return (
     <div className={classes.PackPage}>
+
       <div className={classes.Title}>
         {packInfo.loading ? (
           <span className={classes.PackTitle}>
             <Skeleton animation="wave" variant="text" width="100%" height="30px" />
           </span>
         ) : (
-          <span className={classes.PackTitle}>
-            {packInfo.packCards.packName}
-            {USER_ID === packInfo.packCards.packUserId && (
-              <PackEditConfIcon />
-            )}
-          </span>
+          <PackActionsInside
+            packName={packInfo.packCards}
+          />
         )}
-        <Button text="Add new card" sidePadding={35} type="blue" />
+
+        <Button
+          text="Add new card"
+          sidePadding={35}
+          type="blue"
+          onClick={() => {
+            setShow((p) => !p);
+          }}
+        />
+
+        {show && (
+        <CardActions
+          onClick={() => {
+            setShow((p) => !p);
+          }}
+          type="add"
+          id={path.current}
+        />
+        )}
+
       </div>
+
       <div className={classes.SearchSection}>
         <span className={classes.SearchText}>Search</span>
         <div className={classes.InputContainer}>
@@ -67,8 +86,9 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           />
         </div>
       </div>
+
       <CardsList
-        data={cards}
+        data={packInfo.packCards.cards}
       />
     </div>
   );

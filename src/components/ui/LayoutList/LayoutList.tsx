@@ -6,7 +6,7 @@ import { HatIcon } from '../../icons/HatIcon';
 import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { Pack } from '../../../interfaces/Packs';
-import { PackActions } from '../AddNewPack/PackActions';
+import { PackActions } from '../PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { formatDate } from '../../../utils/dataHelper';
@@ -72,7 +72,10 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
                       id: item._id,
                     }}
                   >
-                    <HatIcon />
+                    <HatIcon
+                      width="16"
+                      height="16"
+                    />
                   </Link>
 
                   {(item.user_id === USER_ID) && (
@@ -87,6 +90,8 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
                     />
 
                     <TrashCanIcon
+                      width="14"
+                      height="16"
                       onClick={() => {
                         handleDeleteClick();
                         currentSelectedModal(item._id);

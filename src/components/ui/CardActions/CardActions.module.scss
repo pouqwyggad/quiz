@@ -1,0 +1,78 @@
+@import "../../../css/common";
+
+.Wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, .6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Container {
+  z-index: 11;
+  background-color: #fff;
+  width: 395px;
+  border-radius: 2px;
+  filter: drop-shadow(0 0 30px #343D40);
+}
+
+hr {
+  background: $borderColor;
+  margin-bottom:  24px;
+}
+
+.Title {
+  display: flex;
+  justify-content: space-between;
+  padding: 19px 24px;
+  align-items: center;
+  position: relative;
+  @include create-text($text, 18px, 500);
+}
+
+.ContainerSectionTwo {
+  padding: 0 24px;
+}
+
+.ButtonsContainer {
+  padding: 0px 24px 24px 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.CheckBox {
+  padding-left: 24px;
+}
+
+.DeleteModalText {
+  @include create-text($text, 14px, 400, $lineHeight: 24px);
+  padding: 0 24px;
+}
+
+.SelectText {
+  @include create-text($sideText, 14px, 400);
+}
+
+.TextAreaContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  padding-top: 24px;
+}
+
+.SelectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.Input {
+  border-radius: 2px;
+  height: 36px;
+}
