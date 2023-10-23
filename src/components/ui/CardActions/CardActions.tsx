@@ -1,6 +1,7 @@
-import React, { FC, PropsWithChildren, useState } from 'react';
+import React, {
+  FC, PropsWithChildren, useState,
+} from 'react';
 import FormControl from '@mui/material/FormControl';
-// import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import classes from './CardActions.module.scss';
@@ -8,19 +9,19 @@ import { CloseIcon } from '../../icons/CloseIcon';
 import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
 import { useAppDispatch } from '../../../hooks/hook';
-import { addCardAsync, getCardsAsync } from '../../../store/cardsSlice';
+import { addCardAsync, deleteCardAsync, getCardsAsync } from '../../../store/cardsSlice';
 
 interface CardActionsProps {
   onClick: () => void
   type: string
-  id?: string
+  CARD_ID?: string
+  PACK_ID?: string
 }
 
 export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
-  onClick, type, id = '',
+  onClick, type, CARD_ID = '', PACK_ID = '',
 }) => {
   const dispatch = useAppDispatch();
-
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [selectValue, setSelectValue] = useState('Text');
@@ -32,10 +33,17 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
     setAnswer(e.target.value);
   };
   const addCardHandler = async () => {
-    dispatch(addCardAsync({ question, answer, id }));
+    dispatch(addCardAsync({ question, answer, PACK_ID }));
     onClick();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync({ id }));
+    // await new Promise((resolve) => { setTimeout(resolve, 1000); });
+    dispatch(getCardsAsync({ PACK_ID }));
+  };
+
+  const deleteCardHandler = async () => {
+    dispatch(deleteCardAsync({ CARD_ID }));
+    onClick();
+    // await new Promise((resolve) => { setTimeout(resolve, 1000); });
+    dispatch(getCardsAsync({ PACK_ID }));
   };
 
   return (
@@ -102,14 +110,14 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
           {/* /> */}
           {/* )} */}
 
-          {/* {type === 'delete' && ( */}
-          {/* <Button */}
-          {/*  sidePadding={44} */}
-          {/*  type="red" */}
-          {/*  text="Delete" */}
-          {/*  onClick={deleteCardHandler} */}
-          {/* /> */}
-          {/* )} */}
+          {type === 'delete' && (
+          <Button
+            sidePadding={44}
+            type="red"
+            text="Delete"
+            onClick={deleteCardHandler}
+          />
+          )}
 
         </div>
       </div>
@@ -118,5 +126,6 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
 };
 
 CardActions.defaultProps = {
-  id: '',
+  CARD_ID: '',
+  PACK_ID: '',
 };

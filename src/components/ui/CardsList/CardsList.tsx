@@ -1,5 +1,5 @@
 import React, {
-  FC, PropsWithChildren, useState,
+  FC, PropsWithChildren, useEffect, useRef, useState,
 } from 'react';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
@@ -27,17 +27,25 @@ const StyledRating = styled(Rating)({
 export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
-  const [, setShowDeleteModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const USER_ID = useAppSelector((state) => state.auth.user._id);
+  const path = useRef('');
+
   const handleEditClick = () => {
     setShowEditModal((p) => !p);
   };
+
   const handleDeleteClick = () => {
     setShowDeleteModal((p) => !p);
   };
   const currentSelectedModal = (id: string) => {
     setSelectedItemId(id);
   };
+
+  useEffect(() => {
+    const url = window.location.pathname.split('/');
+    path.current = url[url.length - 1];
+  }, []);
 
   return (
     <div className={classes.Container}>
@@ -82,13 +90,30 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
                   height="16"
                 />
 
-                <TrashCanIcon onClick={handleDeleteClick} width="16" height="16" />
+                <TrashCanIcon
+                  onClick={() => {
+                    handleDeleteClick();
+                    currentSelectedModal(item._id);
+                  }}
+                  width="16"
+                  height="16"
+                />
 
                 {showEditModal && selectedItemId === item._id && (
                 <CardActions
                   onClick={handleEditClick}
                   type="edit"
-                  id={item._id}
+                  CARD_ID={item._id}
+                  PACK_ID={path.current}
+                />
+                )}
+
+                {showDeleteModal && selectedItemId === item._id && (
+                <CardActions
+                  onClick={handleDeleteClick}
+                  type="delete"
+                  CARD_ID={item._id}
+                  PACK_ID={path.current}
                 />
                 )}
 

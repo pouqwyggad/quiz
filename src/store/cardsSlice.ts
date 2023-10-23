@@ -2,11 +2,11 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
 import { Card, Cards } from '../interfaces/Cards';
 
-export const getCardsAsync = createAsyncThunk<Cards, { id: string }, { rejectValue: any }>(
+export const getCardsAsync = createAsyncThunk<Cards, { PACK_ID: string }, { rejectValue: any }>(
   'cards/getCards',
-  async ({ id }, { rejectWithValue }) => {
+  async ({ PACK_ID }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/cards/card?cardsPack_id=${id}&pageCount=8`);
+      const response = await api.get(`/cards/card?cardsPack_id=${PACK_ID}&pageCount=8`);
       return response.data as Cards;
     } catch (e: any) {
       return rejectWithValue(e);
@@ -14,14 +14,14 @@ export const getCardsAsync = createAsyncThunk<Cards, { id: string }, { rejectVal
   },
 );
 
-export const addCardAsync = createAsyncThunk<Card, { question: string, answer: string, id: string },
-{ rejectValue: any }>(
+export const addCardAsync = createAsyncThunk<Card,
+{ question: string, answer: string, PACK_ID: string }, { rejectValue: any }>(
   'cards/edit',
-  async ({ question, answer, id }, { rejectWithValue }) => {
+  async ({ question, answer, PACK_ID }, { rejectWithValue }) => {
     try {
       const card = {
         card: {
-          cardsPack_id: id,
+          cardsPack_id: PACK_ID,
           question,
           answer,
           grade: 4,
@@ -29,6 +29,18 @@ export const addCardAsync = createAsyncThunk<Card, { question: string, answer: s
       };
       const response = await api.post('cards/card', card);
       return response.data;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+export const deleteCardAsync = createAsyncThunk<void, { CARD_ID: string }, { rejectValue: any }>(
+  'cards/delete',
+  // eslint-disable-next-line consistent-return
+  async ({ CARD_ID }, { rejectWithValue }) => {
+    try {
+      await api.delete(`/cards/card?id=${CARD_ID}`);
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -74,7 +86,6 @@ const cardsSlice = createSlice({
       })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
         Object.assign(state.packCards, action.payload);
-        console.log(state.packCards);
         state.loading = false;
       })
       .addCase(addCardAsync.pending, (state) => {
@@ -82,7 +93,6 @@ const cardsSlice = createSlice({
       })
       .addCase(addCardAsync.fulfilled, (state, action) => {
         Object.assign(state.packCards, action.payload);
-        console.log(state.packCards);
         state.loading = false;
       });
   },

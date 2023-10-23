@@ -8,7 +8,6 @@ import { SearchIcon } from '../../icons/SearchIcon';
 import { CardsList } from '../../ui/CardsList/CardsList';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { getCardsAsync } from '../../../store/cardsSlice';
-import { Card } from '../../../interfaces/Cards';
 import { PackActionsInside } from '../../ui/PackAnctionsInside/PackActionsInside';
 import { CardActions } from '../../ui/CardActions/CardActions';
 
@@ -19,21 +18,14 @@ interface PackPageProps {
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
   const packInfo = useAppSelector((state) => state.cards);
-  const [, setCards] = useState<Card[]>(packInfo.packCards.cards);
   const [show, setShow] = useState(false);
   const path = useRef('');
 
   useEffect(() => {
     const url = window.location.pathname.split('/');
     path.current = url[url.length - 1];
-    const fetchData = async () => {
-      const response = await dispatch(getCardsAsync({ id: path.current }));
-      if (getCardsAsync.fulfilled.match(response)) {
-        console.log(response.payload.cards);
-        setCards(response.payload.cards);
-      } else {
-        console.error('Ошибка при получении карточек');
-      }
+    const fetchData = () => {
+      dispatch(getCardsAsync({ PACK_ID: path.current }));
     };
 
     fetchData();
@@ -68,7 +60,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
             setShow((p) => !p);
           }}
           type="add"
-          id={path.current}
+          PACK_ID={path.current}
         />
         )}
 
