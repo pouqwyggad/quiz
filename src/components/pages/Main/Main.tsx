@@ -3,12 +3,12 @@ import React, {
 } from 'react';
 import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
-import { LayoutList } from '../../ui/LayoutList/LayoutList';
 import { Pagination } from '../../ui/Pagination/Pagination';
 import { Button } from '../../ui/Button/Button';
-import { PackActions } from '../../ui/AddNewPack/PackActions';
+import { PackActions } from '../../ui/PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { Pack } from '../../../interfaces/Packs';
+import { LayoutList } from '../../ui/LayoutList/LayoutList';
 
 interface MainProps {}
 
@@ -17,11 +17,10 @@ const ROWS_PER_PAGE = 10;
 const getTotalPageCount = (rowCount: number): number => Math.ceil(rowCount / ROWS_PER_PAGE);
 
 export const Main: FC<PropsWithChildren<MainProps>> = () => {
-  const cards = useAppSelector((state) => state.cards.cardPacks);
+  const cards = useAppSelector((state) => state.packs.cardsInfo.cardPacks);
   const [dataset] = useState<Pack[]>(cards);
   const [page, setPage] = useState(1);
   const [newPackStatus, setNewPackStatus] = useState<boolean>(false);
-
   const addCardHandler = () => {
     setNewPackStatus((n) => !n);
   };
@@ -55,6 +54,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         {newPackStatus && (
           <PackActions
             onClick={addCardHandler}
+            type="add"
           />
         )}
 

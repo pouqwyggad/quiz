@@ -2,22 +2,13 @@ import React, { FC, PropsWithChildren, useState } from 'react';
 import classes from './Filters.module.scss';
 import { FilterIcon } from '../../icons/FilterIcon';
 import { SearchIcon } from '../../icons/SearchIcon';
-import { DoubleRange } from '../multiRangeSlider/DoubleRange';
+import { CustomSlider } from '../Slider/CustomSlider';
 
 interface FiltersProps {
 }
 
-interface RangeValues {
-  min: number;
-  max: number;
-}
-
 export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
-  const [, setRangeValues] = useState<RangeValues>({ min: 1, max: 10 });
   const [selectPacks, setSelectPacks] = useState(false);
-  const handleRangeChange = (values: RangeValues) => {
-    setRangeValues(values);
-  };
 
   return (
     <div className={classes.Filters}>
@@ -60,11 +51,7 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
       <div className={classes.RangeInput}>
         <p className={classes.TitleText}>Number of cards</p>
 
-        <DoubleRange
-          min={1}
-          max={10}
-          onChange={handleRangeChange}
-        />
+        <CustomSlider />
 
       </div>
 
