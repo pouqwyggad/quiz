@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
-import { Card, Cards } from '../interfaces/Cards';
+import { Cards } from '../interfaces/Cards';
 
 export const getCardsAsync = createAsyncThunk<Cards, { PACK_ID: string }, { rejectValue: any }>(
   'cards/get',
@@ -14,9 +14,10 @@ export const getCardsAsync = createAsyncThunk<Cards, { PACK_ID: string }, { reje
   },
 );
 
-export const addCardAsync = createAsyncThunk<Card,
+export const addCardAsync = createAsyncThunk<void,
 { question: string, answer: string, PACK_ID: string }, { rejectValue: any }>(
   'cards/add',
+  // eslint-disable-next-line consistent-return
   async ({ question, answer, PACK_ID }, { rejectWithValue }) => {
     try {
       const card = {
@@ -27,8 +28,7 @@ export const addCardAsync = createAsyncThunk<Card,
           grade: 4,
         },
       };
-      const response = await api.post('cards/card', card);
-      return response.data;
+      await api.post('cards/card', card);
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -47,14 +47,12 @@ export const deleteCardAsync = createAsyncThunk<void, { CARD_ID: string }, { rej
   },
 );
 
-export const editCardAsync = createAsyncThunk<Card,
+export const editCardAsync = createAsyncThunk<void,
 { question: string, answer: string, CARD_ID: string }, { rejectValue: any }>(
   'cards/edit',
-  // @ts-ignore
   // eslint-disable-next-line consistent-return
   async ({ question, answer, CARD_ID }, { rejectWithValue }) => {
     try {
-      console.log(CARD_ID);
       const card = {
         card: {
           _id: CARD_ID,
@@ -62,11 +60,7 @@ export const editCardAsync = createAsyncThunk<Card,
           answer,
         },
       };
-      console.log(card);
-      const response = await api.put('cards/card', card);
-
-      console.log(response.data);
-      return response.data;
+      await api.put('cards/card', card);
     } catch (e: any) {
       return rejectWithValue(e);
     }
@@ -117,8 +111,7 @@ const cardsSlice = createSlice({
       .addCase(addCardAsync.pending, (state) => {
         state.loading = true;
       })
-      .addCase(addCardAsync.fulfilled, (state, action) => {
-        Object.assign(state.packCards, action.payload);
+      .addCase(addCardAsync.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(editCardAsync.pending, (state) => {

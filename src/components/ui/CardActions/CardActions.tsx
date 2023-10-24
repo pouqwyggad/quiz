@@ -45,14 +45,13 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
   };
 
   const deleteCardHandler = async () => {
-    dispatch(deleteCardAsync({ CARD_ID }));
+    await dispatch(deleteCardAsync({ CARD_ID }));
     onClick();
-    // await new Promise((resolve) => { setTimeout(resolve, 1000); });
     dispatch(getCardsAsync({ PACK_ID }));
   };
 
   const editPackHandler = async () => {
-    dispatch(editCardAsync({ question, answer, CARD_ID }));
+    await dispatch(editCardAsync({ question, answer, CARD_ID }));
     onClick();
     dispatch(getCardsAsync({ PACK_ID }));
   };
@@ -63,6 +62,8 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
         <div className={classes.Title}>
           <h3>
             {type === 'add' && 'Add new card'}
+            {type === 'delete' && 'Delete card'}
+            {type === 'edit' && 'Edit card'}
           </h3>
           <CloseIcon
             onClick={onClick}
@@ -71,29 +72,40 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
 
         <hr />
 
-        <div className={classes.SelectContainer}>
-          <div className={classes.SelectText}>Choose a question format</div>
-          <FormControl fullWidth>
-            <Select
-              className={classes.Input}
-              id="demo-simple-select"
-              value={selectValue}
-              onChange={(e) => {
-                setSelectValue(e.target.value);
-              }}
-            >
-              <MenuItem value="Text">Text</MenuItem>
-              <MenuItem value="Something">Something</MenuItem>
-              <MenuItem value="Something 2">Something 2</MenuItem>
-            </Select>
-          </FormControl>
+        {type === 'delete' && (
+        <div className={classes.DeleteText}>
+          Do you really want to remove this card?
         </div>
+        )}
 
-        <div className={classes.TextAreaContainer}>
-          <TextField onChange={handleChangeQuestion} name="question" text="Question" />
-          <TextField onChange={handleChangeAnswer} name="answer" text="Answer" />
+        {type !== 'delete' && (
+        <>
+          <div className={classes.SelectContainer}>
+            <div className={classes.SelectText}>Choose a question format</div>
+            <FormControl fullWidth>
+              <Select
+                className={classes.Input}
+                id="demo-simple-select"
+                value={selectValue}
+                onChange={(e) => {
+                  setSelectValue(e.target.value);
+                }}
+              >
+                <MenuItem value="Text">Text</MenuItem>
+                <MenuItem value="Something">Something</MenuItem>
+                <MenuItem value="Something 2">Something 2</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
 
-        </div>
+          <div className={classes.TextAreaContainer}>
+            <TextField onChange={handleChangeQuestion} name="question" text="Question" />
+            <TextField onChange={handleChangeAnswer} name="answer" text="Answer" />
+
+          </div>
+        </>
+        )}
+
         <div className={classes.ButtonsContainer}>
 
           <Button
