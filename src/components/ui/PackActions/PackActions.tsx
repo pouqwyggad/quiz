@@ -28,17 +28,19 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     setName(e.target.value);
   };
   const addCardHandler = async () => {
-    dispatch(addNewPackAsync({ name, privatePack }));
+    const firstRequest = await dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getPacksAsync());
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getPacksAsync());
+    }
   };
 
   const editPackHandler = async () => {
-    dispatch(editPackNameAsync({ id, name }));
+    const firstRequest = await dispatch(editPackNameAsync({ id, name }));
     onClick();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getPacksAsync());
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getPacksAsync());
+    }
   };
 
   const deleteCardHandler = async () => {
