@@ -6,7 +6,6 @@ export const getPacksAsync = createAsyncThunk(
   'pack/getPacks',
   async () => {
     const response = await api.get('/cards/pack?pageCount=8');
-
     return response.data;
   },
 );
@@ -38,7 +37,6 @@ export const deletePackAsync = createAsyncThunk<Packs,
   async ({ id }, { rejectWithValue }) => {
     try {
       const response = await api.delete('/cards/pack', { params: { id } });
-      console.log(response);
       return response.data;
     } catch (e: any) {
       return rejectWithValue(e.response.data);
@@ -54,15 +52,12 @@ export const editPackNameAsync = createAsyncThunk<Packs,
     try {
       const cardsPack = {
         cardsPack: {
-          id,
+          _id: id,
           name,
         },
       };
 
-      console.log(cardsPack);
-
       const response = await api.put('/cards/pack', cardsPack);
-      console.log(response);
       return response.data;
     } catch (e: any) {
       return rejectWithValue(e.response.data);
@@ -103,17 +98,26 @@ const packsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getPacksAsync.fulfilled, (state, action) => {
+        state.loading = false;
         Object.assign(state.cardsInfo, action.payload);
+      })
+      .addCase(addNewPackAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addNewPackAsync.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(addNewPackAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
+      .addCase(deletePackAsync.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(deletePackAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
+      .addCase(deletePackAsync.fulfilled, (state) => {
+        state.loading = false;
       })
-      .addCase(editPackNameAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
+      .addCase(editPackNameAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(editPackNameAsync.fulfilled, (state) => {
+        state.loading = false;
       });
   },
 });

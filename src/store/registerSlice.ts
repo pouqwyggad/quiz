@@ -10,16 +10,6 @@ export const registerAsync = createAsyncThunk<boolean, { email: string, password
       const response = await api.post<IRegister>('/auth/register', { email, password });
 
       return !!response;
-
-      //   if (response) {
-      //     return true;
-      //   }
-      //
-      //   return false;
-      // } catch (error) {
-      //   // @ts-ignore
-      //   throw error.response.data;
-      // }
     } catch (error) {
       // @ts-ignore
       throw error.response.data;
@@ -44,5 +34,4 @@ const registerSlice = createSlice({
     },
   },
 });
-// export const {} = registerSlice.actions;
 export default registerSlice.reducer;

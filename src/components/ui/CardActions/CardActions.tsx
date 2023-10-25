@@ -38,22 +38,30 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
     setAnswer(e.target.value);
   };
   const addCardHandler = async () => {
-    dispatch(addCardAsync({ question, answer, PACK_ID }));
+    const firstRequest = await dispatch(addCardAsync({ question, answer, PACK_ID }));
     onClick();
-    // await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync({ PACK_ID }));
+
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getCardsAsync({ PACK_ID }));
+    }
   };
 
   const deleteCardHandler = async () => {
-    await dispatch(deleteCardAsync({ CARD_ID }));
+    const firstRequest = await dispatch(deleteCardAsync({ CARD_ID }));
     onClick();
-    dispatch(getCardsAsync({ PACK_ID }));
+
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getCardsAsync({ PACK_ID }));
+    }
   };
 
   const editPackHandler = async () => {
-    await dispatch(editCardAsync({ question, answer, CARD_ID }));
+    const firstRequest = await dispatch(editCardAsync({ question, answer, CARD_ID }));
     onClick();
-    dispatch(getCardsAsync({ PACK_ID }));
+
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getCardsAsync({ PACK_ID }));
+    }
   };
 
   return (

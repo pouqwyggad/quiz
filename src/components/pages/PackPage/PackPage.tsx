@@ -19,6 +19,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
   const packInfo = useAppSelector((state) => state.cards);
   const [show, setShow] = useState(false);
+  const ID_USER = useAppSelector((state) => state.auth.user._id);
   const path = useRef('');
 
   useEffect(() => {
@@ -45,43 +46,81 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           />
         )}
 
-        <Button
-          text="Add new card"
-          sidePadding={35}
-          type="blue"
-          onClick={() => {
-            setShow((p) => !p);
-          }}
-        />
+        {packInfo.packCards.cards.length > 0 && (
+          <div>
+            <Button
+              text="Add new card"
+              sidePadding={35}
+              type="blue"
+              onClick={() => {
+                setShow((p) => !p);
+              }}
+            />
 
-        {show && (
-        <CardActions
-          onClick={() => {
-            setShow((p) => !p);
-          }}
-          type="add"
-          PACK_ID={path.current}
-        />
+            {show && (
+            <CardActions
+              onClick={() => {
+                setShow((p) => !p);
+              }}
+              type="add"
+              PACK_ID={path.current}
+            />
+            )}
+          </div>
         )}
-
       </div>
 
-      <div className={classes.SearchSection}>
-        <span className={classes.SearchText}>Search</span>
-        <div className={classes.InputContainer}>
-          <SearchIcon className={classes.SearchIcon} />
-          <input
-            id="inputSearchInfo"
-            className={classes.Input}
-            placeholder="Provide your text"
-            type="text"
-          />
+      {packInfo.packCards.cards.length > 0 ? (
+        <div className={classes.ContentContainer}>
+          <div className={classes.SearchSection}>
+            <span className={classes.SearchText}>Search</span>
+            <div className={classes.InputContainer}>
+              <SearchIcon className={classes.SearchIcon} />
+              <input
+                id="inputSearchInfo"
+                className={classes.Input}
+                placeholder="Provide your text"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <CardsList data={packInfo.packCards.cards} />
         </div>
-      </div>
+      ) : (
+        <div className={classes.EmptyPackContainer}>
 
-      <CardsList
-        data={packInfo.packCards.cards}
-      />
+          {ID_USER === packInfo.packCards.packUserId ? (
+            <>
+              <div className={classes.EmptyPackText}>
+                This pack is empty. Click add new card to fill this pack
+              </div>
+
+              <Button
+                text="Add new card"
+                sidePadding={35}
+                type="blue"
+                onClick={() => {
+                  setShow((p) => !p);
+                }}
+              />
+            </>
+          ) : (
+            <div className={classes.EmptyPackText}>
+              This pack is empty.
+            </div>
+          )}
+          {show && (
+          <CardActions
+            onClick={() => {
+              setShow((p) => !p);
+            }}
+            type="add"
+            PACK_ID={path.current}
+          />
+          )}
+        </div>
+      )}
     </div>
   );
 };

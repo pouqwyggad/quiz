@@ -36,7 +36,6 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
   const handleEditClick = () => {
     setShowEditModal((p) => !p);
   };
-
   const handleDeleteClick = () => {
     setShowDeleteModal((p) => !p);
   };

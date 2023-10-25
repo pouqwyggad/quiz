@@ -44,10 +44,11 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
   };
 
   const deleteCardHandler = async () => {
-    dispatch(deletePackAsync({ id }));
+    const firstRequest = await dispatch(deletePackAsync({ id }));
     onClick();
-    // await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getPacksAsync());
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getPacksAsync());
+    }
   };
 
   return (
