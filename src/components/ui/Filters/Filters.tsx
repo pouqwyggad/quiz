@@ -1,14 +1,31 @@
-import React, { FC, PropsWithChildren, useState } from 'react';
+import React, {
+  FC, PropsWithChildren, useEffect, useState,
+} from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useDebounce } from '@uidotdev/usehooks';
 import classes from './Filters.module.scss';
 import { FilterIcon } from '../../icons/FilterIcon';
 import { SearchIcon } from '../../icons/SearchIcon';
 import { CustomSlider } from '../Slider/CustomSlider';
+import { useAppDispatch } from '../../../hooks/hook';
+import { getPacksAsync, searchPackAsync } from '../../../store/packsSlice';
 
 interface FiltersProps {
 }
 
 export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
+  const dispatch = useAppDispatch();
   const [selectPacks, setSelectPacks] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearch = useDebounce(searchValue, 500);
+
+  useEffect(() => {
+    if (debouncedSearch) {
+      dispatch(searchPackAsync({ searchValue }));
+    } else {
+      dispatch(getPacksAsync());
+    }
+  }, [debouncedSearch]);
 
   return (
     <div className={classes.Filters}>
@@ -20,11 +37,13 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
             className={classes.Input}
             placeholder="Provide your text"
             type="text"
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
           />
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor="inputSearchInfo" className={classes.IconSearch}>
+          <div className={classes.IconSearch}>
             <SearchIcon />
-          </label>
+          </div>
         </div>
       </div>
 

@@ -65,6 +65,20 @@ export const editPackNameAsync = createAsyncThunk<Packs,
   },
 );
 
+export const searchPackAsync = createAsyncThunk<Packs,
+{ searchValue :string }, { rejectValue: any }>(
+  'pack/search',
+  async ({ searchValue }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/cards/pack?packName=${searchValue}`);
+      console.log(response.data);
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
 interface CardsState {
   cardsInfo: Packs;
   loading: boolean;
@@ -118,6 +132,12 @@ const packsSlice = createSlice({
       })
       .addCase(editPackNameAsync.fulfilled, (state) => {
         state.loading = false;
+      })
+      .addCase(searchPackAsync.pending, (state) => {
+        state.loading = false;
+      })
+      .addCase(searchPackAsync.fulfilled, (state, action) => {
+        Object.assign(state.cardsInfo, action.payload);
       });
   },
 });
