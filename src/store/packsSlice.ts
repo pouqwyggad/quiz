@@ -71,7 +71,19 @@ export const searchPackAsync = createAsyncThunk<Packs,
   async ({ searchValue }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/cards/pack?packName=${searchValue}`);
-      console.log(response.data);
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+export const filterPacksByIdAsync = createAsyncThunk<Packs,
+{ USER_ID :string }, { rejectValue: any }>(
+  'pack/searchByUserId',
+  async ({ USER_ID }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/cards/pack?user_id=${USER_ID}`);
       return response.data;
     } catch (e) {
       return rejectWithValue(e);
@@ -134,12 +146,19 @@ const packsSlice = createSlice({
         state.loading = false;
       })
       .addCase(searchPackAsync.pending, (state) => {
-        state.loading = false;
+        state.loading = true;
       })
       .addCase(searchPackAsync.fulfilled, (state, action) => {
         Object.assign(state.cardsInfo, action.payload);
+        state.loading = false;
+      })
+      .addCase(filterPacksByIdAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(filterPacksByIdAsync.fulfilled, (state, action) => {
+        Object.assign(state.cardsInfo, action.payload);
+        state.loading = false;
       });
   },
 });
-
 export default packsSlice.reducer;

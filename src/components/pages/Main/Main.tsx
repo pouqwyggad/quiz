@@ -62,19 +62,41 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
 
       <Filters />
 
-      <LayoutList
-        data={cards}
-      />
+      {cards.length > 0 ? (
+        <>
+          <LayoutList
+            data={cards}
+          />
 
-      <Pagination
-        onNextPageClick={handleNextPageClick}
-        onPrevPageClick={handlePrevPageClick}
-        disable={{
-          left: page === 1,
-          right: page === getTotalPageCount(dataset.length),
-        }}
-        nav={{ current: page, total: getTotalPageCount(dataset.length) }}
-      />
+          <Pagination
+            onNextPageClick={handleNextPageClick}
+            onPrevPageClick={handlePrevPageClick}
+            disable={{
+              left: page === 1,
+              right: page === getTotalPageCount(dataset.length),
+            }}
+            nav={{ current: page, total: getTotalPageCount(dataset.length) }}
+          />
+        </>
+      ) : (
+        <div className={classes.NoPacks}>
+          <div className={classes.Title}>No packages found. Add new pack</div>
+
+          <Button
+            sidePadding={28}
+            type="blue"
+            text="Add new pack"
+            onClick={addCardHandler}
+          />
+
+          {newPackStatus && (
+            <PackActions
+              onClick={addCardHandler}
+              type="add"
+            />
+          )}
+        </div>
+      )}
 
     </div>
   );

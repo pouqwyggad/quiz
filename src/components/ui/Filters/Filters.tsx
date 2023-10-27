@@ -9,13 +9,13 @@ import { SearchIcon } from '../../icons/SearchIcon';
 import { CustomSlider } from '../Slider/CustomSlider';
 import { useAppDispatch } from '../../../hooks/hook';
 import { getPacksAsync, searchPackAsync } from '../../../store/packsSlice';
+import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
 
 interface FiltersProps {
 }
 
 export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
   const dispatch = useAppDispatch();
-  const [selectPacks, setSelectPacks] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearch = useDebounce(searchValue, 500);
 
@@ -49,29 +49,12 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
 
       <div className={classes.ShowPacksArea}>
         <p className={classes.TitleText}>Show packs cards</p>
-        <div className={classes.SwitchPacksContainer}>
-          <button
-            type="button"
-            className={`${!selectPacks ? classes.Switch : classes.SwitchActive}`}
-            onClick={() => setSelectPacks((prevState) => !prevState)}
-          >
-            My
-          </button>
-          <button
-            type="button"
-            className={`${selectPacks ? classes.Switch : classes.SwitchActive}`}
-            onClick={() => setSelectPacks((prevState) => !prevState)}
-          >
-            All
-          </button>
-        </div>
+        <SwitchButtons />
       </div>
 
       <div className={classes.RangeInput}>
         <p className={classes.TitleText}>Number of cards</p>
-
         <CustomSlider />
-
       </div>
 
       <div className={classes.FilterIconArea}>

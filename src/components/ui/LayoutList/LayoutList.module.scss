@@ -66,6 +66,9 @@
 .CellOneD, .CellTwoD, .CellThreeD, .CellFourD {
   display: flex;
   min-width: 23.5%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   align-items: center;
   @include create-text(#000, 13px, 400, $lineHeight: 17px);
 }
