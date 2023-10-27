@@ -14,24 +14,21 @@ export const SwitchButtons: FC<PropsWithChildren<SwitchButtonsProps>> = () => {
 
   const filterPacksByMy = () => {
     setButtonMyIsDisabled(true);
-    dispatch(filterPacksByIdAsync({ USER_ID })).then(() => {
-      setButtonMyIsDisabled(false);
-      setCurrentButton('my');
-    });
+    dispatch(filterPacksByIdAsync({ USER_ID })).then(() => setButtonMyIsDisabled(false));
   };
   const filterPacksByAll = () => {
     setButtonMyIsDisabled(true);
-    dispatch(getPacksAsync()).then(() => {
-      setButtonMyIsDisabled(false);
-      setCurrentButton('all');
-    });
+    dispatch(getPacksAsync()).then(() => setButtonMyIsDisabled(false));
   };
 
   return (
     <div className={classes.SwitchPacksContainer}>
       <button
         type="button"
-        onClick={filterPacksByMy}
+        onClick={() => {
+          setCurrentButton('my');
+          filterPacksByMy();
+        }}
         className={`${currentButton === 'my' ? classes.SwitchActive : classes.Switch}`}
         disabled={buttonMyIsDisabled || currentButton === 'my'}
       >
@@ -39,7 +36,10 @@ export const SwitchButtons: FC<PropsWithChildren<SwitchButtonsProps>> = () => {
       </button>
       <button
         type="button"
-        onClick={filterPacksByAll}
+        onClick={() => {
+          setCurrentButton('all');
+          filterPacksByAll();
+        }}
         className={`${currentButton === 'all' ? classes.SwitchActive : classes.Switch}`}
         disabled={buttonMyIsDisabled || currentButton === 'all'}
       >
