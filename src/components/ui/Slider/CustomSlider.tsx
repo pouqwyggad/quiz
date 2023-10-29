@@ -1,8 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material';
+import { useDebounce } from '@uidotdev/usehooks';
 import classes from './CustomSlider.module.scss';
+import { getPacksAsync } from '../../../store/packsSlice';
+import { useAppDispatch } from '../../../hooks/hook';
 
 function valuetext(value: number) {
   return `${value}°C`;
@@ -53,7 +56,20 @@ interface CustomSliderProps {
 }
 
 export const CustomSlider: FC<CustomSliderProps> = () => {
-  const [value, setValue] = useState<number[]>([1, 10]);
+  const dispatch = useAppDispatch();
+  const [value, setValue] = useState<number[]>([0, 130]);
+  const debouncedSearch = useDebounce(value, 1000);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (loaded && debouncedSearch) {
+      dispatch(getPacksAsync({ MAX: value[1], MIN: value[0] }));
+    }
+  }, [debouncedSearch]);
+  useEffect(() => {
+    // Установите состояние "loaded" в true после загрузки компонента
+    setLoaded(true);
+  }, []);
 
   const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
@@ -72,9 +88,8 @@ export const CustomSlider: FC<CustomSliderProps> = () => {
       <div className={classes.SliderValue}>{value[0]}</div>
       <Box sx={{ width: '155px' }}>
         <PrettoSlider
-          min={1}
-          max={10}
-          getAriaLabel={() => 'Minimum distance'}
+          min={0}
+          max={130}
           value={value}
           onChange={handleChange}
           valueLabelDisplay="off"

@@ -2,10 +2,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
 import { Packs } from '../interfaces/Packs';
 
-export const getPacksAsync = createAsyncThunk(
+export const getPacksAsync = createAsyncThunk<Packs,
+{ searchValue? :string, USER_ID? :string, MAX? :number, MIN? :number }, { rejectValue: any }>(
   'pack/getPacks',
-  async () => {
-    const response = await api.get('/cards/pack?pageCount=8');
+  async ({
+    searchValue = '', USER_ID = '', MAX = 130, MIN = 0,
+  }) => {
+    const response = await api.get(`https://neko-back.herokuapp.com/2.0/cards/pack?min=${MIN}&max=${MAX}&sortPacks=&page=1&pageCount=${8}&packName=${searchValue}&user_id=${USER_ID}&`);
     return response.data;
   },
 );
@@ -65,32 +68,6 @@ export const editPackNameAsync = createAsyncThunk<Packs,
   },
 );
 
-export const searchPackAsync = createAsyncThunk<Packs,
-{ searchValue :string }, { rejectValue: any }>(
-  'pack/search',
-  async ({ searchValue }, { rejectWithValue }) => {
-    try {
-      const response = await api.get(`/cards/pack?packName=${searchValue}`);
-      return response.data;
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  },
-);
-
-export const filterPacksByIdAsync = createAsyncThunk<Packs,
-{ USER_ID :string }, { rejectValue: any }>(
-  'pack/searchByUserId',
-  async ({ USER_ID }, { rejectWithValue }) => {
-    try {
-      const response = await api.get(`/cards/pack?user_id=${USER_ID}`);
-      return response.data;
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  },
-);
-
 interface CardsState {
   cardsInfo: Packs;
   loading: boolean;
@@ -143,20 +120,6 @@ const packsSlice = createSlice({
         state.loading = true;
       })
       .addCase(editPackNameAsync.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(searchPackAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(searchPackAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
-        state.loading = false;
-      })
-      .addCase(filterPacksByIdAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(filterPacksByIdAsync.fulfilled, (state, action) => {
-        Object.assign(state.cardsInfo, action.payload);
         state.loading = false;
       });
   },

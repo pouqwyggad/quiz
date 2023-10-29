@@ -8,7 +8,7 @@ import { FilterIcon } from '../../icons/FilterIcon';
 import { SearchIcon } from '../../icons/SearchIcon';
 import { CustomSlider } from '../Slider/CustomSlider';
 import { useAppDispatch } from '../../../hooks/hook';
-import { getPacksAsync, searchPackAsync } from '../../../store/packsSlice';
+import { getPacksAsync } from '../../../store/packsSlice';
 import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
 
 interface FiltersProps {
@@ -20,10 +20,8 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
   const debouncedSearch = useDebounce(searchValue, 500);
 
   useEffect(() => {
-    if (debouncedSearch) {
-      dispatch(searchPackAsync({ searchValue }));
-    } else {
-      dispatch(getPacksAsync());
+    if (debouncedSearch || searchValue === '') {
+      dispatch(getPacksAsync({ searchValue }));
     }
   }, [debouncedSearch]);
 
@@ -37,6 +35,7 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
             className={classes.Input}
             placeholder="Provide your text"
             type="text"
+            value={searchValue}
             onChange={(e) => {
               setSearchValue(e.target.value);
             }}

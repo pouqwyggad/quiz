@@ -31,7 +31,7 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     const firstRequest = await dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getPacksAsync());
+      dispatch(getPacksAsync({}));
     }
   };
 
@@ -39,7 +39,7 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     const firstRequest = await dispatch(editPackNameAsync({ id, name }));
     onClick();
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getPacksAsync());
+      dispatch(getPacksAsync({}));
     }
   };
 
@@ -47,7 +47,7 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     const firstRequest = await dispatch(deletePackAsync({ id }));
     onClick();
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getPacksAsync());
+      dispatch(getPacksAsync({}));
     }
   };
 
