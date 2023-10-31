@@ -30,6 +30,14 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
     }));
   };
 
+  const resetRequestValue = () => {
+    setRequest({
+      searchValue: '',
+      value: [0, 130],
+      currentUser: '',
+    });
+  };
+
   useEffect(() => {
     if (debouncedSearch) {
       dispatch(getPacksAsync({
@@ -79,7 +87,9 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
       </div>
 
       <div className={classes.FilterIconArea}>
-        <FilterIcon />
+        <FilterIcon
+          onClick={resetRequestValue}
+        />
       </div>
 
     </div>
