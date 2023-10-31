@@ -9,7 +9,6 @@ import { Button } from '../../ui/Button/Button';
 import { loginAsync } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
 import { pageMotion } from '../../../motions/pageMotion';
-import { getCardsAsync } from '../../../store/cardsSlice';
 
 interface LoginProps {
 }
@@ -54,7 +53,6 @@ export const Login: FC<PropsWithChildren<LoginProps>> = () => {
       loginAsync({ email: user.email, password: user.password, rememberMe }),
     );
     if (res.meta.requestStatus === 'fulfilled') {
-      dispatch(getCardsAsync());
       await navigate({ to: '/profile' });
     }
   };

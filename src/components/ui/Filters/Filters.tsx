@@ -1,23 +1,29 @@
-import React, { FC, PropsWithChildren, useState } from 'react';
+import React, {
+  FC, PropsWithChildren, useEffect, useState,
+} from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useDebounce } from '@uidotdev/usehooks';
 import classes from './Filters.module.scss';
 import { FilterIcon } from '../../icons/FilterIcon';
 import { SearchIcon } from '../../icons/SearchIcon';
-import { DoubleRange } from '../multiRangeSlider/DoubleRange';
+import { CustomSlider } from '../Slider/CustomSlider';
+import { useAppDispatch } from '../../../hooks/hook';
+import { getPacksAsync } from '../../../store/packsSlice';
+import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
 
 interface FiltersProps {
 }
 
-interface RangeValues {
-  min: number;
-  max: number;
-}
-
 export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
-  const [, setRangeValues] = useState<RangeValues>({ min: 1, max: 10 });
-  const [selectPacks, setSelectPacks] = useState(false);
-  const handleRangeChange = (values: RangeValues) => {
-    setRangeValues(values);
-  };
+  const dispatch = useAppDispatch();
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearch = useDebounce(searchValue, 500);
+
+  useEffect(() => {
+    if (debouncedSearch || searchValue === '') {
+      dispatch(getPacksAsync({ searchValue }));
+    }
+  }, [debouncedSearch]);
 
   return (
     <div className={classes.Filters}>
@@ -29,43 +35,25 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
             className={classes.Input}
             placeholder="Provide your text"
             type="text"
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
           />
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor="inputSearchInfo" className={classes.IconSearch}>
+          <div className={classes.IconSearch}>
             <SearchIcon />
-          </label>
+          </div>
         </div>
       </div>
 
       <div className={classes.ShowPacksArea}>
         <p className={classes.TitleText}>Show packs cards</p>
-        <div className={classes.SwitchPacksContainer}>
-          <button
-            type="button"
-            className={`${!selectPacks ? classes.Switch : classes.SwitchActive}`}
-            onClick={() => setSelectPacks((prevState) => !prevState)}
-          >
-            My
-          </button>
-          <button
-            type="button"
-            className={`${selectPacks ? classes.Switch : classes.SwitchActive}`}
-            onClick={() => setSelectPacks((prevState) => !prevState)}
-          >
-            All
-          </button>
-        </div>
+        <SwitchButtons />
       </div>
 
       <div className={classes.RangeInput}>
         <p className={classes.TitleText}>Number of cards</p>
-
-        <DoubleRange
-          min={1}
-          max={10}
-          onChange={handleRangeChange}
-        />
-
+        <CustomSlider />
       </div>
 
       <div className={classes.FilterIconArea}>

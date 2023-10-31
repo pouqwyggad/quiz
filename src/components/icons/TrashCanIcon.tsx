@@ -3,18 +3,23 @@ import React, { FC, PropsWithChildren } from 'react';
 interface TrashCanIconProps {
   className?: string
   onClick: () => void
+  width: string
+  height: string
 }
 
-export const TrashCanIcon: FC<PropsWithChildren<TrashCanIconProps>> = ({ className, onClick }) => (
+export const TrashCanIcon: FC<PropsWithChildren<TrashCanIconProps>> = (
+  {
+    className, onClick, width, height,
+  },
+) => (
   <button
     type="button"
     onClick={onClick}
   >
     <svg
       className={className}
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="16"
+      width={width}
+      height={height}
       viewBox="0 0 20 22"
       fill="none"
     >

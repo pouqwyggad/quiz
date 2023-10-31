@@ -7,8 +7,8 @@ import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
 import { useAppDispatch } from '../../../hooks/hook';
 import {
-  addNewPackAsync, deletePackAsync, editPackNameAsync, getCardsAsync,
-} from '../../../store/cardsSlice';
+  addNewPackAsync, deletePackAsync, editPackNameAsync, getPacksAsync,
+} from '../../../store/packsSlice';
 
 interface AddNewPackProps {
   onClick: () => void
@@ -28,24 +28,27 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     setName(e.target.value);
   };
   const addCardHandler = async () => {
-    dispatch(addNewPackAsync({ name, privatePack }));
+    const firstRequest = await dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync());
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getPacksAsync({}));
+    }
   };
 
   const editPackHandler = async () => {
-    dispatch(editPackNameAsync({ id, name }));
+    const firstRequest = await dispatch(editPackNameAsync({ id, name }));
     onClick();
-    await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync());
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getPacksAsync({}));
+    }
   };
 
   const deleteCardHandler = async () => {
-    dispatch(deletePackAsync({ id }));
+    const firstRequest = await dispatch(deletePackAsync({ id }));
     onClick();
-    // await new Promise((resolve) => { setTimeout(resolve, 1000); });
-    dispatch(getCardsAsync());
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      dispatch(getPacksAsync({}));
+    }
   };
 
   return (
