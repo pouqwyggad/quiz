@@ -21,6 +21,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
   const [dataset] = useState<Pack[]>(cards);
   const [page, setPage] = useState(1);
   const [newPackStatus, setNewPackStatus] = useState<boolean>(false);
+
   const addCardHandler = () => {
     setNewPackStatus((n) => !n);
   };
@@ -97,7 +98,6 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           )}
         </div>
       )}
-
     </div>
   );
 };

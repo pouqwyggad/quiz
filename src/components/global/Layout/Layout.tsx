@@ -62,9 +62,9 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
           <Main />
         )}
 
-        {isAuthChecked && (
+        {/* {isAuthChecked && ( */}
         <Outlet />
-        )}
+        {/* // )} */}
 
       </main>
     </div>

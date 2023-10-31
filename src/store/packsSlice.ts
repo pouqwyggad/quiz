@@ -3,12 +3,12 @@ import api from '../api';
 import { Packs } from '../interfaces/Packs';
 
 export const getPacksAsync = createAsyncThunk<Packs,
-{ searchValue? :string, USER_ID? :string, MAX? :number, MIN? :number }, { rejectValue: any }>(
+{ searchValue? :string, currentUser? :string, MAX? :number, MIN? :number }, { rejectValue: any }>(
   'pack/getPacks',
   async ({
-    searchValue = '', USER_ID = '', MAX = 130, MIN = 0,
+    searchValue = '', currentUser = '', MAX = 130, MIN = 0,
   }) => {
-    const response = await api.get(`https://neko-back.herokuapp.com/2.0/cards/pack?min=${MIN}&max=${MAX}&sortPacks=&page=1&pageCount=${8}&packName=${searchValue}&user_id=${USER_ID}&`);
+    const response = await api.get(`https://neko-back.herokuapp.com/2.0/cards/pack?min=${MIN}&max=${MAX}&sortPacks=&page=1&pageCount=${8}&packName=${searchValue}&user_id=${currentUser}`);
     return response.data;
   },
 );
