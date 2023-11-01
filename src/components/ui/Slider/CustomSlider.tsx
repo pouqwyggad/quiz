@@ -1,11 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material';
-import { useDebounce } from '@uidotdev/usehooks';
 import classes from './CustomSlider.module.scss';
-import { getPacksAsync } from '../../../store/packsSlice';
-import { useAppDispatch } from '../../../hooks/hook';
+import { IRequest } from '../../../interfaces/RequestFilters';
 
 function valuetext(value: number) {
   return `${value}°C`;
@@ -53,33 +51,20 @@ const PrettoSlider = styled(Slider)({
 });
 
 interface CustomSliderProps {
+  value: number[]
+  onChangeValue: (newValue: IRequest) => void
 }
 
-export const CustomSlider: FC<CustomSliderProps> = () => {
-  const dispatch = useAppDispatch();
-  const [value, setValue] = useState<number[]>([0, 130]);
-  const debouncedSearch = useDebounce(value, 1000);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (loaded && debouncedSearch) {
-      dispatch(getPacksAsync({ MAX: value[1], MIN: value[0] }));
-    }
-  }, [debouncedSearch]);
-  useEffect(() => {
-    // Установите состояние "loaded" в true после загрузки компонента
-    setLoaded(true);
-  }, []);
-
+export const CustomSlider: FC<CustomSliderProps> = ({ value, onChangeValue }) => {
   const handleChange = (event: Event, newValue: number | number[], activeThumb: number) => {
     if (!Array.isArray(newValue)) {
       return;
     }
 
     if (activeThumb === 0) {
-      setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
+      onChangeValue({ value: [Math.min(newValue[0], value[1] - minDistance), value[1]] });
     } else {
-      setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
+      onChangeValue({ value: [value[0], Math.max(newValue[1], value[0] + minDistance)] });
     }
   };
 

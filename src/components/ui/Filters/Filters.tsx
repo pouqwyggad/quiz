@@ -1,7 +1,6 @@
 import React, {
   FC, PropsWithChildren, useEffect, useState,
 } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { useDebounce } from '@uidotdev/usehooks';
 import classes from './Filters.module.scss';
 import { FilterIcon } from '../../icons/FilterIcon';
@@ -10,18 +9,43 @@ import { CustomSlider } from '../Slider/CustomSlider';
 import { useAppDispatch } from '../../../hooks/hook';
 import { getPacksAsync } from '../../../store/packsSlice';
 import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
+import { IRequest } from '../../../interfaces/RequestFilters';
 
 interface FiltersProps {
 }
 
 export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
   const dispatch = useAppDispatch();
-  const [searchValue, setSearchValue] = useState('');
-  const debouncedSearch = useDebounce(searchValue, 500);
+  const [request, setRequest] = useState<IRequest>({
+    searchValue: '',
+    value: [0, 130],
+    currentUser: '',
+  });
+  const debouncedSearch = useDebounce(request, 500);
+
+  const changeRequestValues = (newValue: IRequest) => {
+    setRequest((prevState) => ({
+      ...prevState,
+      ...newValue,
+    }));
+  };
+
+  const resetRequestValue = () => {
+    setRequest({
+      searchValue: '',
+      value: [0, 130],
+      currentUser: '',
+    });
+  };
 
   useEffect(() => {
-    if (debouncedSearch || searchValue === '') {
-      dispatch(getPacksAsync({ searchValue }));
+    if (debouncedSearch) {
+      dispatch(getPacksAsync({
+        searchValue: request.searchValue,
+        MIN: request.value ? request.value[0] : 0,
+        MAX: request.value ? request.value[1] : 130,
+        currentUser: request.currentUser,
+      }));
     }
   }, [debouncedSearch]);
 
@@ -35,9 +59,9 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
             className={classes.Input}
             placeholder="Provide your text"
             type="text"
-            value={searchValue}
+            value={request.searchValue}
             onChange={(e) => {
-              setSearchValue(e.target.value);
+              changeRequestValues({ searchValue: e.target.value });
             }}
           />
           <div className={classes.IconSearch}>
@@ -48,16 +72,24 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = () => {
 
       <div className={classes.ShowPacksArea}>
         <p className={classes.TitleText}>Show packs cards</p>
-        <SwitchButtons />
+        <SwitchButtons
+          value={request.currentUser || ''}
+          onValueChange={changeRequestValues}
+        />
       </div>
 
       <div className={classes.RangeInput}>
         <p className={classes.TitleText}>Number of cards</p>
-        <CustomSlider />
+        <CustomSlider
+          value={request.value || [0, 130]}
+          onChangeValue={changeRequestValues}
+        />
       </div>
 
       <div className={classes.FilterIconArea}>
-        <FilterIcon />
+        <FilterIcon
+          onClick={resetRequestValue}
+        />
       </div>
 
     </div>

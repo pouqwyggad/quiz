@@ -1,40 +1,35 @@
-import React, { FC, PropsWithChildren, useState } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import classes from './SwitchButtons.module.scss';
-import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
-import { getPacksAsync } from '../../../store/packsSlice';
+import { useAppSelector } from '../../../hooks/hook';
+import { IRequest } from '../../../interfaces/RequestFilters';
 
 interface SwitchButtonsProps {
+  value: string
+  onValueChange: (newValue: IRequest) => void;
 }
 
-export const SwitchButtons: FC<PropsWithChildren<SwitchButtonsProps>> = () => {
-  const dispatch = useAppDispatch();
-  const [currentButton, setCurrentButton] = useState<string | null>('all');
-  const [buttonMyIsDisabled, setButtonMyIsDisabled] = useState(false);
+export const SwitchButtons: FC<PropsWithChildren<SwitchButtonsProps>> = (
+  { value, onValueChange },
+) => {
   const USER_ID = useAppSelector((state) => state.auth.user._id);
 
   return (
     <div className={classes.SwitchPacksContainer}>
       <button
-        type="button"
+        className={`${value !== '' ? classes.SwitchActive : classes.Switch}`}
         onClick={() => {
-          setCurrentButton('my');
-          setButtonMyIsDisabled(true);
-          dispatch(getPacksAsync({ USER_ID })).then(() => setButtonMyIsDisabled(false));
+          onValueChange({ currentUser: USER_ID });
         }}
-        className={`${currentButton === 'my' ? classes.SwitchActive : classes.Switch}`}
-        disabled={buttonMyIsDisabled || currentButton === 'my'}
+        type="button"
       >
         My
       </button>
       <button
         type="button"
         onClick={() => {
-          setCurrentButton('all');
-          setButtonMyIsDisabled(true);
-          dispatch(getPacksAsync({})).then(() => setButtonMyIsDisabled(false));
+          onValueChange({ currentUser: '' });
         }}
-        className={`${currentButton === 'all' ? classes.SwitchActive : classes.Switch}`}
-        disabled={buttonMyIsDisabled || currentButton === 'all'}
+        className={`${value === '' ? classes.SwitchActive : classes.Switch}`}
       >
         All
       </button>
