@@ -1,60 +1,98 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
-import { Packs } from '../interfaces/Packs';
+import { Cards } from '../interfaces/Cards';
 
-export const getCardsAsync = createAsyncThunk(
-  'cards/getCards',
-  async () => {
-    const response = await api.get('/cards/pack');
-
-    return response.data;
+export const getCardsAsync = createAsyncThunk<Cards, { PACK_ID: string }, { rejectValue: any }>(
+  'cards/get',
+  async ({ PACK_ID }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/cards/card?cardsPack_id=${PACK_ID}&pageCount=8`);
+      return response.data as Cards;
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
   },
 );
 
-export const addNewPackAsync = createAsyncThunk<Packs,
-{ name: string, privatePack: boolean }, { rejectValue: any }
->(
-  'cards/addNewPack',
-  async ({ name, privatePack }, { rejectWithValue }) => {
+export const addCardAsync = createAsyncThunk<void,
+{ question: string, answer: string, PACK_ID: string }, { rejectValue: any }>(
+  'cards/add',
+  // eslint-disable-next-line consistent-return
+  async ({ question, answer, PACK_ID }, { rejectWithValue }) => {
     try {
-      const cardsPack = {
-        cardsPack: {
-          name,
-          private: privatePack,
+      const card = {
+        card: {
+          cardsPack_id: PACK_ID,
+          question,
+          answer,
+          grade: 4,
         },
       };
-      const response = await api.post('/cards/pack', cardsPack);
-      return response.data;
-    } catch (e: any) {
-      return rejectWithValue(e.response.data);
+      await api.post('cards/card', card);
+    } catch (e) {
+      return rejectWithValue(e);
     }
   },
 );
 
-export const deletePackAsync = createAsyncThunk<Packs,
-{ id: string }, { rejectValue: any }
->(
-  'cards/deletePack',
-  async ({ id }, { rejectWithValue }) => {
+export const deleteCardAsync = createAsyncThunk<void, { CARD_ID: string }, { rejectValue: any }>(
+  'cards/delete',
+  // eslint-disable-next-line consistent-return
+  async ({ CARD_ID }, { rejectWithValue }) => {
     try {
-      const response = await api.delete('/cards/pack', { params: { id } });
-      console.log(response);
-      return response.data;
-    } catch (e: any) {
-      return rejectWithValue(e.response.data);
+      await api.delete(`/cards/card?id=${CARD_ID}`);
+    } catch (e) {
+      return rejectWithValue(e);
     }
   },
 );
 
-const initialState: Packs = {
-  cardPacks: [],
-  page: 0,
-  pageCount: 0,
-  cardPacksTotalCount: 0,
-  minCardsCount: 0,
-  maxCardsCount: 0,
-  token: '',
-  tokenDeathTime: 0,
+export const editCardAsync = createAsyncThunk<void,
+{ question: string, answer: string, CARD_ID: string }, { rejectValue: any }>(
+  'cards/edit',
+  // eslint-disable-next-line consistent-return
+  async ({ question, answer, CARD_ID }, { rejectWithValue }) => {
+    try {
+      const card = {
+        card: {
+          _id: CARD_ID,
+          question,
+          answer,
+        },
+      };
+      await api.put('cards/card', card);
+    } catch (e: any) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+interface CardsState {
+  packCards: Cards;
+  loading: boolean;
+  error: any;
+  isAuth: boolean;
+}
+
+const initialState: CardsState = {
+  packCards: {
+    cards: [],
+    packUserId: '',
+    packName: '',
+    packPrivate: false,
+    packCreated: '',
+    packUpdated: '',
+    page: 0,
+    pageCount: 0,
+    cardsTotalCount: 0,
+    minGrade: 0,
+    maxGrade: 0,
+    token: '',
+    tokenDeathTime: 0,
+  },
+  loading: false,
+  error: null,
+  isAuth: false,
 };
 
 const cardsSlice = createSlice({
@@ -63,14 +101,30 @@ const cardsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(getCardsAsync.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+        Object.assign(state.packCards, action.payload);
+        state.loading = false;
       })
-      .addCase(addNewPackAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+      .addCase(addCardAsync.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(deletePackAsync.fulfilled, (state, action) => {
-        Object.assign(state, action.payload);
+      .addCase(addCardAsync.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(editCardAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(editCardAsync.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteCardAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteCardAsync.fulfilled, (state) => {
+        state.loading = false;
       });
   },
 });

@@ -27,14 +27,26 @@
     transition: all .2s ease-in-out;
 
     &:hover {
-      //background: $bbHover;
+      //background: #F9F9FA;
+    }
+  }
+
+    &Red {
+      @include create-text(#fff, 16px, 500, $letterSpacing: 0.16px);
+      background: $red;
+      box-shadow: $RedShadow;
+
+      transition: all .2s ease-in-out;
+
+      &:hover {
+        background: $redHover;
+      }
+
     }
 
-  }
-
-  &Disabled {
-    @include create-text($text, 16px, 500, $letterSpacing: 0.16px);
-    background: $red;
-    box-shadow: $logOutButton;
-  }
+    &Disabled {
+      @include create-text($text, 16px, 500, $letterSpacing: 0.16px);
+      background: $red;
+      box-shadow: $logOutButton;
+    }
 }

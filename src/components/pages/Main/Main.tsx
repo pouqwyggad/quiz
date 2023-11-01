@@ -3,12 +3,12 @@ import React, {
 } from 'react';
 import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
-import { LayoutList } from '../../ui/LayoutList/LayoutList';
 import { Pagination } from '../../ui/Pagination/Pagination';
 import { Button } from '../../ui/Button/Button';
-import { PackActions } from '../../ui/AddNewPack/PackActions';
+import { PackActions } from '../../ui/PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { Pack } from '../../../interfaces/Packs';
+import { LayoutList } from '../../ui/LayoutList/LayoutList';
 
 interface MainProps {}
 
@@ -17,7 +17,7 @@ const ROWS_PER_PAGE = 10;
 const getTotalPageCount = (rowCount: number): number => Math.ceil(rowCount / ROWS_PER_PAGE);
 
 export const Main: FC<PropsWithChildren<MainProps>> = () => {
-  const cards = useAppSelector((state) => state.cards.cardPacks);
+  const cards = useAppSelector((state) => state.packs.cardsInfo.cardPacks);
   const [dataset] = useState<Pack[]>(cards);
   const [page, setPage] = useState(1);
   const [newPackStatus, setNewPackStatus] = useState<boolean>(false);
@@ -55,6 +55,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         {newPackStatus && (
           <PackActions
             onClick={addCardHandler}
+            type="add"
           />
         )}
 
@@ -62,20 +63,41 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
 
       <Filters />
 
-      <LayoutList
-        data={cards}
-      />
+      {cards.length > 0 ? (
+        <>
+          <LayoutList
+            data={cards}
+          />
 
-      <Pagination
-        onNextPageClick={handleNextPageClick}
-        onPrevPageClick={handlePrevPageClick}
-        disable={{
-          left: page === 1,
-          right: page === getTotalPageCount(dataset.length),
-        }}
-        nav={{ current: page, total: getTotalPageCount(dataset.length) }}
-      />
+          <Pagination
+            onNextPageClick={handleNextPageClick}
+            onPrevPageClick={handlePrevPageClick}
+            disable={{
+              left: page === 1,
+              right: page === getTotalPageCount(dataset.length),
+            }}
+            nav={{ current: page, total: getTotalPageCount(dataset.length) }}
+          />
+        </>
+      ) : (
+        <div className={classes.NoPacks}>
+          <div className={classes.Title}>No packages found. Add new pack</div>
 
+          <Button
+            sidePadding={28}
+            type="blue"
+            text="Add new pack"
+            onClick={addCardHandler}
+          />
+
+          {newPackStatus && (
+            <PackActions
+              onClick={addCardHandler}
+              type="add"
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

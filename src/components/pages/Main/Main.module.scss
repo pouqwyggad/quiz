@@ -11,3 +11,16 @@
 .PageTitle {
   @include create-text($text, 22px, 600, $lineHeight: 20px);
 }
+
+
+.NoPacks {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  gap: 32px;
+  padding-top: 86px;
+}
+.Title {
+  @include create-text($sideText, 16px, 400);
+}

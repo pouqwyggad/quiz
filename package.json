@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.14",
     "@mui/material": "^5.14.13",
     "@reduxjs/toolkit": "^1.9.6",
     "@tanstack/react-router": "^0.0.1-beta.191",
@@ -15,6 +16,7 @@
     "@types/node": "^16.18.53",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
+    "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.5.1",
     "framer-motion": "^10.16.4",
     "prop-types": "^15.8.1",

@@ -8,15 +8,16 @@ import { Main } from '../../pages/Main/Main';
 import { checkAuth } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
 import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
-import { getCardsAsync } from '../../../store/cardsSlice';
 
 interface LayoutProps {
 }
+
 export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
   const navigate = useNavigate({ from: '/' });
   const dispatch = useAppDispatch();
   const path = useRef('');
   const [isButtonShow, setIsButtonShow] = useState(false);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useMemo(() => {
     path.current = window.location.pathname;
@@ -31,11 +32,13 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
     const fetchData = async () => {
       try {
         if (localStorage.getItem('token') && !(window.location.href.includes('auth'))) {
-          await new Promise((resolve) => { setTimeout(resolve, 1000); });
           const result = await dispatch(checkAuth());
-          await dispatch(getCardsAsync());
 
-          if (result.payload.error) {
+          if (result.meta.requestStatus === 'fulfilled') {
+            setIsAuthChecked(true);
+          }
+          if (result.meta.requestStatus === 'rejected') {
+            setIsAuthChecked(true);
             navigate({ to: '/auth/login' });
           }
         }
@@ -51,17 +54,19 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
       <Header />
 
       {isButtonShow && (
-      <BackPageButton src="/" />
+        <BackPageButton src="/" />
       )}
 
       <main className={classes.Main}>
-        {path.current === '/' && (
-        <Main />
+        {path.current === '/' && isAuthChecked && (
+          <Main />
         )}
 
+        {isAuthChecked && (
         <Outlet />
-      </main>
+        )}
 
+      </main>
     </div>
   );
 };
