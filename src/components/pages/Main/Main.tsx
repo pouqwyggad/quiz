@@ -1,43 +1,82 @@
 import React, {
-  FC, PropsWithChildren, useCallback, useState,
+  FC, PropsWithChildren, useEffect, useState,
 } from 'react';
+import { useDebounce } from '@uidotdev/usehooks';
 import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
 import { Pagination } from '../../ui/Pagination/Pagination';
 import { Button } from '../../ui/Button/Button';
 import { PackActions } from '../../ui/PackActions/PackActions';
-import { useAppSelector } from '../../../hooks/hook';
-import { Pack } from '../../../interfaces/Packs';
+import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { LayoutList } from '../../ui/LayoutList/LayoutList';
+import { IRequest } from '../../../interfaces/RequestFilters';
+import { getPacksAsync } from '../../../store/packsSlice';
 
 interface MainProps {}
 
-const ROWS_PER_PAGE = 10;
-
-const getTotalPageCount = (rowCount: number): number => Math.ceil(rowCount / ROWS_PER_PAGE);
-
 export const Main: FC<PropsWithChildren<MainProps>> = () => {
-  const cards = useAppSelector((state) => state.packs.cardsInfo.cardPacks);
-  const [dataset] = useState<Pack[]>(cards);
-  const [page, setPage] = useState(1);
+  const [request, setRequest] = useState<IRequest>({
+    searchValue: '',
+    value: [0, 130],
+    currentUser: '',
+    rowsPerPage: 8,
+  });
+  const dispatch = useAppDispatch();
+  const cards = useAppSelector((state) => state.packs.cardsInfo);
   const [newPackStatus, setNewPackStatus] = useState<boolean>(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const debouncedSearch = useDebounce(request, 500);
 
+  const updatePacksData = () => dispatch(getPacksAsync({
+    searchValue: request.searchValue,
+    MIN: request.value ? request.value[0] : 0,
+    MAX: request.value ? request.value[1] : 130,
+    currentUser: request.currentUser,
+    page: currentPage,
+    rowsPerPage: request.rowsPerPage,
+  }));
+  const clickHandler = (e: React.MouseEvent<HTMLButtonElement>, page: number) => {
+    setCurrentPage(page);
+  };
+
+  const clickNextPageHandler = (page: number) => {
+    setCurrentPage(page + 1);
+  };
+
+  const clickPrevPageHandler = (page: number) => {
+    setCurrentPage(page - 1);
+  };
+  const changeRequestValues = (newValue: IRequest) => {
+    setRequest((prevState) => ({
+      ...prevState,
+      ...newValue,
+    }));
+  };
+
+  const resetRequestValue = () => {
+    setRequest({
+      searchValue: '',
+      value: [0, 130],
+      currentUser: '',
+    });
+  };
   const addCardHandler = () => {
     setNewPackStatus((n) => !n);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (debouncedSearch) {
+        const res = await updatePacksData();
 
-  const handleNextPageClick = useCallback(() => {
-    const current = page;
-    const next = current + 1;
-    const total = dataset ? getTotalPageCount(dataset.length) : current;
-    setPage(next <= total ? next : current);
-  }, [page, dataset]);
+        if (res.meta.requestStatus === 'fulfilled' && request.rowsPerPage !== undefined) {
+          setTotalPages(Math.ceil(res.payload.cardPacksTotalCount / request.rowsPerPage));
+        }
+      }
+    };
 
-  const handlePrevPageClick = useCallback(() => {
-    const current = page;
-    const prev = current - 1;
-    setPage(prev > 0 ? prev : current);
-  }, [page]);
+    fetchData();
+  }, [debouncedSearch, currentPage]);
 
   return (
     <div className={classes.Main}>
@@ -61,22 +100,28 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
 
       </div>
 
-      <Filters />
+      <Filters
+        requestValues={request}
+        onChange={changeRequestValues}
+        onReset={resetRequestValue}
+      />
 
-      {cards.length > 0 ? (
+      {cards.cardPacks.length > 0 ? (
         <>
           <LayoutList
-            data={cards}
+            data={cards.cardPacks}
+            rowsPerPage={request.rowsPerPage || 8}
           />
 
           <Pagination
-            onNextPageClick={handleNextPageClick}
-            onPrevPageClick={handlePrevPageClick}
-            disable={{
-              left: page === 1,
-              right: page === getTotalPageCount(dataset.length),
-            }}
-            nav={{ current: page, total: getTotalPageCount(dataset.length) }}
+            total={totalPages}
+            current={currentPage}
+            separator="..."
+            onClick={clickHandler}
+            onChange={changeRequestValues}
+            ROWS_PER_PAGE={request.rowsPerPage || 8}
+            clickNext={clickNextPageHandler}
+            clickPrev={clickPrevPageHandler}
           />
         </>
       ) : (

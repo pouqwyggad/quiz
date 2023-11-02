@@ -13,9 +13,10 @@ import { formatDate } from '../../../utils/dataHelper';
 
 interface LayoutListProps {
   data: Pack[]
+  rowsPerPage:number
 }
 
-export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => {
+export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsPerPage }) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -50,7 +51,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data }) => 
         </div>
 
         {isLoading && (
-          Array.from(Array(8).keys()).map(() => (
+          Array.from(Array(rowsPerPage).keys()).map(() => (
             <div className={classes.SkeletonRow}>
               <Skeleton className={classes.Skeleton} animation="wave" variant="rectangular" width="98%" />
             </div>
