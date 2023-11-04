@@ -31,7 +31,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (localStorage.getItem('token') && !(window.location.href.includes('auth'))) {
+        if (!(window.location.href.includes('auth'))) {
           const result = await dispatch(checkAuth());
 
           if (result.meta.requestStatus === 'fulfilled') {

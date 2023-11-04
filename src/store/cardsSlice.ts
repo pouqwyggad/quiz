@@ -2,11 +2,21 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
 import { Cards } from '../interfaces/Cards';
 
-export const getCardsAsync = createAsyncThunk<Cards, { PACK_ID: string }, { rejectValue: any }>(
+export const getCardsAsync = createAsyncThunk<Cards,
+{
+  PACK_ID?: string,
+  // MIN?: number,
+  // MAX?: number,
+  rowsPerPage?: number,
+  page?: number,
+},
+{ rejectValue: any }>(
   'cards/get',
-  async ({ PACK_ID }, { rejectWithValue }) => {
+  async ({
+    PACK_ID, page = 1, rowsPerPage = 6,
+  }, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/cards/card?cardsPack_id=${PACK_ID}&pageCount=8`);
+      const response = await api.get(`/cards/card?cardsPack_id=${PACK_ID}&pageCount=${rowsPerPage}&page=${page}`);
       return response.data as Cards;
     } catch (e: any) {
       return rejectWithValue(e);
