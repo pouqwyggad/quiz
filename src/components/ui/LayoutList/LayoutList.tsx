@@ -29,7 +29,6 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsP
   const handleDeleteClick = () => {
     setShowDeleteModal((p) => !p);
   };
-
   const currentSelectedModal = (id: string) => {
     setSelectedItemId(id);
   };

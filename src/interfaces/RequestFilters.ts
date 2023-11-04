@@ -4,4 +4,5 @@ export interface IRequest {
   currentUser?: string
   rowsPerPage?: number
   page?: number
+  PACK_ID?: string
 }

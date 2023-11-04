@@ -2,6 +2,7 @@ import React, {
   FC, PropsWithChildren, useEffect, useRef, useState,
 } from 'react';
 import Skeleton from '@mui/material/Skeleton';
+import { useDebounce } from '@uidotdev/usehooks';
 import classes from './PackPage.module.scss';
 import { Button } from '../../ui/Button/Button';
 import { SearchIcon } from '../../icons/SearchIcon';
@@ -10,9 +11,10 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { getCardsAsync } from '../../../store/cardsSlice';
 import { PackActionsInside } from '../../ui/PackAnctionsInside/PackActionsInside';
 import { CardActions } from '../../ui/CardActions/CardActions';
+import { IRequest } from '../../../interfaces/RequestFilters';
+import { Pagination } from '../../ui/Pagination/Pagination';
 
 interface PackPageProps {
-
 }
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
@@ -22,24 +24,61 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const ID_USER = useAppSelector((state) => state.auth.user._id);
   const path = useRef('');
 
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [request, setRequest] = useState<IRequest>({
+    PACK_ID: path.current,
+    page: 1,
+    rowsPerPage: 6,
+  });
+  const debouncedSearch = useDebounce(request, 500);
+
+  const updateCardsData = () => dispatch(getCardsAsync({
+    PACK_ID: path.current,
+    page: currentPage,
+    rowsPerPage: request.rowsPerPage,
+  }));
+
+  const clickPaginationButtons = (page: number, type: number) => {
+    if ((page === 1 && type === -1) || (page === totalPages && type === 1)) return;
+    setCurrentPage(page + type);
+  };
+  const changeRequestValues = (newValue: IRequest) => {
+    setRequest((prevState) => ({
+      ...prevState,
+      ...newValue,
+    }));
+  };
+
+  const clickHandler = (e: React.MouseEvent<HTMLButtonElement>, page: number) => {
+    setCurrentPage(page);
+  };
+
   useEffect(() => {
     const url = window.location.pathname.split('/');
     path.current = url[url.length - 1];
-    const fetchData = () => {
-      dispatch(getCardsAsync({ PACK_ID: path.current }));
+    const fetchData = async () => {
+      if (debouncedSearch) {
+        const res = await updateCardsData();
+
+        if (res.meta.requestStatus === 'fulfilled' && request.rowsPerPage !== undefined) {
+          setTotalPages(Math.ceil(res.payload.cardsTotalCount / request.rowsPerPage));
+        }
+      }
     };
 
     fetchData();
-  }, []);
+  }, [debouncedSearch, currentPage]);
 
   return (
     <div className={classes.PackPage}>
 
       <div className={classes.Title}>
         {packInfo.loading ? (
-          <span className={classes.PackTitle}>
+          <div className={classes.PackTitle}>
             <Skeleton animation="wave" variant="text" width="100%" height="30px" />
-          </span>
+          </div>
         ) : (
           <PackActionsInside
             packName={packInfo.packCards}
@@ -86,6 +125,16 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           </div>
 
           <CardsList data={packInfo.packCards.cards} />
+
+          <Pagination
+            total={totalPages}
+            current={currentPage}
+            separator="..."
+            onClick={clickHandler}
+            onChange={changeRequestValues}
+            ROWS_PER_PAGE={request.rowsPerPage || 6}
+            clickHandler={clickPaginationButtons}
+          />
         </div>
       ) : (
         <div className={classes.EmptyPackContainer}>

@@ -40,12 +40,8 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
     setCurrentPage(page);
   };
 
-  const clickNextPageHandler = (page: number) => {
-    setCurrentPage(page + 1);
-  };
-
-  const clickPrevPageHandler = (page: number) => {
-    setCurrentPage(page - 1);
+  const clickPaginationButtons = (page: number, type: number) => {
+    setCurrentPage(page + type);
   };
   const changeRequestValues = (newValue: IRequest) => {
     setRequest((prevState) => ({
@@ -120,8 +116,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             onClick={clickHandler}
             onChange={changeRequestValues}
             ROWS_PER_PAGE={request.rowsPerPage || 8}
-            clickNext={clickNextPageHandler}
-            clickPrev={clickPrevPageHandler}
+            clickHandler={clickPaginationButtons}
           />
         </>
       ) : (

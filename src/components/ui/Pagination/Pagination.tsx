@@ -13,13 +13,12 @@ interface PaginationProps {
   ROWS_PER_PAGE: number
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, page: number) => void
   onChange: (newValue: IRequest) => void
-  clickNext: (page: number) => void
-  clickPrev: (page: number) => void
+  clickHandler: (page: number, type: number) => void
 }
 
 export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
   total, current, separator, onClick,
-  ROWS_PER_PAGE, onChange, clickNext, clickPrev,
+  ROWS_PER_PAGE, onChange, clickHandler,
 }) => {
   const showAfterFirst = current < 5;
   const showBeforeLast = current > total - 4;
@@ -48,7 +47,7 @@ export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
       <div className={classes.PaginationContainer}>
         <PagArrowLeftIcon
           onClick={() => {
-            clickPrev(current);
+            clickHandler(current, -1);
           }}
         />
         <div className={classes.PaginationRow}>
@@ -70,7 +69,7 @@ export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
         </div>
         <PagArrowRightIcon
           onClick={() => {
-            clickNext(current);
+            clickHandler(current, 1);
           }}
         />
       </div>
