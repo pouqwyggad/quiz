@@ -23,10 +23,8 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const [show, setShow] = useState(false);
   const ID_USER = useAppSelector((state) => state.auth.user._id);
   const path = useRef('');
-
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
   const [request, setRequest] = useState<IRequest>({
     PACK_ID: path.current,
     page: 1,
@@ -124,7 +122,10 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
             </div>
           </div>
 
-          <CardsList data={packInfo.packCards.cards} />
+          <CardsList
+            rowsPerPage={request.rowsPerPage || 8}
+            data={packInfo.packCards.cards}
+          />
 
           <Pagination
             total={totalPages}

@@ -28,7 +28,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedSearch = useDebounce(request, 500);
 
-  const updatePacksData = () => dispatch(getPacksAsync({
+  const updatePacksData = async () => dispatch(getPacksAsync({
     searchValue: request.searchValue,
     MIN: request.value ? request.value[0] : 0,
     MAX: request.value ? request.value[1] : 130,
@@ -39,8 +39,8 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement>, page: number) => {
     setCurrentPage(page);
   };
-
   const clickPaginationButtons = (page: number, type: number) => {
+    if ((page === 1 && type === -1) || (page === totalPages && type === 1)) return;
     setCurrentPage(page + type);
   };
   const changeRequestValues = (newValue: IRequest) => {
@@ -55,6 +55,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
       searchValue: '',
       value: [0, 130],
       currentUser: '',
+      rowsPerPage: 8,
     });
   };
   const addCardHandler = () => {
@@ -91,6 +92,8 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           <PackActions
             onClick={addCardHandler}
             type="add"
+            updateTotal={setTotalPages}
+            ROWS_PER_PAGE={request.rowsPerPage || 8}
           />
         )}
 
@@ -107,6 +110,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           <LayoutList
             data={cards.cardPacks}
             rowsPerPage={request.rowsPerPage || 8}
+            updateTotal={setTotalPages}
           />
 
           <Pagination
@@ -134,6 +138,8 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             <PackActions
               onClick={addCardHandler}
               type="add"
+              updateTotal={setTotalPages}
+              ROWS_PER_PAGE={request.rowsPerPage}
             />
           )}
         </div>

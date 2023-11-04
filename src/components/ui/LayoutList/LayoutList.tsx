@@ -14,9 +14,12 @@ import { formatDate } from '../../../utils/dataHelper';
 interface LayoutListProps {
   data: Pack[]
   rowsPerPage:number
+  updateTotal: (total: number) => void
 }
 
-export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsPerPage }) => {
+export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
+  { data, rowsPerPage, updateTotal },
+) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -114,6 +117,8 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsP
                       type="delete"
                       id={item._id}
                       packName={item.name}
+                      updateTotal={updateTotal}
+                      ROWS_PER_PAGE={rowsPerPage}
                     />
                   )}
                 </div>
