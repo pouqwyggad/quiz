@@ -21,10 +21,12 @@ interface CardActionsProps {
   type: string
   CARD_ID?: string
   PACK_ID?: string
+  ROWS_PER_PAGE: number
+  updateTotal?: (total: number) => void
 }
 
 export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
-  onClick, type, CARD_ID = '', PACK_ID = '',
+  onClick, type, CARD_ID = '', PACK_ID = '', ROWS_PER_PAGE, updateTotal,
 }) => {
   const dispatch = useAppDispatch();
   const [question, setQuestion] = useState('');
@@ -41,8 +43,14 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
     const firstRequest = await dispatch(addCardAsync({ question, answer, PACK_ID }));
     onClick();
 
+    // dispatch(getCardsAsync({ PACK_ID }));
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getCardsAsync({ PACK_ID }));
+      const res = await dispatch(getCardsAsync({ PACK_ID }));
+      if (res.meta.requestStatus === 'fulfilled') {
+        if (updateTotal) {
+          updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+        }
+      }
     }
   };
 
@@ -51,7 +59,13 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getCardsAsync({ PACK_ID }));
+      // dispatch(getCardsAsync({ PACK_ID }));
+      const res = await dispatch(getCardsAsync({ PACK_ID }));
+      if (res.meta.requestStatus === 'fulfilled') {
+        if (updateTotal) {
+          updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+        }
+      }
     }
   };
 
@@ -159,4 +173,5 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
 CardActions.defaultProps = {
   CARD_ID: '',
   PACK_ID: '',
+  updateTotal: () => {},
 };

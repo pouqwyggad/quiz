@@ -18,6 +18,8 @@ import { CardActions } from '../CardActions/CardActions';
 interface CardsListProps {
   data: Card[]
   rowsPerPage: number
+  ROWS_PER_PAGE: number
+  updateTotal: (total: number) => void
 }
 
 const StyledRating = styled(Rating)({
@@ -26,7 +28,11 @@ const StyledRating = styled(Rating)({
   },
 });
 
-export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data, rowsPerPage }) => {
+export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
+  {
+    data, rowsPerPage, updateTotal, ROWS_PER_PAGE,
+  },
+) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -115,6 +121,8 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data, rowsPer
                     type="edit"
                     CARD_ID={item._id}
                     PACK_ID={path.current}
+                    updateTotal={updateTotal}
+                    ROWS_PER_PAGE={ROWS_PER_PAGE}
                   />
                   )}
 
@@ -124,6 +132,8 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data, rowsPer
                     type="delete"
                     CARD_ID={item._id}
                     PACK_ID={path.current}
+                    updateTotal={updateTotal}
+                    ROWS_PER_PAGE={ROWS_PER_PAGE}
                   />
                   )}
 

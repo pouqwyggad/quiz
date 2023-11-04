@@ -19,20 +19,20 @@ interface PackPageProps {
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
-  const packInfo = useAppSelector((state) => state.cards);
-  const [show, setShow] = useState(false);
-  const ID_USER = useAppSelector((state) => state.auth.user._id);
   const path = useRef('');
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [request, setRequest] = useState<IRequest>({
     PACK_ID: path.current,
     page: 1,
     rowsPerPage: 6,
   });
+  const [show, setShow] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const packInfo = useAppSelector((state) => state.cards);
+  const ID_USER = useAppSelector((state) => state.auth.user._id);
   const debouncedSearch = useDebounce(request, 500);
 
-  const updateCardsData = () => dispatch(getCardsAsync({
+  const updateCardsData = async () => dispatch(getCardsAsync({
     PACK_ID: path.current,
     page: currentPage,
     rowsPerPage: request.rowsPerPage,
@@ -101,6 +101,8 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
               }}
               type="add"
               PACK_ID={path.current}
+              updateTotal={setTotalPages}
+              ROWS_PER_PAGE={request.rowsPerPage || 8}
             />
             )}
           </div>
@@ -125,6 +127,8 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           <CardsList
             rowsPerPage={request.rowsPerPage || 8}
             data={packInfo.packCards.cards}
+            updateTotal={setTotalPages}
+            ROWS_PER_PAGE={request.rowsPerPage || 8}
           />
 
           <Pagination
@@ -167,6 +171,8 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
             }}
             type="add"
             PACK_ID={path.current}
+            updateTotal={setTotalPages}
+            ROWS_PER_PAGE={request.rowsPerPage || 8}
           />
           )}
         </div>
