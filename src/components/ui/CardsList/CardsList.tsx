@@ -64,7 +64,7 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
           <div className={classes.CellThree}>
             <span className={classes.ClickArea}>
               Last Updated
-              <DropDownArrowIcon />
+              <DropDownArrowIcon rotate={0} />
             </span>
           </div>
           <div className={classes.CellFour}>Grade</div>

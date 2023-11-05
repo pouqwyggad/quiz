@@ -20,6 +20,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
     value: [0, 130],
     currentUser: '',
     rowsPerPage: 8,
+    sort: '0updated',
   });
   const dispatch = useAppDispatch();
   const cards = useAppSelector((state) => state.packs.cardsInfo);
@@ -35,6 +36,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
     currentUser: request.currentUser,
     page: currentPage,
     rowsPerPage: request.rowsPerPage,
+    sortPacks: request.sort,
   }));
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement>, page: number) => {
     setCurrentPage(page);
@@ -111,6 +113,8 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             data={cards.cardPacks}
             rowsPerPage={request.rowsPerPage || 8}
             updateTotal={setTotalPages}
+            onChangeRequest={changeRequestValues}
+            request={request}
           />
 
           <Pagination

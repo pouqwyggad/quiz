@@ -10,16 +10,23 @@ import { PackActions } from '../PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { formatDate } from '../../../utils/dataHelper';
+import { IRequest } from '../../../interfaces/RequestFilters';
 
 interface LayoutListProps {
   data: Pack[]
   rowsPerPage:number
   updateTotal: (total: number) => void
+  onChangeRequest: (newValue: IRequest) => void
+  request: IRequest
 }
 
-export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
-  { data, rowsPerPage, updateTotal },
-) => {
+export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
+  data,
+  rowsPerPage,
+  updateTotal,
+  onChangeRequest,
+  request,
+}) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -43,10 +50,20 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
           <div className={classes.CellOne}>Name</div>
           <div className={classes.CellTwo}>Cards</div>
           <div className={classes.CellThree}>
-            <span className={classes.ClickArea}>
+            <button
+              type="button"
+              onClick={() => {
+                if (request.sort === '0updated') {
+                  onChangeRequest({ sort: '1updated' });
+                } else {
+                  onChangeRequest({ sort: '0updated' });
+                }
+              }}
+              className={classes.ClickArea}
+            >
               Last Updated
-              <DropDownArrowIcon />
-            </span>
+              <DropDownArrowIcon rotate={request.sort === '0updated' ? 0 : 180} />
+            </button>
           </div>
           <div className={classes.CellFour}>Created by</div>
           <div className={classes.CellFive}>Actions</div>

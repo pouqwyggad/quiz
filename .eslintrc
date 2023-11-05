@@ -12,7 +12,8 @@
     "eslint-disable-next-line no-empty-pattern": "off",
     "no-param-reassign": ["error", { "props": false }],
     "no-underscore-dangle":  ["error", { "allow": ["_id"] }],
-    "react/no-array-index-key": "off"
+    "react/no-array-index-key": "off",
+    "@typescript-eslint/quotes": "off"
   },
   "ignorePatterns": ["tailwind.config.js"]
 }

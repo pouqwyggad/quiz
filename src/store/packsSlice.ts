@@ -8,6 +8,7 @@ export const getPacksAsync = createAsyncThunk<Packs, {
   MAX? :number,
   MIN? :number,
   page?: number,
+  sortPacks?: string
   rowsPerPage?: number }, { rejectValue: any }>(
 
   'pack/getPacks',
@@ -19,12 +20,13 @@ export const getPacksAsync = createAsyncThunk<Packs, {
     MIN = 0,
     page = 1,
     rowsPerPage = 8,
+    sortPacks = '0updated',
   }) => {
     const response = await api.get('/cards/pack', {
       params: {
         min: MIN,
         max: MAX,
-        sortPacks: '',
+        sortPacks,
         page,
         pageCount: rowsPerPage,
         packName: searchValue,

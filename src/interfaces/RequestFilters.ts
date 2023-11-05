@@ -5,4 +5,5 @@ export interface IRequest {
   rowsPerPage?: number
   page?: number
   PACK_ID?: string
+  sort?: string
 }
