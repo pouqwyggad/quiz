@@ -64,7 +64,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
 
   return (
     <>
-      <button type="button" className={classes.PackTitle}>
+      <div className={classes.PackTitle}>
         {packName.packName}
         {USER_ID === packName.packUserId && (
           <PackEditConfIcon
@@ -82,8 +82,9 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
               exit="exit"
               className={classes.DropDownContainer}
             >
-              <button
-                type="button"
+              {/* eslint-disable-next-line max-len */}
+              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+              <div
                 className={classes.MenuItem}
                 onClick={() => {
                   handleEditClick();
@@ -95,7 +96,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
                   height="24"
                 />
                 Edit
-              </button>
+              </div>
               <div className={classes.MenuItem}>
                 <TrashCanIcon
                   width="22"
@@ -123,7 +124,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
         {/*  packName={item.name} */}
         {/* /> */}
         {/* )} */}
-      </button>
+      </div>
 
       {showEditModal && (
         <PackActions

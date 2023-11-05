@@ -72,3 +72,11 @@
 .EmptyPackText {
   @include create-text($sideText, 16px, 400);
 }
+
+.NoCardsFind {
+  padding-top: 86px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  @include create-text($sideText, 16px, 400);
+}

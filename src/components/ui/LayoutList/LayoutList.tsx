@@ -70,8 +70,8 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
         </div>
 
         {isLoading && (
-          Array.from(Array(rowsPerPage).keys()).map(() => (
-            <div className={classes.SkeletonRow}>
+          Array.from(Array(rowsPerPage).keys()).map((n, i) => (
+            <div key={i} className={classes.SkeletonRow}>
               <Skeleton className={classes.Skeleton} animation="wave" variant="rectangular" width="98%" />
             </div>
           ))

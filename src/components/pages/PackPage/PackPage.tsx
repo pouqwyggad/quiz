@@ -33,6 +33,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const packInfo = useAppSelector((state) => state.cards);
   const ID_USER = useAppSelector((state) => state.auth.user._id);
   const debouncedSearch = useDebounce(request, 500);
+  const [tableStatus, setTableStatus] = useState('');
 
   const updateCardsData = async () => dispatch(getCardsAsync({
     PACK_ID: path.current,
@@ -61,8 +62,33 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     const url = window.location.pathname.split('/');
     path.current = url[url.length - 1];
     const fetchData = async () => {
-      if (debouncedSearch) {
-        const res = await updateCardsData();
+      if (!debouncedSearch) {
+        return;
+      }
+      const res = await updateCardsData();
+
+      if (res.meta.requestStatus === 'fulfilled') {
+        const cardsNotEmpty = res.payload.cards.length !== 0;
+        const isMyPack = ID_USER === res.payload.packUserId;
+        const hasSearchValue = request.searchValue !== '';
+
+        if (cardsNotEmpty && isMyPack) {
+          setTableStatus('success my');
+        } else if (cardsNotEmpty) {
+          setTableStatus('success all');
+        } else if (!cardsNotEmpty && isMyPack) {
+          setTableStatus('empty my');
+        } else {
+          setTableStatus('empty all');
+        }
+
+        if (!cardsNotEmpty && hasSearchValue) {
+          if (isMyPack) {
+            setTableStatus('no matches my');
+          } else {
+            setTableStatus('no matches all');
+          }
+        }
 
         if (res.meta.requestStatus === 'fulfilled' && request.rowsPerPage !== undefined) {
           setTotalPages(Math.ceil(res.payload.cardsTotalCount / request.rowsPerPage));
@@ -87,7 +113,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           />
         )}
 
-        {packInfo.packCards.cards.length > 0 && (
+        {((tableStatus === 'success my') || (tableStatus === 'no matches my')) && (
           <div>
             <Button
               text="Add new card"
@@ -113,77 +139,89 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
         )}
       </div>
 
-      {packInfo.packCards.cards.length > 0 ? (
-        <div className={classes.ContentContainer}>
-          <div className={classes.SearchSection}>
-            <span className={classes.SearchText}>Search</span>
-            <div className={classes.InputContainer}>
-              <SearchIcon className={classes.SearchIcon} />
-              <input
-                id="inputSearchInfo"
-                className={classes.Input}
-                value={request.searchValue}
-                placeholder="Provide your text"
-                type="text"
-                onChange={(e) => changeRequestValues({ searchValue: e.target.value })}
-              />
-            </div>
+      {((tableStatus === 'success all') || (tableStatus === 'success my')) && (
+      <div className={classes.ContentContainer}>
+        <div className={classes.SearchSection}>
+          <span className={classes.SearchText}>Search</span>
+          <div className={classes.InputContainer}>
+            <SearchIcon className={classes.SearchIcon} />
+            <input
+              id="inputSearchInfo"
+              className={classes.Input}
+              value={request.searchValue}
+              placeholder="Provide your text"
+              type="text"
+              onChange={(e) => changeRequestValues({ searchValue: e.target.value })}
+            />
           </div>
-
-          <CardsList
-            rowsPerPage={request.rowsPerPage || 8}
-            data={packInfo.packCards.cards}
-            updateTotal={setTotalPages}
-            ROWS_PER_PAGE={request.rowsPerPage || 8}
-            request={request}
-            sortByGrade={changeRequestValues}
-          />
-
-          <Pagination
-            total={totalPages}
-            current={currentPage}
-            separator="..."
-            onClick={clickHandler}
-            onChange={changeRequestValues}
-            ROWS_PER_PAGE={request.rowsPerPage || 6}
-            clickHandler={clickPaginationButtons}
-          />
         </div>
-      ) : (
-        <div className={classes.EmptyPackContainer}>
 
-          {ID_USER === packInfo.packCards.packUserId ? (
-            <>
-              <div className={classes.EmptyPackText}>
-                This pack is empty. Click add new card to fill this pack
-              </div>
+        <CardsList
+          rowsPerPage={request.rowsPerPage || 8}
+          data={packInfo.packCards.cards}
+          updateTotal={setTotalPages}
+          ROWS_PER_PAGE={request.rowsPerPage || 8}
+          request={request}
+          sortByGrade={changeRequestValues}
+        />
 
-              <Button
-                text="Add new card"
-                sidePadding={35}
-                type="blue"
-                onClick={() => {
-                  setShow((p) => !p);
-                }}
-              />
-            </>
-          ) : (
-            <div className={classes.EmptyPackText}>
-              This pack is empty.
-            </div>
-          )}
-          {show && (
-          <CardActions
-            onClick={() => {
-              setShow((p) => !p);
-            }}
-            type="add"
-            PACK_ID={path.current}
-            updateTotal={setTotalPages}
-            ROWS_PER_PAGE={request.rowsPerPage || 8}
-          />
-          )}
+        <Pagination
+          total={totalPages}
+          current={currentPage}
+          separator="..."
+          onClick={clickHandler}
+          onChange={changeRequestValues}
+          ROWS_PER_PAGE={request.rowsPerPage || 6}
+          clickHandler={clickPaginationButtons}
+        />
+      </div>
+      )}
+
+      {tableStatus === "empty my" && (
+      <div className={classes.EmptyPackContainer}>
+        <div className={classes.EmptyPackText}>
+          This pack is empty. Click add new card to fill this pack
         </div>
+
+        <Button
+          text="Add new card"
+          sidePadding={35}
+          type="blue"
+          onClick={() => {
+            setShow((p) => !p);
+          }}
+        />
+      </div>
+      )}
+
+      {tableStatus === "empty all" && (
+      <div className={classes.EmptyPackContainer}>
+        <div className={classes.EmptyPackText}>
+          This pack is empty.
+        </div>
+      </div>
+      )}
+
+      {((tableStatus === "no matches my") || (tableStatus === "no matches all")) && (
+      <div className={classes.ContentContainer}>
+        <div className={classes.SearchSection}>
+          <span className={classes.SearchText}>Search</span>
+          <div className={classes.InputContainer}>
+            <SearchIcon className={classes.SearchIcon} />
+            <input
+              id="inputSearchInfo"
+              className={classes.Input}
+              value={request.searchValue}
+              placeholder="Provide your text"
+              type="text"
+              onChange={(e) => changeRequestValues({ searchValue: e.target.value })}
+            />
+          </div>
+        </div>
+        <div className={classes.NoCardsFind}>
+          No cards with this question!
+        </div>
+      </div>
       )}
     </div>
   );

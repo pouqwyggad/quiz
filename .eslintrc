@@ -13,7 +13,8 @@
     "no-param-reassign": ["error", { "props": false }],
     "no-underscore-dangle":  ["error", { "allow": ["_id"] }],
     "react/no-array-index-key": "off",
-    "@typescript-eslint/quotes": "off"
+    "@typescript-eslint/quotes": "off",
+    "click-events-have-key-events": "off"
   },
   "ignorePatterns": ["tailwind.config.js"]
 }

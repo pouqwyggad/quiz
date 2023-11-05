@@ -28,6 +28,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedSearch = useDebounce(request, 500);
+  const [tableStatus, setTableStatus] = useState('');
 
   const updatePacksData = async () => dispatch(getPacksAsync({
     searchValue: request.searchValue,
@@ -63,12 +64,23 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
   const addCardHandler = () => {
     setNewPackStatus((n) => !n);
   };
+
   useEffect(() => {
     const fetchData = async () => {
-      if (debouncedSearch) {
-        const res = await updatePacksData();
+      if (!debouncedSearch) {
+        return;
+      }
 
-        if (res.meta.requestStatus === 'fulfilled' && request.rowsPerPage !== undefined) {
+      const res = await updatePacksData();
+
+      if (res.meta.requestStatus === 'fulfilled') {
+        if (res.payload.cardsPack !== 0) {
+          setTableStatus('success');
+        } else {
+          setTableStatus('empty');
+        }
+
+        if (request.rowsPerPage !== undefined) {
           setTotalPages(Math.ceil(res.payload.cardPacksTotalCount / request.rowsPerPage));
         }
       }
@@ -107,7 +119,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         onReset={resetRequestValue}
       />
 
-      {cards.cardPacks.length > 0 ? (
+      {tableStatus === 'success' && (
         <>
           <LayoutList
             data={cards.cardPacks}
@@ -127,26 +139,28 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             clickHandler={clickPaginationButtons}
           />
         </>
-      ) : (
-        <div className={classes.NoPacks}>
-          <div className={classes.Title}>No packages found. Add new pack</div>
+      )}
 
-          <Button
-            sidePadding={28}
-            type="blue"
-            text="Add new pack"
-            onClick={addCardHandler}
-          />
+      {tableStatus === 'empty' && (
+      <div className={classes.NoPacks}>
+        <div className={classes.Title}>No packages found. Add new pack</div>
 
-          {newPackStatus && (
-            <PackActions
-              onClick={addCardHandler}
-              type="add"
-              updateTotal={setTotalPages}
-              ROWS_PER_PAGE={request.rowsPerPage}
-            />
-          )}
-        </div>
+        <Button
+          sidePadding={28}
+          type="blue"
+          text="Add new pack"
+          onClick={addCardHandler}
+        />
+
+        {newPackStatus && (
+        <PackActions
+          onClick={addCardHandler}
+          type="add"
+          updateTotal={setTotalPages}
+          ROWS_PER_PAGE={request.rowsPerPage}
+        />
+        )}
+      </div>
       )}
     </div>
   );
