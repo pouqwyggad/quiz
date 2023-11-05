@@ -6,7 +6,8 @@ export const getCardsAsync = createAsyncThunk<Cards, {
   PACK_ID?: string,
   rowsPerPage?: number,
   page?: number,
-  sortCards?: string },
+  sortCards?: string
+  cardQuestion?: string },
 { rejectValue: any }>(
 
   'cards/get',
@@ -17,6 +18,7 @@ export const getCardsAsync = createAsyncThunk<Cards, {
       page = 1,
       rowsPerPage = 6,
       sortCards = '0grade',
+      cardQuestion = '',
     },
     { rejectWithValue },
   ) => {
@@ -27,6 +29,7 @@ export const getCardsAsync = createAsyncThunk<Cards, {
           pageCount: rowsPerPage,
           page,
           sortCards,
+          cardQuestion,
         },
       });
       return response.data as Cards;

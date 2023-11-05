@@ -25,6 +25,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     page: 1,
     rowsPerPage: 6,
     sort: '0grade',
+    searchValue: '',
   });
   const [show, setShow] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -38,6 +39,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     page: currentPage,
     rowsPerPage: request.rowsPerPage,
     sortCards: request.sort,
+    cardQuestion: request.searchValue,
   }));
 
   const clickPaginationButtons = (page: number, type: number) => {
@@ -120,8 +122,10 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
               <input
                 id="inputSearchInfo"
                 className={classes.Input}
+                value={request.searchValue}
                 placeholder="Provide your text"
                 type="text"
+                onChange={(e) => changeRequestValues({ searchValue: e.target.value })}
               />
             </div>
           </div>
@@ -132,7 +136,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
             updateTotal={setTotalPages}
             ROWS_PER_PAGE={request.rowsPerPage || 8}
             request={request}
-            sortByGrade={setRequest}
+            sortByGrade={changeRequestValues}
           />
 
           <Pagination
