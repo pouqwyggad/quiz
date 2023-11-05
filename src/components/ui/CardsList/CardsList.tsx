@@ -14,12 +14,15 @@ import { useAppSelector } from '../../../hooks/hook';
 import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { CardActions } from '../CardActions/CardActions';
+import { IRequest } from "../../../interfaces/RequestFilters";
 
 interface CardsListProps {
   data: Card[]
   rowsPerPage: number
   ROWS_PER_PAGE: number
   updateTotal: (total: number) => void
+  sortByGrade: (newValue: IRequest) => void
+  request: IRequest
 }
 
 const StyledRating = styled(Rating)({
@@ -30,7 +33,7 @@ const StyledRating = styled(Rating)({
 
 export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
   {
-    data, rowsPerPage, updateTotal, ROWS_PER_PAGE,
+    data, rowsPerPage, updateTotal, ROWS_PER_PAGE, request, sortByGrade,
   },
 ) => {
   const [selectedItemId, setSelectedItemId] = useState('');
@@ -62,12 +65,23 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
           <div className={classes.CellOne}>Question</div>
           <div className={classes.CellTwo}>Answer</div>
           <div className={classes.CellThree}>
-            <span className={classes.ClickArea}>
-              Last Updated
-              <DropDownArrowIcon rotate={0} />
-            </span>
+            <span>Last Updated</span>
           </div>
-          <div className={classes.CellFour}>Grade</div>
+
+          <button
+            type="button"
+            className={`${classes.CellFour} ${classes.ClickArea}`}
+            onClick={() => {
+              if (request.sort === '0grade') {
+                sortByGrade({ sort: '1grade' });
+              } else {
+                sortByGrade({ sort: '0grade' });
+              }
+            }}
+          >
+            Grade
+            <DropDownArrowIcon rotate={request.sort === '0grade' ? 0 : 180} />
+          </button>
         </div>
 
         {isLoading && (

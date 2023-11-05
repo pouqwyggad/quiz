@@ -5,7 +5,9 @@ import { Cards } from '../interfaces/Cards';
 export const getCardsAsync = createAsyncThunk<Cards, {
   PACK_ID?: string,
   rowsPerPage?: number,
-  page?: number, }, { rejectValue: any }>(
+  page?: number,
+  sortCards?: string },
+{ rejectValue: any }>(
 
   'cards/get',
 
@@ -14,6 +16,7 @@ export const getCardsAsync = createAsyncThunk<Cards, {
       PACK_ID,
       page = 1,
       rowsPerPage = 6,
+      sortCards = '0grade',
     },
     { rejectWithValue },
   ) => {
@@ -23,6 +26,7 @@ export const getCardsAsync = createAsyncThunk<Cards, {
           cardsPack_id: PACK_ID,
           pageCount: rowsPerPage,
           page,
+          sortCards,
         },
       });
       return response.data as Cards;

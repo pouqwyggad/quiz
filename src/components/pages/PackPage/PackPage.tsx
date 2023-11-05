@@ -24,6 +24,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     PACK_ID: path.current,
     page: 1,
     rowsPerPage: 6,
+    sort: '0grade',
   });
   const [show, setShow] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -36,6 +37,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     PACK_ID: path.current,
     page: currentPage,
     rowsPerPage: request.rowsPerPage,
+    sortCards: request.sort,
   }));
 
   const clickPaginationButtons = (page: number, type: number) => {
@@ -129,6 +131,8 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
             data={packInfo.packCards.cards}
             updateTotal={setTotalPages}
             ROWS_PER_PAGE={request.rowsPerPage || 8}
+            request={request}
+            sortByGrade={setRequest}
           />
 
           <Pagination
