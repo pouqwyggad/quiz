@@ -14,9 +14,15 @@ import { useAppSelector } from '../../../hooks/hook';
 import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { CardActions } from '../CardActions/CardActions';
+import { IRequest } from "../../../interfaces/RequestFilters";
 
 interface CardsListProps {
   data: Card[]
+  rowsPerPage: number
+  ROWS_PER_PAGE: number
+  updateTotal: (total: number) => void
+  sortByGrade: (newValue: IRequest) => void
+  request: IRequest
 }
 
 const StyledRating = styled(Rating)({
@@ -25,7 +31,11 @@ const StyledRating = styled(Rating)({
   },
 });
 
-export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
+export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
+  {
+    data, rowsPerPage, updateTotal, ROWS_PER_PAGE, request, sortByGrade,
+  },
+) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -55,17 +65,28 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
           <div className={classes.CellOne}>Question</div>
           <div className={classes.CellTwo}>Answer</div>
           <div className={classes.CellThree}>
-            <span className={classes.ClickArea}>
-              Last Updated
-              <DropDownArrowIcon />
-            </span>
+            <span>Last Updated</span>
           </div>
-          <div className={classes.CellFour}>Grade</div>
+
+          <button
+            type="button"
+            className={`${classes.CellFour} ${classes.ClickArea}`}
+            onClick={() => {
+              if (request.sort === '0grade') {
+                sortByGrade({ sort: '1grade' });
+              } else {
+                sortByGrade({ sort: '0grade' });
+              }
+            }}
+          >
+            Grade
+            <DropDownArrowIcon rotate={request.sort === '0grade' ? 0 : 180} />
+          </button>
         </div>
 
         {isLoading && (
-          Array.from(Array(8).keys()).map(() => (
-            <div className={classes.SkeletonRow}>
+          Array.from(Array(rowsPerPage).keys()).map((n, i) => (
+            <div key={i} className={classes.SkeletonRow}>
               <Skeleton className={classes.Skeleton} animation="wave" variant="rectangular" width="98%" />
             </div>
           ))
@@ -84,7 +105,7 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
                   name="text-feedback"
                   value={item.grade}
                   readOnly
-                  precision={0.01}
+                  precision={0.5}
                   emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
                 />
 
@@ -114,6 +135,8 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
                     type="edit"
                     CARD_ID={item._id}
                     PACK_ID={path.current}
+                    updateTotal={updateTotal}
+                    ROWS_PER_PAGE={ROWS_PER_PAGE}
                   />
                   )}
 
@@ -123,6 +146,8 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = ({ data }) => {
                     type="delete"
                     CARD_ID={item._id}
                     PACK_ID={path.current}
+                    updateTotal={updateTotal}
+                    ROWS_PER_PAGE={ROWS_PER_PAGE}
                   />
                   )}
 

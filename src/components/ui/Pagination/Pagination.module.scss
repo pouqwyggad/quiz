@@ -1,0 +1,48 @@
+@import "../../../css/common";
+
+.PaginationWrapper {
+  width: 100%;
+  padding-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.PaginationContainer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.PaginationRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.Item {
+  @include create-text($text, 12px, 400);
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+
+  &Active {
+    @include create-text(#fff, 12px, 400);
+    background: $bb;
+  }
+}
+
+
+.PaginationCardsValue {
+  height: 100%;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  @include create-text($text, 12px, 400);
+}
+
+.Select {
+  outline: none;
+  border: 1px solid $borderColor;
+  height: 100%;
+}
