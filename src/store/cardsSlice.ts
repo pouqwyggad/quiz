@@ -2,21 +2,36 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
 import { Cards } from '../interfaces/Cards';
 
-export const getCardsAsync = createAsyncThunk<Cards,
-{
+export const getCardsAsync = createAsyncThunk<Cards, {
   PACK_ID?: string,
-  // MIN?: number,
-  // MAX?: number,
   rowsPerPage?: number,
   page?: number,
-},
+  sortCards?: string
+  cardQuestion?: string },
 { rejectValue: any }>(
+
   'cards/get',
-  async ({
-    PACK_ID, page = 1, rowsPerPage = 6,
-  }, { rejectWithValue }) => {
+
+  async (
+    {
+      PACK_ID,
+      page = 1,
+      rowsPerPage = 6,
+      sortCards = '0grade',
+      cardQuestion = '',
+    },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await api.get(`/cards/card?cardsPack_id=${PACK_ID}&pageCount=${rowsPerPage}&page=${page}`);
+      const response = await api.get('/cards/card', {
+        params: {
+          cardsPack_id: PACK_ID,
+          pageCount: rowsPerPage,
+          page,
+          sortCards,
+          cardQuestion,
+        },
+      });
       return response.data as Cards;
     } catch (e: any) {
       return rejectWithValue(e);
@@ -26,16 +41,14 @@ export const getCardsAsync = createAsyncThunk<Cards,
 
 export const addCardAsync = createAsyncThunk<void,
 { question: string, answer: string, PACK_ID: string }, { rejectValue: any }>(
+
   'cards/add',
   // eslint-disable-next-line consistent-return
   async ({ question, answer, PACK_ID }, { rejectWithValue }) => {
     try {
       const card = {
         card: {
-          cardsPack_id: PACK_ID,
-          question,
-          answer,
-          grade: 4,
+          cardsPack_id: PACK_ID, question, answer, grade: 4,
         },
       };
       await api.post('cards/card', card);
@@ -46,6 +59,7 @@ export const addCardAsync = createAsyncThunk<void,
 );
 
 export const deleteCardAsync = createAsyncThunk<void, { CARD_ID: string }, { rejectValue: any }>(
+
   'cards/delete',
   // eslint-disable-next-line consistent-return
   async ({ CARD_ID }, { rejectWithValue }) => {
@@ -59,6 +73,7 @@ export const deleteCardAsync = createAsyncThunk<void, { CARD_ID: string }, { rej
 
 export const editCardAsync = createAsyncThunk<void,
 { question: string, answer: string, CARD_ID: string }, { rejectValue: any }>(
+
   'cards/edit',
   // eslint-disable-next-line consistent-return
   async ({ question, answer, CARD_ID }, { rejectWithValue }) => {

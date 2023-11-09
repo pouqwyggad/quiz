@@ -10,13 +10,23 @@ import { PackActions } from '../PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { formatDate } from '../../../utils/dataHelper';
+import { IRequest } from '../../../interfaces/RequestFilters';
 
 interface LayoutListProps {
   data: Pack[]
   rowsPerPage:number
+  updateTotal: (total: number) => void
+  onChangeRequest: (newValue: IRequest) => void
+  request: IRequest
 }
 
-export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsPerPage }) => {
+export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
+  data,
+  rowsPerPage,
+  updateTotal,
+  onChangeRequest,
+  request,
+}) => {
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -40,18 +50,28 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsP
           <div className={classes.CellOne}>Name</div>
           <div className={classes.CellTwo}>Cards</div>
           <div className={classes.CellThree}>
-            <span className={classes.ClickArea}>
+            <button
+              type="button"
+              onClick={() => {
+                if (request.sort === '0updated') {
+                  onChangeRequest({ sort: '1updated' });
+                } else {
+                  onChangeRequest({ sort: '0updated' });
+                }
+              }}
+              className={classes.ClickArea}
+            >
               Last Updated
-              <DropDownArrowIcon />
-            </span>
+              <DropDownArrowIcon rotate={request.sort === '0updated' ? 0 : 180} />
+            </button>
           </div>
           <div className={classes.CellFour}>Created by</div>
           <div className={classes.CellFive}>Actions</div>
         </div>
 
         {isLoading && (
-          Array.from(Array(rowsPerPage).keys()).map(() => (
-            <div className={classes.SkeletonRow}>
+          Array.from(Array(rowsPerPage).keys()).map((n, i) => (
+            <div key={i} className={classes.SkeletonRow}>
               <Skeleton className={classes.Skeleton} animation="wave" variant="rectangular" width="98%" />
             </div>
           ))
@@ -114,6 +134,8 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({ data, rowsP
                       type="delete"
                       id={item._id}
                       packName={item.name}
+                      updateTotal={updateTotal}
+                      ROWS_PER_PAGE={rowsPerPage}
                     />
                   )}
                 </div>

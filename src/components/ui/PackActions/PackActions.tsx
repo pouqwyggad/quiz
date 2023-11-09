@@ -15,10 +15,12 @@ interface AddNewPackProps {
   type: string
   id?: string
   packName?: string
+  updateTotal?: (total: number) => void
+  ROWS_PER_PAGE?: number
 }
 
 export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
-  onClick, type, id = '', packName,
+  onClick, type, id = '', packName, updateTotal, ROWS_PER_PAGE,
 }) => {
   const dispatch = useAppDispatch();
   const [name, setName] = useState('');
@@ -31,7 +33,12 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     const firstRequest = await dispatch(addNewPackAsync({ name, privatePack }));
     onClick();
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getPacksAsync({}));
+      const res = await dispatch(getPacksAsync({}));
+      if (res.meta.requestStatus === 'fulfilled') {
+        if (updateTotal) {
+          updateTotal(Math.ceil(res.payload.cardPacksTotalCount / (ROWS_PER_PAGE || 8)));
+        }
+      }
     }
   };
 
@@ -47,7 +54,12 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
     const firstRequest = await dispatch(deletePackAsync({ id }));
     onClick();
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getPacksAsync({}));
+      const res = await dispatch(getPacksAsync({}));
+      if (res.meta.requestStatus === 'fulfilled') {
+        if (updateTotal) {
+          updateTotal(Math.ceil(res.payload.cardPacksTotalCount / (ROWS_PER_PAGE || 8)));
+        }
+      }
     }
   };
 
@@ -149,4 +161,6 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
 PackActions.defaultProps = {
   id: '',
   packName: 'this Pack',
+  updateTotal: () => {},
+  ROWS_PER_PAGE: 8,
 };

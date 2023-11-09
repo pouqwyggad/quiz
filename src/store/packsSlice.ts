@@ -2,35 +2,50 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import api from '../api';
 import { Packs } from '../interfaces/Packs';
 
-export const getPacksAsync = createAsyncThunk<Packs,
-{
+export const getPacksAsync = createAsyncThunk<Packs, {
   searchValue? :string,
   currentUser? :string,
   MAX? :number,
   MIN? :number,
   page?: number,
-  rowsPerPage?: number
-}, { rejectValue: any }>(
+  sortPacks?: string
+  rowsPerPage?: number }, { rejectValue: any }>(
+
   'pack/getPacks',
+
   async ({
-    searchValue = '', currentUser = '', MAX = 130, MIN = 0, page = 1, rowsPerPage = 8,
+    searchValue = '',
+    currentUser = '',
+    MAX = 130,
+    MIN = 0,
+    page = 1,
+    rowsPerPage = 8,
+    sortPacks = '0updated',
   }) => {
-    const response = await api.get(`https://neko-back.herokuapp.com/2.0/cards/pack?min=${MIN}&max=${MAX}&sortPacks=&page=${page}&pageCount=${rowsPerPage}&packName=${searchValue}&user_id=${currentUser}`);
+    const response = await api.get('/cards/pack', {
+      params: {
+        min: MIN,
+        max: MAX,
+        sortPacks,
+        page,
+        pageCount: rowsPerPage,
+        packName: searchValue,
+        user_id: currentUser,
+      },
+    });
     return response.data;
   },
 );
 
 export const addNewPackAsync = createAsyncThunk<Packs,
-{ name: string, privatePack: boolean }, { rejectValue: any }
->(
+{ name: string, privatePack: boolean }, { rejectValue: any }>(
+
   'pack/addNewPack',
+
   async ({ name, privatePack }, { rejectWithValue }) => {
     try {
       const cardsPack = {
-        cardsPack: {
-          name,
-          private: privatePack,
-        },
+        cardsPack: { name, private: privatePack },
       };
       const response = await api.post('/cards/pack', cardsPack);
       return response.data;
@@ -41,9 +56,10 @@ export const addNewPackAsync = createAsyncThunk<Packs,
 );
 
 export const deletePackAsync = createAsyncThunk<Packs,
-{ id: string }, { rejectValue: any }
->(
+{ id: string }, { rejectValue: any }>(
+
   'pack/deletePack',
+
   async ({ id }, { rejectWithValue }) => {
     try {
       const response = await api.delete('/cards/pack', { params: { id } });
@@ -55,16 +71,14 @@ export const deletePackAsync = createAsyncThunk<Packs,
 );
 
 export const editPackNameAsync = createAsyncThunk<Packs,
-{ id: string, name: string }, { rejectValue: any }
->(
+{ id: string, name: string }, { rejectValue: any }>(
+
   'pack/edit',
+
   async ({ id, name }, { rejectWithValue }) => {
     try {
       const cardsPack = {
-        cardsPack: {
-          _id: id,
-          name,
-        },
+        cardsPack: { _id: id, name },
       };
 
       const response = await api.put('/cards/pack', cardsPack);
