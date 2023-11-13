@@ -2,6 +2,8 @@ import React, {
   FC, PropsWithChildren, useEffect, useState,
 } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
 import { Pagination } from '../../ui/Pagination/Pagination';
@@ -51,6 +53,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
       ...prevState,
       ...newValue,
     }));
+    console.log(document.cookie);
   };
 
   const resetRequestValue = () => {
@@ -119,7 +122,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         onReset={resetRequestValue}
       />
 
-      {tableStatus === 'success' && (
+      {tableStatus === 'success' ? (
         <>
           <LayoutList
             data={cards.cardPacks}
@@ -139,8 +142,13 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             clickHandler={clickPaginationButtons}
           />
         </>
+      ) : (
+        <div className={classes.Spinner}>
+          <Stack sx={{ color: '#366eff' }} spacing={2} direction="row">
+            <CircularProgress color="inherit" />
+          </Stack>
+        </div>
       )}
-
       {tableStatus === 'empty' && (
       <div className={classes.NoPacks}>
         <div className={classes.Title}>No packages found. Add new pack</div>

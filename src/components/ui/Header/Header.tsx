@@ -34,10 +34,10 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
     if (window.location.href.includes('auth')) e.preventDefault();
   };
 
-  window.history.pushState(null, '', window.location.href);
-  window.addEventListener('popstate', () => {
-    window.history.pushState(null, '', window.location.href);
-  });
+  // window.history.pushState(null, '', window.location.href);
+  // window.addEventListener('popstate', () => {
+  //   window.history.pushState(null, '', window.location.href);
+  // });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

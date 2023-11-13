@@ -18,6 +18,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
   const path = useRef('');
   const [isButtonShow, setIsButtonShow] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   useMemo(() => {
     path.current = window.location.pathname;
@@ -31,6 +32,9 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (localStorage.getItem('isAuth') !== 'true') {
+          navigate({ to: '/auth/login' });
+        }
         if (!(window.location.href.includes('auth'))) {
           const result = await dispatch(checkAuth());
 
@@ -41,6 +45,8 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
             setIsAuthChecked(true);
             navigate({ to: '/auth/login' });
           }
+        } else if (window.location.href.includes('auth')) {
+          setShowLogin(true);
         }
       } catch (e) {
         console.error('Ошибка запроса:', e);
@@ -58,11 +64,12 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
       )}
 
       <main className={classes.Main}>
+
         {path.current === '/' && isAuthChecked && (
           <Main />
         )}
 
-        {isAuthChecked && (
+        {(isAuthChecked || showLogin) && (
         <Outlet />
         )}
 

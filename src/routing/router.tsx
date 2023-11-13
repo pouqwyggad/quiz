@@ -22,6 +22,15 @@ const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/',
   component: Layout,
+  // beforeLoad: async () => {
+  //   console.log("f");
+  //   if (localStorage.getItem('isAuth') !== 'true') {
+  //     // eslint-disable-next-line @typescript-eslint/no-throw-literal
+  //     throw redirect({
+  //       to: '/auth/login',
+  //     });
+  //   }
+  // },
 });
 
 const authRoute = new Route({
@@ -46,6 +55,14 @@ const newPasswordsRoute = new Route({
   getParentRoute: () => authRoute,
   path: '/set-new-password',
   component: () => <NewPass />,
+  beforeLoad: async () => {
+    if (localStorage.getItem('isAuth') !== 'true') {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
+      throw redirect({
+        to: '/auth/login',
+      });
+    }
+  },
 });
 
 const newPassRoute = new Route({
