@@ -35,25 +35,25 @@ const indexRoute = new Route({
 
 const authRoute = new Route({
   getParentRoute: () => indexRoute,
-  path: '/auth',
+  path: 'auth',
   component: () => <Form />,
 });
 
 const loginRoute = new Route({
   getParentRoute: () => authRoute,
-  path: '/login',
+  path: 'login',
   component: () => <Login />,
 });
 
 const recoverRoute = new Route({
   getParentRoute: () => authRoute,
-  path: '/forgot-password',
+  path: 'forgot-password',
   component: () => <RecoverPass />,
 });
 
 const newPasswordsRoute = new Route({
   getParentRoute: () => authRoute,
-  path: '/set-new-password',
+  path: 'set-new-password',
   component: () => <NewPass />,
   beforeLoad: async () => {
     if (localStorage.getItem('isAuth') !== 'true') {
@@ -72,19 +72,19 @@ const newPassRoute = new Route({
 
 const registrationRoute = new Route({
   getParentRoute: () => authRoute,
-  path: '/registration',
+  path: 'registration',
   component: () => <Registration />,
 });
 
 const checkEmailRoute = new Route({
   getParentRoute: () => authRoute,
-  path: '/check-mail',
+  path: 'check-mail',
   component: () => <CheckEmail />,
 });
 
 const packRoute = new Route({
   getParentRoute: () => indexRoute,
-  path: '/pack',
+  path: 'pack',
   component: () => <PackPage />,
 });
 

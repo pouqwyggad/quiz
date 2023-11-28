@@ -1,15 +1,18 @@
 import React, { FC, PropsWithChildren } from 'react';
 
 interface TrashCanIconProps {
-  className?: string
-  onClick: () => void
-  width: string
-  height: string
+  className?: string;
+  onClick: () => void;
+  height: string;
+  width: string;
 }
 
 export const TrashCanIcon: FC<PropsWithChildren<TrashCanIconProps>> = (
   {
-    className, onClick, width, height,
+    className,
+    onClick,
+    height,
+    width,
   },
 ) => (
   <button

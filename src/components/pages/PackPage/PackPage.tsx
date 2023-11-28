@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { useDebounce } from '@uidotdev/usehooks';
+import { motion } from "framer-motion";
 import classes from './PackPage.module.scss';
 import { Button } from '../../ui/Button/Button';
 import { SearchIcon } from '../../icons/SearchIcon';
@@ -14,8 +15,7 @@ import { CardActions } from '../../ui/CardActions/CardActions';
 import { IRequest } from '../../../interfaces/RequestFilters';
 import { Pagination } from '../../ui/Pagination/Pagination';
 
-interface PackPageProps {
-}
+interface PackPageProps {}
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
@@ -100,7 +100,21 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   }, [debouncedSearch, currentPage]);
 
   return (
-    <div className={classes.PackPage}>
+    <motion.div
+      className={classes.PackPage}
+      initial={{
+        opacity: 0,
+        x: "100vw",
+      }}
+      animate={{
+        opacity: 1,
+        x: 0,
+      }}
+      exit={{
+        opacity: 0,
+        x: "-100vw",
+      }}
+    >
 
       <div className={classes.Title}>
         {packInfo.loading ? (
@@ -223,6 +237,6 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
         </div>
       </div>
       )}
-    </div>
+    </motion.div>
   );
 };

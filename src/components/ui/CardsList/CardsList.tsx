@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import StarIcon from '@mui/icons-material/Star';
 import Skeleton from '@mui/material/Skeleton';
+import { motion } from "framer-motion";
 import classes from './CardsList.tsx.module.scss';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { Card } from '../../../interfaces/Cards';
@@ -59,7 +60,18 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
   }, []);
 
   return (
-    <div className={classes.Container}>
+    <motion.div
+      className={classes.Container}
+      initial={{
+        opacity: 0,
+        y: 30,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+
+    >
       <div className={classes.Table}>
         <div className={classes.TitleRow}>
           <div className={classes.CellOne}>Question</div>
@@ -158,6 +170,6 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
           ))
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };

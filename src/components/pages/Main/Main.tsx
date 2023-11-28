@@ -4,6 +4,7 @@ import React, {
 import { useDebounce } from '@uidotdev/usehooks';
 import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import { AnimatePresence, motion } from 'framer-motion';
 import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
 import { Pagination } from '../../ui/Pagination/Pagination';
@@ -13,10 +14,13 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { LayoutList } from '../../ui/LayoutList/LayoutList';
 import { IRequest } from '../../../interfaces/RequestFilters';
 import { getPacksAsync } from '../../../store/packsSlice';
+import { mainPageMotion } from "../../../motions/mainPageMotion";
 
 interface MainProps {}
 
 export const Main: FC<PropsWithChildren<MainProps>> = () => {
+  const dispatch = useAppDispatch();
+  const cards = useAppSelector((state) => state.packs.cardsInfo);
   const [request, setRequest] = useState<IRequest>({
     searchValue: '',
     value: [0, 130],
@@ -24,13 +28,11 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
     rowsPerPage: 8,
     sort: '0updated',
   });
-  const dispatch = useAppDispatch();
-  const cards = useAppSelector((state) => state.packs.cardsInfo);
-  const [newPackStatus, setNewPackStatus] = useState<boolean>(false);
+  const [newPackStatus, setNewPackStatus] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const debouncedSearch = useDebounce(request, 500);
   const [tableStatus, setTableStatus] = useState('');
+  const debouncedSearch = useDebounce(request, 500);
 
   const updatePacksData = async () => dispatch(getPacksAsync({
     searchValue: request.searchValue,
@@ -53,7 +55,6 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
       ...prevState,
       ...newValue,
     }));
-    console.log(document.cookie);
   };
 
   const resetRequestValue = () => {
@@ -64,24 +65,17 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
       rowsPerPage: 8,
     });
   };
-  const addCardHandler = () => {
-    setNewPackStatus((n) => !n);
-  };
+  const addCardHandler = () => setNewPackStatus((n) => !n);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!debouncedSearch) {
-        return;
-      }
+      if (!debouncedSearch) return;
 
       const res = await updatePacksData();
 
       if (res.meta.requestStatus === 'fulfilled') {
-        if (res.payload.cardsPack !== 0) {
-          setTableStatus('success');
-        } else {
-          setTableStatus('empty');
-        }
+        if (res.payload.cardsPack !== 0) setTableStatus('success');
+        else setTableStatus('empty');
 
         if (request.rowsPerPage !== undefined) {
           setTotalPages(Math.ceil(res.payload.cardPacksTotalCount / request.rowsPerPage));
@@ -93,9 +87,14 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
   }, [debouncedSearch, currentPage]);
 
   return (
-    <div className={classes.Main}>
+    <motion.div
+      className={classes.Main}
+      variants={mainPageMotion}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <div className="flex justify-between mb-[34px]">
-
         <div className={classes.PageTitle}>Packs List</div>
 
         <Button
@@ -105,15 +104,16 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           onClick={addCardHandler}
         />
 
-        {newPackStatus && (
+        <AnimatePresence>
+          {newPackStatus && (
           <PackActions
             onClick={addCardHandler}
             type="add"
             updateTotal={setTotalPages}
             ROWS_PER_PAGE={request.rowsPerPage || 8}
           />
-        )}
-
+          )}
+        </AnimatePresence>
       </div>
 
       <Filters
@@ -149,6 +149,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           </Stack>
         </div>
       )}
+
       {tableStatus === 'empty' && (
       <div className={classes.NoPacks}>
         <div className={classes.Title}>No packages found. Add new pack</div>
@@ -160,16 +161,19 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           onClick={addCardHandler}
         />
 
-        {newPackStatus && (
-        <PackActions
-          onClick={addCardHandler}
-          type="add"
-          updateTotal={setTotalPages}
-          ROWS_PER_PAGE={request.rowsPerPage}
-        />
-        )}
+        <AnimatePresence>
+          {newPackStatus && (
+          <PackActions
+            onClick={addCardHandler}
+            type="add"
+            updateTotal={setTotalPages}
+            ROWS_PER_PAGE={request.rowsPerPage}
+          />
+          )}
+        </AnimatePresence>
       </div>
       )}
-    </div>
+
+    </motion.div>
   );
 };

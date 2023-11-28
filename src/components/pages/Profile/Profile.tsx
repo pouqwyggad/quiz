@@ -24,17 +24,11 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
   const [avatar, setAvatar] = useState(data.user.avatar);
   const [editName, setEditName] = useState(false);
 
-  const handleLogout = () => {
-    dispatch(logoutAsync());
-  };
+  const handleLogout = () => dispatch(logoutAsync());
 
-  const edit = () => {
-    setEditName((p) => !p);
-  };
+  const edit = () => setEditName((p) => !p);
 
-  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
 
   const saveNewName = () => {
     dispatch(changeProfileNameAsync({ avatar, name }));
@@ -88,41 +82,51 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
           </label>
         </div>
 
-        {editName ? (
-          <div className={classes.EditContainer}>
-            <TextField onChange={handleChangeName} text="Nickname" name="text" />
-            <button
-              type="button"
-              className={classes.ButtonSave}
-              onClick={() => {
-                saveNewName();
-                edit();
-              }}
+        <div className={classes.NameContainer}>
+          {editName ? (
+            <motion.div
+              className={classes.EditContainer}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+
             >
-              save
-            </button>
-          </div>
-        ) : (
-          <div className={classes.NameArea}>
-            {
-              data.user.name ? (
-                <>
-                  <div className={classes.Username}>
-                    {data.user.name}
-                  </div>
-                  <EditIcon
-                    width="20"
-                    height="20"
-                    className={classes.Edit}
-                    onClick={edit}
-                  />
-                </>
-              ) : (
-                <Skeleton animation="wave" variant="text" width={200} height={30} />
-              )
-            }
-          </div>
-        )}
+              <TextField onChange={handleChangeName} text="Nickname" name="text" />
+              <button
+                type="button"
+                className={classes.ButtonSave}
+                onClick={() => {
+                  saveNewName();
+                  edit();
+                }}
+              >
+                save
+              </button>
+            </motion.div>
+          ) : (
+            <div
+              className={classes.NameArea}
+            >
+              {
+                  data.user.name ? (
+                    <>
+                      <div className={classes.Username}>{data.user.name}</div>
+
+                      <EditIcon
+                        width="20"
+                        height="20"
+                        className={classes.Edit}
+                        onClick={edit}
+                      />
+
+                    </>
+                  ) : (
+                    <Skeleton animation="wave" variant="text" width={200} height={30} />
+                  )
+                }
+            </div>
+          )}
+        </div>
 
         <div className={classes.EmailText}>
           {data.user.email ? data.user.email : <Skeleton animation="wave" variant="text" width={150} height={20} />}

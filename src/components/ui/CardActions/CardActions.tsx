@@ -17,33 +17,37 @@ import {
 } from '../../../store/cardsSlice';
 
 interface CardActionsProps {
-  onClick: () => void
-  type: string
-  CARD_ID?: string
-  PACK_ID?: string
-  ROWS_PER_PAGE: number
-  updateTotal?: (total: number) => void
+  onClick: () => void;
+  type: string;
+  CARD_ID?: string;
+  PACK_ID?: string;
+  ROWS_PER_PAGE: number;
+  updateTotal?: (total: number) => void;
 }
 
-export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
-  onClick, type, CARD_ID = '', PACK_ID = '', ROWS_PER_PAGE, updateTotal,
-}) => {
+export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
+  {
+    onClick,
+    type,
+    CARD_ID = '',
+    PACK_ID = '',
+    ROWS_PER_PAGE,
+    updateTotal,
+  },
+) => {
   const dispatch = useAppDispatch();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [selectValue, setSelectValue] = useState('Text');
 
-  const handleChangeQuestion = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuestion(e.target.value);
-  };
-  const handleChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswer(e.target.value);
-  };
+  // eslint-disable-next-line max-len
+  const handleChangeQuestion = (e: React.ChangeEvent<HTMLInputElement>) => setQuestion(e.target.value);
+  const handleChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
+
   const addCardHandler = async () => {
     const firstRequest = await dispatch(addCardAsync({ question, answer, PACK_ID }));
     onClick();
 
-    // dispatch(getCardsAsync({ PACK_ID }));
     if (firstRequest.meta.requestStatus === 'fulfilled') {
       const res = await dispatch(getCardsAsync({ PACK_ID }));
       if (res.meta.requestStatus === 'fulfilled') {
@@ -59,7 +63,6 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      // dispatch(getCardsAsync({ PACK_ID }));
       const res = await dispatch(getCardsAsync({ PACK_ID }));
       if (res.meta.requestStatus === 'fulfilled') {
         if (updateTotal) {
@@ -104,26 +107,25 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = ({
         <>
           <div className={classes.SelectContainer}>
             <div className={classes.SelectText}>Choose a question format</div>
+
             <FormControl fullWidth>
               <Select
                 className={classes.Input}
                 id="demo-simple-select"
                 value={selectValue}
-                onChange={(e) => {
-                  setSelectValue(e.target.value);
-                }}
+                onChange={(e) => setSelectValue(e.target.value)}
               >
                 <MenuItem value="Text">Text</MenuItem>
                 <MenuItem value="Something">Something</MenuItem>
                 <MenuItem value="Something 2">Something 2</MenuItem>
               </Select>
             </FormControl>
+
           </div>
 
           <div className={classes.TextAreaContainer}>
             <TextField onChange={handleChangeQuestion} name="question" text="Question" />
             <TextField onChange={handleChangeAnswer} name="answer" text="Answer" />
-
           </div>
         </>
         )}

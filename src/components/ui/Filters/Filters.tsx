@@ -18,8 +18,11 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = (
   { requestValues, onChange, onReset },
 ) => (
   <div className={classes.Filters}>
+
     <div className={classes.SearchArea}>
+
       <p className={classes.TitleText}>Search</p>
+
       <div className={classes.InputWrapper}>
         <input
           id="inputSearchInfo"

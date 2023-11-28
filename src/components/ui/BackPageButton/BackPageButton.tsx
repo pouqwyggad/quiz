@@ -1,18 +1,29 @@
 import React, { FC, PropsWithChildren } from 'react';
 import { Link } from '@tanstack/react-router';
+import { motion } from "framer-motion";
 import classes from './BackPageButton.module.scss';
 import { ArrowBackIcon } from '../../icons/ArrowBackIcon';
+import { backPageButtonMotion } from "../../../motions/backPageButtonMotion";
 
 interface BackPageButtonProps {
   src: string
 }
 
 export const BackPageButton: FC<PropsWithChildren<BackPageButtonProps>> = ({ src }) => (
-  <Link
+  <motion.div
+    variants={backPageButtonMotion}
     className={classes.Back}
-    to={src}
+    initial="initial"
+    animate="animate"
+    exit="exit"
   >
-    <ArrowBackIcon />
-    Back to Packs List
-  </Link>
+    <Link
+      className={classes.Link}
+      to={src}
+      preload="intent"
+    >
+      <ArrowBackIcon />
+      Back to Packs List
+    </Link>
+  </motion.div>
 );

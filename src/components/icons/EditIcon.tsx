@@ -1,14 +1,17 @@
 import React, { FC, PropsWithChildren } from 'react';
 
 interface EditIconProps {
-  className?: string
-  onClick?: () => void
-  width: string
-  height: string
+  className?: string;
+  onClick?: () => void;
+  height: string;
+  width: string;
 }
 
 export const EditIcon: FC<PropsWithChildren<EditIconProps>> = ({
-  className, onClick, width, height,
+  className,
+  onClick,
+  height,
+  width,
 }) => {
   const clickHandler = () => {
     if (onClick) {

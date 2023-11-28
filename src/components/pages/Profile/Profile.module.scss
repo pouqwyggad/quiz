@@ -10,15 +10,15 @@
 }
 
 .ProfileCardContainer {
-  background: #fff;
   display: flex;
-  filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.10)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.10));
   flex-direction: column;
+  min-width: 520px;
+  height: fit-content;
+  background: #fff;
+  filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.10)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.10));
   padding: 27px 33px 36px 33px;
   align-items: center;
   border-radius: 2px;
-  height: fit-content;
-  min-width: 520px;
 }
 
 .ProfileTitle {
@@ -46,18 +46,33 @@
   cursor: pointer;
 }
 
+.NameContainer {
+  width: 100%;
+  height: 96px;
+}
+
 .NameArea {
   display: flex;
+  justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
   gap: 8px;
   padding: 17px 0 24px 0;
-  transition: all .2s ease-in-out;
+  //transition: all .2s ease-in-out;
   //transition: opacity 0.2s ease-in-out;
-  opacity: 1;
 
   .Username {
     @include create-text($text, 25px, 400, $lineHeight: 24px);
   }
+}
+
+.EditContainer {
+  display: flex;
+  position: relative;
+  width: 100%;
+  margin-top: 36px;
+  height: 60px;
 }
 
 .EmailText {
@@ -75,6 +90,7 @@
   right: 12px;
   bottom: 35px;
   transition: all .2s ease-in-out;
+
   &:hover {
     background: $bbHover;
   }
@@ -84,19 +100,12 @@
   cursor: pointer;
 }
 
-.EditContainer {
-  margin-top: 36px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  transition: all .2s ease;
-}
-
 .ChooseProfileAvatarIconHover {
   transition: all .1s ease-in-out;
- &:hover {
-   fill: #383838;
- }
+
+  &:hover {
+    fill: #383838;
+  }
 }
 
 .AvatarChangeIcon input {

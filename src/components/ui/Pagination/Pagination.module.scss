@@ -25,13 +25,13 @@
   width: 24px;
   height: 24px;
   border-radius: 2px;
+  transition: all .2s ease;
 
   &Active {
     @include create-text(#fff, 12px, 400);
     background: $bb;
   }
 }
-
 
 .PaginationCardsValue {
   height: 100%;

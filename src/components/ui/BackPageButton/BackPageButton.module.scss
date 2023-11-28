@@ -2,11 +2,14 @@
 
 .Back{
   position: absolute;
-  display: flex;
-  gap: 8px;
   top: 84px;
   left: 136px;
-  z-index: 200;
+  z-index: 20;
   cursor: pointer;
+}
+
+.Link {
   @include create-text($text, 14px, 400, $lineHeight: 24px);
+  display: flex;
+  gap: 8px;
 }

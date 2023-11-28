@@ -50,6 +50,7 @@ export const Registration: FC<PropsWithChildren<RegistrationProps>> = () => {
         onChange={handleChangeUserValue}
         text="Email"
       />
+
       <TextField
         user={user}
         name="password"
@@ -79,6 +80,7 @@ export const Registration: FC<PropsWithChildren<RegistrationProps>> = () => {
       >
         Sing In
       </Link>
+
     </motion.div>
   );
 };

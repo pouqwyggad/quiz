@@ -56,6 +56,7 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
 
       <Link
         to="/"
+        preload="intent"
         onClick={handleRedirect}
       >
         <LogoIcon />

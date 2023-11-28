@@ -1,25 +1,34 @@
 import React, {
   FC, PropsWithChildren,
 } from 'react';
+import { motion } from "framer-motion";
 import classes from './Pagination.module.scss';
 import { PagArrowLeftIcon } from '../../icons/PagArrowLeftIcon';
 import { PagArrowRightIcon } from '../../icons/PagArrowRightIcon';
 import { IRequest } from '../../../interfaces/RequestFilters';
+import { paginationMotion } from "../../../motions/paginationMotion";
 
 interface PaginationProps {
-  total: number
-  current: number
-  separator:string
-  ROWS_PER_PAGE: number
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, page: number) => void
-  onChange: (newValue: IRequest) => void
-  clickHandler: (page: number, type: number) => void
+  total: number;
+  current: number;
+  separator:string;
+  ROWS_PER_PAGE: number;
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, page: number) => void;
+  onChange: (newValue: IRequest) => void;
+  clickHandler: (page: number, type: number) => void;
 }
 
-export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
-  total, current, separator, onClick,
-  ROWS_PER_PAGE, onChange, clickHandler,
-}) => {
+export const Pagination: FC<PropsWithChildren<PaginationProps>> = (
+  {
+    total,
+    current,
+    separator,
+    onClick,
+    ROWS_PER_PAGE,
+    onChange,
+    clickHandler,
+  },
+) => {
   const showAfterFirst = current < 5;
   const showBeforeLast = current > total - 4;
 
@@ -43,14 +52,18 @@ export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
     : createArrayButtons(total, 1);
 
   return (
-    <div className={classes.PaginationWrapper}>
+    <motion.div
+      variants={paginationMotion}
+      className={classes.PaginationWrapper}
+      initial="initial"
+      animate="animate"
+    >
       <div className={classes.PaginationContainer}>
-        <PagArrowLeftIcon
-          onClick={() => {
-            clickHandler(current, -1);
-          }}
-        />
+
+        <PagArrowLeftIcon onClick={() => clickHandler(current, -1)} />
+
         <div className={classes.PaginationRow}>
+
           {buttonsToRender.map((number, index) => (number === separator ? (
             <div className={classes.Separator} key={index}>
               {separator}
@@ -66,15 +79,16 @@ export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
               {number}
             </button>
           )))}
+
         </div>
-        <PagArrowRightIcon
-          onClick={() => {
-            clickHandler(current, 1);
-          }}
-        />
+
+        <PagArrowRightIcon onClick={() => clickHandler(current, 1)} />
+
       </div>
+
       <div className={classes.PaginationCardsValue}>
-        <p>Show</p>
+        Show
+
         <select
           className={classes.Select}
           value={ROWS_PER_PAGE}
@@ -84,8 +98,10 @@ export const Pagination: FC<PropsWithChildren<PaginationProps>> = ({
           <option value={8}>8</option>
           <option value={6}>6</option>
         </select>
-        <p>Cards per Page</p>
+
+        Cards per Page
       </div>
-    </div>
+
+    </motion.div>
   );
 };

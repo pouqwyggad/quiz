@@ -12,7 +12,7 @@ export const pageMotion = {
   },
   exit: {
     opacity: 0,
-    y: 40,
+    y: -40,
     transition: {
       duration: 0.3,
     },

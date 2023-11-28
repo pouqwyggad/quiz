@@ -1,12 +1,18 @@
 import React, { FC, PropsWithChildren } from 'react';
 
 interface HatIconProps {
-  className?: string
-  width: string
-  height: string
+  className?: string;
+  height: string;
+  width: string;
 }
 
-export const HatIcon: FC<PropsWithChildren<HatIconProps>> = ({ className, width, height }) => (
+export const HatIcon: FC<PropsWithChildren<HatIconProps>> = (
+  {
+    className,
+    height,
+    width,
+  },
+) => (
   <div>
     <svg
       className={className}

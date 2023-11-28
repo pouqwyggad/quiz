@@ -1,22 +1,23 @@
 @import "../../../css/common";
 
 .Wrapper {
-  position: absolute;
+  display: flex;
+  //align-items: center;
+  justify-content: center;
+  position: fixed;
   width: 100%;
   height: 100vh;
   top: 0;
   left: 0;
-  z-index: 10;
   background: rgba(0, 0, 0, .6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .Container {
+  margin-top: 200px;
   z-index: 11;
   background-color: #fff;
   width: 395px;
+  height: fit-content;
   border-radius: 2px;
   filter: drop-shadow(0 0 30px #343D40);
 }

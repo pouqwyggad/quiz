@@ -2,6 +2,7 @@ import React, {
   FC, PropsWithChildren, useRef, useMemo, useEffect, useState,
 } from 'react';
 import { Outlet, useNavigate } from '@tanstack/react-router';
+import { AnimatePresence } from "framer-motion";
 import classes from './Layout.module.scss';
 import { Header } from '../../ui/Header/Header';
 import { Main } from '../../pages/Main/Main';
@@ -22,6 +23,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
 
   useMemo(() => {
     path.current = window.location.pathname;
+
     if (path.current.includes('auth') || path.current === '/') {
       setIsButtonShow(false);
     } else {
@@ -31,25 +33,18 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (localStorage.getItem('isAuth') !== 'true') {
-          navigate({ to: '/auth/login' });
-        }
-        if (!(window.location.href.includes('auth'))) {
-          const result = await dispatch(checkAuth());
+      if (!(window.location.href.includes('auth'))) {
+        const result = await dispatch(checkAuth());
 
-          if (result.meta.requestStatus === 'fulfilled') {
-            setIsAuthChecked(true);
-          }
-          if (result.meta.requestStatus === 'rejected') {
-            setIsAuthChecked(true);
-            navigate({ to: '/auth/login' });
-          }
-        } else if (window.location.href.includes('auth')) {
-          setShowLogin(true);
+        if (result.meta.requestStatus === 'fulfilled') {
+          setIsAuthChecked(true);
+        } else {
+          navigate({ to: '/auth/login', replace: true });
         }
-      } catch (e) {
-        console.error('Ошибка запроса:', e);
+      }
+
+      if (window.location.href.includes('auth')) {
+        setShowLogin(true);
       }
     };
     fetchData();
@@ -59,13 +54,15 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
     <div className={classes.Layout}>
       <Header />
 
-      {isButtonShow && (
-        <BackPageButton src="/" />
-      )}
+      <AnimatePresence>
+        {isButtonShow && (
+          <BackPageButton src="/" />
+        )}
+      </AnimatePresence>
 
       <main className={classes.Main}>
 
-        {path.current === '/' && isAuthChecked && (
+        {(path.current === '/' && isAuthChecked) && (
           <Main />
         )}
 

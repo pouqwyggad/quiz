@@ -1,5 +1,6 @@
 import React, { FC, PropsWithChildren, useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { motion } from "framer-motion";
 import { Checkbox } from '@mui/material';
 import classes from './PackActions.module.scss';
 import { CloseIcon } from '../../icons/CloseIcon';
@@ -9,19 +10,27 @@ import { useAppDispatch } from '../../../hooks/hook';
 import {
   addNewPackAsync, deletePackAsync, editPackNameAsync, getPacksAsync,
 } from '../../../store/packsSlice';
+import { modalContainer, modalMotion } from "../../../motions/modalMotion";
 
 interface AddNewPackProps {
-  onClick: () => void
-  type: string
-  id?: string
-  packName?: string
-  updateTotal?: (total: number) => void
-  ROWS_PER_PAGE?: number
+  onClick: () => void;
+  type: string;
+  id?: string;
+  packName?: string;
+  updateTotal?: (total: number) => void;
+  ROWS_PER_PAGE?: number;
 }
 
-export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
-  onClick, type, id = '', packName, updateTotal, ROWS_PER_PAGE,
-}) => {
+export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = (
+  {
+    onClick,
+    type,
+    id = '',
+    packName,
+    updateTotal,
+    ROWS_PER_PAGE,
+  },
+) => {
   const dispatch = useAppDispatch();
   const [name, setName] = useState('');
   const [privatePack, setPrivatePack] = useState(false);
@@ -64,56 +73,64 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
   };
 
   return (
-    <div className={classes.Wrapper}>
-      <div className={classes.Container}>
+    <motion.div
+      className={classes.Wrapper}
+      animate="animate"
+      exit="exit"
+      variants={modalContainer}
+    >
+      <motion.div
+        className={classes.Container}
+        variants={modalMotion}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
         <div className={classes.Title}>
           <h3>
             {type === 'add' && 'Add new pack'}
             {type === 'edit' && 'Edit pack'}
             {type === 'delete' && 'Delete Pack'}
           </h3>
-          <CloseIcon
-            onClick={onClick}
-          />
+
+          <CloseIcon onClick={onClick} />
         </div>
 
         <hr />
 
         {type === 'delete' && (
-        <p className={classes.DeleteModalText}>
-          Do you really want to remove
-          {' '}
-          <b>{packName}</b>
-          ? All cards will be deleted.
-        </p>
+          <div className={classes.DeleteModalText}>
+            Do you really want to remove
+            {' '}
+            <b>{packName}</b>
+            ? All cards will be deleted.
+          </div>
         )}
 
         {type !== 'delete' && (
-        <>
-
-          <div className={classes.ContainerSectionTwo}>
-            <TextField
-              onChange={handleChangeValue}
-              text="Name pack"
-              name={type}
-            />
-          </div>
-
-          <FormControlLabel
-            className={classes.CheckBox}
-            label="Private pack"
-            control={(
-              <Checkbox
-                checked={privatePack}
-                onChange={() => {
-                  setPrivatePack((prevState) => !prevState);
-                }}
-                inputProps={{ 'aria-label': 'controlled' }}
+          <>
+            <div className={classes.ContainerSectionTwo}>
+              <TextField
+                onChange={handleChangeValue}
+                text="Name pack"
+                name={type}
               />
-              )}
-          />
+            </div>
 
-        </>
+            <FormControlLabel
+              className={classes.CheckBox}
+              label="Private pack"
+              control={(
+                <Checkbox
+                  checked={privatePack}
+                  onChange={() => {
+                    setPrivatePack((prevState) => !prevState);
+                  }}
+                  inputProps={{ 'aria-label': 'controlled' }}
+                />
+              )}
+            />
+          </>
         )}
 
         <div className={classes.ButtonsContainer}>
@@ -135,26 +152,26 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = ({
           )}
 
           {type === 'edit' && (
-          <Button
-            sidePadding={44}
-            type="blue"
-            text="Edit"
-            onClick={editPackHandler}
-          />
+            <Button
+              sidePadding={44}
+              type="blue"
+              text="Edit"
+              onClick={editPackHandler}
+            />
           )}
 
           {type === 'delete' && (
-          <Button
-            sidePadding={44}
-            type="red"
-            text="Delete"
-            onClick={deleteCardHandler}
-          />
+            <Button
+              sidePadding={44}
+              type="red"
+              text="Delete"
+              onClick={deleteCardHandler}
+            />
           )}
 
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

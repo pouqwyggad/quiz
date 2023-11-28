@@ -1,6 +1,7 @@
 import React, { FC, PropsWithChildren, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import Skeleton from '@mui/material/Skeleton';
+import { AnimatePresence, motion } from 'framer-motion';
 import classes from './LayoutList.module.scss';
 import { HatIcon } from '../../icons/HatIcon';
 import { EditIcon } from '../../icons/EditIcon';
@@ -11,40 +12,42 @@ import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { formatDate } from '../../../utils/dataHelper';
 import { IRequest } from '../../../interfaces/RequestFilters';
+import { layoutListMotion } from "../../../motions/layoutListMotion";
 
 interface LayoutListProps {
-  data: Pack[]
-  rowsPerPage:number
-  updateTotal: (total: number) => void
-  onChangeRequest: (newValue: IRequest) => void
-  request: IRequest
+  onChangeRequest: (newValue: IRequest) => void;
+  updateTotal: (total: number) => void;
+  rowsPerPage:number;
+  request: IRequest;
+  data: Pack[];
 }
 
 export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
-  data,
+  onChangeRequest,
   rowsPerPage,
   updateTotal,
-  onChangeRequest,
   request,
+  data,
 }) => {
+  const isLoading = useAppSelector((state) => state.packs.loading);
+  const USER_ID = useAppSelector((state) => state.auth.user._id);
   const [selectedItemId, setSelectedItemId] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const isLoading = useAppSelector((state) => state.packs.loading);
-  const USER_ID = useAppSelector((state) => state.auth.user._id);
 
-  const handleEditClick = () => {
-    setShowEditModal((p) => !p);
-  };
-  const handleDeleteClick = () => {
-    setShowDeleteModal((p) => !p);
-  };
-  const currentSelectedModal = (id: string) => {
-    setSelectedItemId(id);
-  };
+  const handleEditClick = () => setShowEditModal((p) => !p);
+
+  const handleDeleteClick = () => setShowDeleteModal((p) => !p);
+
+  const currentSelectedModal = (id: string) => setSelectedItemId(id);
 
   return (
-    <div className={classes.Container}>
+    <motion.div
+      className={classes.Container}
+      variants={layoutListMotion}
+      initial="initial"
+      animate="animate"
+    >
       <div className={classes.Table}>
         <div className={classes.TitleRow}>
           <div className={classes.CellOne}>Name</div>
@@ -85,12 +88,12 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
               <div className={classes.CellThreeD}>{formatDate(item.updated)}</div>
               <div className={classes.CellFourD}>{item.user_name}</div>
               <div className={classes.CellFiveD}>
+
                 <div className={classes.ActionsContainer}>
+
                   <Link
                     to="/pack/$id"
-                    params={{
-                      id: item._id,
-                    }}
+                    params={{ id: item._id }}
                   >
                     <HatIcon
                       width="16"
@@ -101,12 +104,12 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
                   {(item.user_id === USER_ID) && (
                   <>
                     <EditIcon
+                      width="16"
+                      height="16"
                       onClick={() => {
                         handleEditClick();
                         currentSelectedModal(item._id);
                       }}
-                      width="16"
-                      height="16"
                     />
 
                     <TrashCanIcon
@@ -120,15 +123,18 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
                   </>
                   )}
 
-                  {showEditModal && selectedItemId === item._id && (
+                  <AnimatePresence>
+                    {showEditModal && selectedItemId === item._id && (
                     <PackActions
                       onClick={handleEditClick}
                       type="edit"
                       id={item._id}
                     />
-                  )}
+                    )}
+                  </AnimatePresence>
 
-                  {showDeleteModal && selectedItemId === item._id && (
+                  <AnimatePresence>
+                    {showDeleteModal && selectedItemId === item._id && (
                     <PackActions
                       onClick={handleDeleteClick}
                       type="delete"
@@ -137,13 +143,15 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
                       updateTotal={updateTotal}
                       ROWS_PER_PAGE={rowsPerPage}
                     />
-                  )}
+                    )}
+                  </AnimatePresence>
+
                 </div>
               </div>
             </div>
           ))
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
