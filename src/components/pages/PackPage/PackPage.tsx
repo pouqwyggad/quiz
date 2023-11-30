@@ -14,6 +14,8 @@ import { PackActionsInside } from '../../ui/PackAnctionsInside/PackActionsInside
 import { CardActions } from '../../ui/CardActions/CardActions';
 import { IRequest } from '../../../interfaces/RequestFilters';
 import { Pagination } from '../../ui/Pagination/Pagination';
+import { mainPageMotion } from "../../../motions/mainPageMotion";
+import { NoMatchesPack } from "./NoMatchesPack/NoMatchesPack";
 
 interface PackPageProps {}
 
@@ -102,18 +104,10 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   return (
     <motion.div
       className={classes.PackPage}
-      initial={{
-        opacity: 0,
-        x: "100vw",
-      }}
-      animate={{
-        opacity: 1,
-        x: 0,
-      }}
-      exit={{
-        opacity: 0,
-        x: "-100vw",
-      }}
+      variants={mainPageMotion}
+      initial="initial"
+      animate="animate"
+      exit="exit"
     >
 
       <div className={classes.Title}>
@@ -128,28 +122,25 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
         )}
 
         {((tableStatus === 'success my') || (tableStatus === 'no matches my')) && (
-          <div>
+          <>
             <Button
+              onClick={() => setShow((p) => !p)}
               text="Add new card"
               sidePadding={35}
               type="blue"
-              onClick={() => {
-                setShow((p) => !p);
-              }}
             />
 
             {show && (
             <CardActions
-              onClick={() => {
-                setShow((p) => !p);
-              }}
-              type="add"
-              PACK_ID={path.current}
-              updateTotal={setTotalPages}
+              onClick={() => setShow((p) => !p)}
               ROWS_PER_PAGE={request.rowsPerPage || 8}
+              updateTotal={setTotalPages}
+              PACK_ID={path.current}
+              type="add"
             />
             )}
-          </div>
+
+          </>
         )}
       </div>
 
@@ -185,7 +176,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           separator="..."
           onClick={clickHandler}
           onChange={changeRequestValues}
-          ROWS_PER_PAGE={request.rowsPerPage || 6}
+          ROWS_PER_PAGE={request.rowsPerPage || 8}
           clickHandler={clickPaginationButtons}
         />
       </div>
@@ -216,26 +207,11 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
       </div>
       )}
 
-      {((tableStatus === "no matches my") || (tableStatus === "no matches all")) && (
-      <div className={classes.ContentContainer}>
-        <div className={classes.SearchSection}>
-          <span className={classes.SearchText}>Search</span>
-          <div className={classes.InputContainer}>
-            <SearchIcon className={classes.SearchIcon} />
-            <input
-              id="inputSearchInfo"
-              className={classes.Input}
-              value={request.searchValue}
-              placeholder="Provide your text"
-              type="text"
-              onChange={(e) => changeRequestValues({ searchValue: e.target.value })}
-            />
-          </div>
-        </div>
-        <div className={classes.NoCardsFind}>
-          No cards with this question!
-        </div>
-      </div>
+      {(tableStatus === "no matches my" || tableStatus === "no matches all") && (
+        <NoMatchesPack
+          value={request.searchValue}
+          onChange={changeRequestValues}
+        />
       )}
     </motion.div>
   );

@@ -15,9 +15,7 @@ interface DropDownProfileProps {
 
 export const DropDownProfile: FC<PropsWithChildren<DropDownProfileProps>> = () => {
   const dispatch = useAppDispatch();
-  const handleLogout = () => {
-    dispatch(logoutAsync());
-  };
+  const handleLogout = () => dispatch(logoutAsync());
 
   return (
     <motion.ul
@@ -27,14 +25,14 @@ export const DropDownProfile: FC<PropsWithChildren<DropDownProfileProps>> = () =
       exit="exit"
       className={classes.Container}
     >
-      <Link to="/profile" className={classes.Item}>
+      <Link to="profile" className={classes.Item}>
         <UserIcon />
         Profile
       </Link>
 
       <Link
         onClick={handleLogout}
-        to="/auth/login"
+        to="auth/login"
         className={classes.Item}
       >
         <LogOutIcon />

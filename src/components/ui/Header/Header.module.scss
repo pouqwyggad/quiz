@@ -30,3 +30,24 @@
   height: 36px;
   border-radius: 50%;
 }
+
+.Logo {
+  padding-top: 10px;
+  width: 209px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.LogoLineOne {
+  width: 100%;
+  height: 10px;
+  background: #000;
+}
+
+.LogoLineTwo {
+  width: 80%;
+  height: 10px;
+  background: #000;
+}

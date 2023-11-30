@@ -11,7 +11,7 @@ import { paginationMotion } from "../../../motions/paginationMotion";
 interface PaginationProps {
   total: number;
   current: number;
-  separator:string;
+  separator: string;
   ROWS_PER_PAGE: number;
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, page: number) => void;
   onChange: (newValue: IRequest) => void;

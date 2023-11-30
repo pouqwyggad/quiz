@@ -48,7 +48,7 @@ export const addCardAsync = createAsyncThunk<void,
     try {
       const card = {
         card: {
-          cardsPack_id: PACK_ID, question, answer, grade: 4,
+          cardsPack_id: PACK_ID, question, answer, grade: 0,
         },
       };
       await api.post('cards/card', card);

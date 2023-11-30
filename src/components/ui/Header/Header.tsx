@@ -2,7 +2,7 @@ import React, {
   FC, PropsWithChildren, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { Link } from '@tanstack/react-router';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import classes from './Header.module.scss';
 import { LogoIcon } from '../../icons/LogoIcon';
 import { Button } from '../Button/Button';
@@ -14,7 +14,7 @@ interface HeaderProps {
 }
 
 export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
-  const menuRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLButtonElement | null>(null);
   const data = useAppSelector((state) => state.auth);
   const isAuth = localStorage.getItem('isAuth');
   const [showMenu, setShowMenu] = useState(false);
@@ -33,11 +33,6 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
   const handleRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (window.location.href.includes('auth')) e.preventDefault();
   };
-
-  // window.history.pushState(null, '', window.location.href);
-  // window.addEventListener('popstate', () => {
-  //   window.history.pushState(null, '', window.location.href);
-  // });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,38 +54,40 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
         preload="intent"
         onClick={handleRedirect}
       >
-        <LogoIcon />
+        <LogoIcon className={[classes.Logo, classes.LogoLineOne, classes.LogoLineTwo]} />
       </Link>
 
       {isAuth === 'true' ? (
-      // eslint-disable-next-line react/jsx-no-useless-fragment
-        <>
-          {data.user.avatar ? (
-            <motion.div
-              className={classes.ProfileContainer}
-              onClick={() => setShowMenu((p) => !p)}
-              ref={menuRef}
-            >
-              <span className={classes.ProfileName}>{data.user.name}</span>
+        data.user.avatar ? (
+          <button
+            type="button"
+            className={classes.ProfileContainer}
+            onClick={() => setShowMenu((p) => !p)}
+            ref={menuRef}
+          >
+            <span className={classes.ProfileName}>{data.user.name}</span>
 
-              <img
-                className={classes.ProfileAvatar}
-                src={data.user.avatar}
-                alt="profile"
-              />
+            <img
+              className={classes.ProfileAvatar}
+              src={data.user.avatar}
+              alt="profile"
+            />
 
-              <AnimatePresence>
-                {(showMenu && notShowMenu) && <DropDownProfile />}
-              </AnimatePresence>
+            <AnimatePresence>
+              {(showMenu && notShowMenu) && <DropDownProfile />}
+            </AnimatePresence>
 
-            </motion.div>
-          ) : (
-            <SkeletonAvatar />
-          )}
-        </>
+          </button>
+        ) : (
+          <SkeletonAvatar />
+        )
       ) : (
         <Link to="/auth/login">
-          <Button sidePadding={28} type="blue" text="Sing in" />
+          <Button
+            sidePadding={28}
+            type="blue"
+            text="Sing in"
+          />
         </Link>
       )}
     </header>

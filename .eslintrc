@@ -14,7 +14,8 @@
     "no-underscore-dangle":  ["error", { "allow": ["_id"] }],
     "react/no-array-index-key": "off",
     "@typescript-eslint/quotes": "off",
-    "click-events-have-key-events": "off"
+    "click-events-have-key-events": "off",
+    "no-nested-ternary": "off"
   },
   "ignorePatterns": ["tailwind.config.js"]
 }

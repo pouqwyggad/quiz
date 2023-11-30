@@ -1,0 +1,44 @@
+@import "../../../../css/common";
+
+.Container {
+  @include create-text($sideText, 16px, 400);
+  width: 100%;
+}
+
+.Search {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+
+  &Text {
+    @include create-text($text, 14px, 500, $lineHeight: 17.07px);
+  }
+}
+
+.InputContainer {
+  position: relative;
+}
+
+.Input {
+  position: relative;
+  border-radius: 2px;
+  height: 36px;
+  width: 100%;
+  border: 1px solid $borderColor;
+  padding: 6px 0 6px 40px;
+  cursor: pointer;
+}
+
+.SearchIcon {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+}
+
+.EmptyPack {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 86px;
+}
