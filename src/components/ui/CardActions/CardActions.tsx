@@ -4,6 +4,7 @@ import React, {
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { motion } from "framer-motion";
 import classes from './CardActions.module.scss';
 import { CloseIcon } from '../../icons/CloseIcon';
 import { TextField } from '../TextField/TextField';
@@ -15,6 +16,7 @@ import {
   editCardAsync,
   getCardsAsync,
 } from '../../../store/cardsSlice';
+import { modalContainer, modalMotion } from "../../../motions/modalMotion";
 
 interface CardActionsProps {
   onClick: () => void;
@@ -82,52 +84,70 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
   };
 
   return (
-    <div className={classes.Wrapper}>
-      <div className={classes.Container}>
+    <motion.div
+      className={classes.Wrapper}
+      variants={modalContainer}
+      animate="animate"
+      exit="exit"
+    >
+      <motion.div
+        className={classes.Container}
+        variants={modalMotion}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
         <div className={classes.Title}>
-          <h3>
-            {type === 'add' && 'Add new card'}
-            {type === 'delete' && 'Delete card'}
-            {type === 'edit' && 'Edit card'}
-          </h3>
-          <CloseIcon
-            onClick={onClick}
-          />
+
+          {type === 'add' && 'Add new card'}
+          {type === 'delete' && 'Delete card'}
+          {type === 'edit' && 'Edit card'}
+
+          <CloseIcon onClick={onClick} />
         </div>
 
         <hr />
 
         {type === 'delete' && (
-        <div className={classes.DeleteText}>
-          Do you really want to remove this card?
-        </div>
+          <div className={classes.DeleteText}>
+            Do you really want to remove this card?
+          </div>
         )}
 
         {type !== 'delete' && (
-        <>
-          <div className={classes.SelectContainer}>
-            <div className={classes.SelectText}>Choose a question format</div>
+          <>
+            <div className={classes.SelectContainer}>
+              <div className={classes.SelectText}>Choose a question format</div>
 
-            <FormControl fullWidth>
-              <Select
-                className={classes.Input}
-                id="demo-simple-select"
-                value={selectValue}
-                onChange={(e) => setSelectValue(e.target.value)}
-              >
-                <MenuItem value="Text">Text</MenuItem>
-                <MenuItem value="Something">Something</MenuItem>
-                <MenuItem value="Something 2">Something 2</MenuItem>
-              </Select>
-            </FormControl>
+              <FormControl fullWidth>
+                <Select
+                  onChange={(e) => setSelectValue(e.target.value)}
+                  className={classes.Input}
+                  id="demo-simple-select"
+                  value={selectValue}
+                >
+                  <MenuItem value="Text">Text</MenuItem>
+                  <MenuItem value="Something">Something</MenuItem>
+                  <MenuItem value="Something 2">Something 2</MenuItem>
+                </Select>
+              </FormControl>
 
-          </div>
+            </div>
 
-          <div className={classes.TextAreaContainer}>
-            <TextField onChange={handleChangeQuestion} name="question" text="Question" />
-            <TextField onChange={handleChangeAnswer} name="answer" text="Answer" />
-          </div>
-        </>
+            <div className={classes.TextAreaContainer}>
+              <TextField
+                onChange={handleChangeQuestion}
+                name="question"
+                text="Question"
+              />
+
+              <TextField
+                onChange={handleChangeAnswer}
+                name="answer"
+                text="Answer"
+              />
+            </div>
+          </>
         )}
 
         <div className={classes.ButtonsContainer}>
@@ -140,35 +160,35 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
           />
 
           {type === 'add' && (
-          <Button
-            sidePadding={44}
-            type="blue"
-            text="Save"
-            onClick={addCardHandler}
-          />
+            <Button
+              sidePadding={44}
+              type="blue"
+              text="Save"
+              onClick={addCardHandler}
+            />
           )}
 
           {type === 'edit' && (
-          <Button
-            sidePadding={44}
-            type="blue"
-            text="Edit"
-            onClick={editPackHandler}
-          />
+            <Button
+              sidePadding={44}
+              type="blue"
+              text="Edit"
+              onClick={editPackHandler}
+            />
           )}
 
           {type === 'delete' && (
-          <Button
-            sidePadding={44}
-            type="red"
-            text="Delete"
-            onClick={deleteCardHandler}
-          />
+            <Button
+              sidePadding={44}
+              type="red"
+              text="Delete"
+              onClick={deleteCardHandler}
+            />
           )}
 
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

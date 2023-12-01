@@ -9,24 +9,24 @@ import { IRequest } from '../../../interfaces/RequestFilters';
 import { paginationMotion } from "../../../motions/paginationMotion";
 
 interface PaginationProps {
-  total: number;
-  current: number;
-  separator: string;
-  ROWS_PER_PAGE: number;
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, page: number) => void;
-  onChange: (newValue: IRequest) => void;
   clickHandler: (page: number, type: number) => void;
+  onChange: (newValue: IRequest) => void;
+  ROWS_PER_PAGE: number;
+  separator: string;
+  current: number;
+  total: number;
 }
 
 export const Pagination: FC<PropsWithChildren<PaginationProps>> = (
   {
-    total,
-    current,
-    separator,
-    onClick,
     ROWS_PER_PAGE,
-    onChange,
     clickHandler,
+    separator,
+    onChange,
+    onClick,
+    current,
+    total,
   },
 ) => {
   const showAfterFirst = current < 5;

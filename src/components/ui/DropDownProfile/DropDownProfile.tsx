@@ -20,20 +20,24 @@ export const DropDownProfile: FC<PropsWithChildren<DropDownProfileProps>> = () =
   return (
     <motion.ul
       variants={profileDropDownMotion}
+      className={classes.Container}
       initial="initial"
       animate="animate"
       exit="exit"
-      className={classes.Container}
     >
-      <Link to="profile" className={classes.Item}>
+      <Link
+        className={classes.Item}
+        to="/profile"
+      >
         <UserIcon />
         Profile
       </Link>
 
       <Link
+        className={classes.Item}
         onClick={handleLogout}
         to="auth/login"
-        className={classes.Item}
+        replace
       >
         <LogOutIcon />
         Log out

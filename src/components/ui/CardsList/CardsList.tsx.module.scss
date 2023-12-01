@@ -13,94 +13,50 @@
   text-align: left;
 }
 
-.TitleRow {
-  @include create-text(#000, 14px, 500, $lineHeight: 17px);
+.Row {
   display: flex;
-  padding: 0 36px;
   height: 48px;
+  padding: 0 36px;
   background: $bgGrey;
   border-bottom: 1px solid $borderColor;
-}
+  @include create-text(#000, 14px, 500, $lineHeight: 17px);
 
-.DefaultRow {
-  @include create-text(#000, 13px, 400, $lineHeight: 15.85px);
-  padding: 0 36px;
-  display: flex;
-  border-bottom: 1px solid $borderColor;
-  height: 48px;
+
+  &CellOne, &CellTwo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 30%;
+    @include create-text(#000, 14px, 500, $lineHeight: 17px);
+  }
+
+  &CellThree {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 20%;
+    @include create-text(#000, 14px, 500, $lineHeight: 17px);
+  }
+
+  &CellFour {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    min-width: 10%;
+    gap: 6px;
+    cursor: pointer;
+  }
 }
 
 .SkeletonRow {
-  border-bottom: 1px solid $borderColor;
-  width: 100%;
-  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.CellOne, .CellTwo {
-  display: flex;
-  min-width: 30%;
-  justify-content: space-between;
-  align-items: center;
-  @include create-text(#000, 14px, 500, $lineHeight: 17px);
-}
-
-.CellThree {
-  display: flex;
-  min-width: 20%;
-  justify-content: space-between;
-  align-items: center;
-  @include create-text(#000, 14px, 500, $lineHeight: 17px);
-}
-
-.ClickArea {
-  display: flex;
-  height: 100%;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-.CellOneD, .CellTwoD {
-  display: flex;
-  min-width: 30%;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.CellThreeD {
-  display: flex;
-  min-width: 20%;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.CellFourD {
-  display: flex;
-  align-items: center;
+  width: 100%;
   height: 48px;
-  justify-content: space-between;
-  min-width: 20%;
-}
+  border-bottom: 1px solid $borderColor;
 
-.CellFour {
-  display: flex;
-  align-items: center;
-  height: 48px;
-  min-width: 10%;
-}
-
-.Skeleton {
-  border-radius: 6px;
-}
-
-.Star {
-  fill: #FFC700;
-}
-
-.ActionsContainer {
-  display: flex;
-  gap: 12px;
+  &Item {
+    border-radius: 6px;
+  }
 }

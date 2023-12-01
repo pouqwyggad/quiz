@@ -1,4 +1,4 @@
-export const layoutListMotion = {
+export const ListMotion = {
   initial: {
     opacity: 0,
     y: 30,

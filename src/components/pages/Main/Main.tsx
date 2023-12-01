@@ -123,7 +123,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
       />
 
       {tableStatus === 'success' ? (
-        <>
+        <div>
           <LayoutList
             data={cards.cardPacks}
             rowsPerPage={request.rowsPerPage || 8}
@@ -141,7 +141,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             ROWS_PER_PAGE={request.rowsPerPage || 8}
             clickHandler={clickPaginationButtons}
           />
-        </>
+        </div>
       ) : (
         <div className={classes.Spinner}>
           <Stack sx={{ color: '#366eff' }} spacing={2} direction="row">
@@ -171,6 +171,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
           />
           )}
         </AnimatePresence>
+
       </div>
       )}
 

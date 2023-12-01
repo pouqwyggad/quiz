@@ -1,6 +1,6 @@
 @import "../../../css/common";
 
-.SwitchPacksContainer {
+.Container {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -8,25 +8,24 @@
   border-radius: 2px;
   border: 1px solid $borderColor;
   background: #FFF;
+}
 
-  .Switch {
-    @include create-text($text, 14px, 400);
-    width: 50%;
+.Switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+  @include create-text($text, 14px, 400);
+
+  &Active {
     display: flex;
-    align-items: center;
     justify-content: center;
-    transition: all .2s ease-in-out;
+    align-items: center;
+    width: 50%;
+    background: $bb;
     cursor: pointer;
-
-    &Active {
-      @include create-text(#fff, 14px, 400);
-      background: $bb;
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
+    @include create-text(#fff, 14px, 400);
   }
-
 }

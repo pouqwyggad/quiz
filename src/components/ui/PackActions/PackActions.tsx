@@ -13,22 +13,22 @@ import {
 import { modalContainer, modalMotion } from "../../../motions/modalMotion";
 
 interface AddNewPackProps {
-  onClick: () => void;
-  type: string;
-  id?: string;
-  packName?: string;
   updateTotal?: (total: number) => void;
   ROWS_PER_PAGE?: number;
+  onClick: () => void;
+  packName?: string;
+  type: string;
+  id?: string;
 }
 
 export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = (
   {
+    ROWS_PER_PAGE,
+    updateTotal,
+    packName,
     onClick,
     type,
     id = '',
-    packName,
-    updateTotal,
-    ROWS_PER_PAGE,
   },
 ) => {
   const dispatch = useAppDispatch();

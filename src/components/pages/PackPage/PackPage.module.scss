@@ -1,72 +1,37 @@
 @import "../../../css/common";
 
-.PackPage {
+.Container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: $bg;
   width: 100%;
   height: 100%;
-  padding: 0 136px;
-}
-
-.ContentContainer {
-  width: 100%;
+  padding: 0 136px 36px 136px;
+  background: $bg;
 }
 
 .Title {
   @include create-text($text, 22px, 600, $lineHeight: 26.82px);
   display: flex;
-  width: 100%;
   justify-content: space-between;
-  padding-top: 83px;
+  width: 100%;
   padding-bottom: 28px;
-}
-
-.SearchSection {
-  display: flex;
-  width: 100%;
-  gap: 8px;
-  flex-direction: column;
-
-  .SearchText {
-    @include create-text($text, 14px, 500, $lineHeight: 17.07px);
-  }
-}
-
-.Input {
-  position: relative;
-  border-radius: 2px;
-  height: 36px;
-  width: 100%;
-  border: 1px solid $borderColor;
-  padding: 6px 0 6px 40px;
-  cursor: pointer;
-}
-
-.InputContainer {
-  position: relative;
-}
-
-.SearchIcon {
-  position: absolute;
-  top: 10px;
-  left: 16px;
+  padding-top: 83px;
 }
 
 .PackTitle {
   display: flex;
   align-items: center;
-  gap: 6px;
   min-width: 200px;
+  gap: 6px;
 }
 
 .EmptyPackContainer {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding-top: 86px;
   align-items: center;
+  padding-top: 86px;
+  gap: 32px;
 }
 
 .EmptyPackText {
@@ -74,9 +39,9 @@
 }
 
 .NoCardsFind {
-  padding-top: 86px;
+  @include create-text($sideText, 16px, 400);
   display: flex;
   justify-content: center;
   width: 100%;
-  @include create-text($sideText, 16px, 400);
+  padding-top: 86px;
 }

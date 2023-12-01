@@ -1,0 +1,31 @@
+@import '../../../../css/common.scss';
+
+.Row {
+  display: flex;
+  height: 48px;
+  padding: 0 36px;
+  border-bottom: 1px solid $borderColor;
+
+  &CellOne, &CellTwo, &CellThree, &CellFour {
+    display: flex;
+    align-items: center;
+    min-width: 23.5%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    @include create-text(#000, 13px, 400, $lineHeight: 17px);
+  }
+
+  &CellFive {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    min-width: 6%;
+  }
+}
+
+.ActionsContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

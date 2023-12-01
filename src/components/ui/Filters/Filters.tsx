@@ -9,15 +9,19 @@ import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
 import { IRequest } from '../../../interfaces/RequestFilters';
 
 interface FiltersProps {
-  requestValues: IRequest
-  onChange: (newValue: IRequest) => void
-  onReset: () => void
+  onChange: (newValue: IRequest) => void;
+  requestValues: IRequest;
+  onReset: () => void;
 }
 
 export const Filters: FC<PropsWithChildren<FiltersProps>> = (
-  { requestValues, onChange, onReset },
+  {
+    requestValues,
+    onChange,
+    onReset,
+  },
 ) => (
-  <div className={classes.Filters}>
+  <div className={classes.Container}>
 
     <div className={classes.SearchArea}>
 
@@ -25,18 +29,15 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = (
 
       <div className={classes.InputWrapper}>
         <input
-          id="inputSearchInfo"
-          className={classes.Input}
-          placeholder="Provide your text"
-          type="text"
+          onChange={(e) => onChange({ searchValue: e.target.value })}
           value={requestValues.searchValue}
-          onChange={(e) => {
-            onChange({ searchValue: e.target.value });
-          }}
+          placeholder="Provide your text"
+          className={classes.Input}
+          id="inputSearchInfo"
+          type="text"
         />
-        <div className={classes.IconSearch}>
-          <SearchIcon />
-        </div>
+
+        <SearchIcon className={classes.IconSearch} />
       </div>
     </div>
 
@@ -49,18 +50,13 @@ export const Filters: FC<PropsWithChildren<FiltersProps>> = (
     </div>
 
     <div className={classes.RangeInput}>
-      <p className={classes.TitleText}>Number of cards</p>
+      <div className={classes.TitleText}>Number of cards</div>
       <CustomSlider
         value={requestValues.value || [0, 130]}
         onChangeValue={onChange}
       />
     </div>
 
-    <div className={classes.FilterIconArea}>
-      <FilterIcon
-        onClick={onReset}
-      />
-    </div>
-
+    <FilterIcon onClick={onReset} className={classes.FilterIconArea} />
   </div>
 );

@@ -1,6 +1,6 @@
 @import "../../../css/common";
 
-.Profile {
+.Container {
   position: absolute;
   display: flex;
   padding-top: 60px;
@@ -9,42 +9,56 @@
   height: 100%;
 }
 
-.ProfileCardContainer {
+.Profile {
   display: flex;
   flex-direction: column;
-  min-width: 520px;
   height: fit-content;
+  min-width: 520px;
   background: #fff;
-  filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.10)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.10));
   padding: 27px 33px 36px 33px;
   align-items: center;
   border-radius: 2px;
+  filter: drop-shadow(-1px -1px 2px rgba(0, 0, 0, 0.10)) drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.10));
+
+  &Title {
+    @include create-text($text, 22px, 600);
+    padding-bottom: 30px;
+  }
 }
 
-.ProfileTitle {
-  @include create-text($text, 22px, 600);
-  padding-bottom: 30px;
-}
 
-.AvatarContainer {
+.Avatar {
   user-select: none;
   position: relative;
+
+  &Img {
+    width: 192px;
+    height: 192px;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  &ChangeIcon {
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    z-index: 12;
+    cursor: pointer;
+
+    & input {
+      display: none;
+    }
+  }
 }
 
-.AvatarImg {
-  width: 192px;
-  height: 192px;
-  border-radius: 50%;
-  pointer-events: none;
+.ChooseProfileAvatarIconHover {
+  transition: all .1s ease-in-out;
+
+  &:hover {
+    fill: #383838;
+  }
 }
 
-.AvatarChangeIcon {
-  right: 0;
-  bottom: 0;
-  position: absolute;
-  z-index: 12;
-  cursor: pointer;
-}
 
 .NameContainer {
   width: 100%;
@@ -59,8 +73,6 @@
   height: 100%;
   gap: 8px;
   padding: 17px 0 24px 0;
-  //transition: all .2s ease-in-out;
-  //transition: opacity 0.2s ease-in-out;
 
   .Username {
     @include create-text($text, 25px, 400, $lineHeight: 24px);
@@ -98,16 +110,4 @@
 
 .Edit {
   cursor: pointer;
-}
-
-.ChooseProfileAvatarIconHover {
-  transition: all .1s ease-in-out;
-
-  &:hover {
-    fill: #383838;
-  }
-}
-
-.AvatarChangeIcon input {
-  display: none;
 }

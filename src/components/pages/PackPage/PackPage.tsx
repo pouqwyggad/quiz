@@ -3,24 +3,24 @@ import React, {
 } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { useDebounce } from '@uidotdev/usehooks';
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import classes from './PackPage.module.scss';
 import { Button } from '../../ui/Button/Button';
-import { SearchIcon } from '../../icons/SearchIcon';
-import { CardsList } from '../../ui/CardsList/CardsList';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { getCardsAsync } from '../../../store/cardsSlice';
 import { PackActionsInside } from '../../ui/PackAnctionsInside/PackActionsInside';
 import { CardActions } from '../../ui/CardActions/CardActions';
 import { IRequest } from '../../../interfaces/RequestFilters';
-import { Pagination } from '../../ui/Pagination/Pagination';
 import { mainPageMotion } from "../../../motions/mainPageMotion";
 import { NoMatchesPack } from "./NoMatchesPack/NoMatchesPack";
+import { CompletedPack } from "./CompletedPack/CompletedPack";
 
 interface PackPageProps {}
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
+  const ID_USER = useAppSelector((state) => state.auth.user._id);
+  const packInfo = useAppSelector((state) => state.cards);
   const path = useRef('');
   const [request, setRequest] = useState<IRequest>({
     PACK_ID: path.current,
@@ -29,13 +29,11 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     sort: '0grade',
     searchValue: '',
   });
-  const [show, setShow] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const packInfo = useAppSelector((state) => state.cards);
-  const ID_USER = useAppSelector((state) => state.auth.user._id);
-  const debouncedSearch = useDebounce(request, 500);
   const [tableStatus, setTableStatus] = useState('');
+  const [totalPages, setTotalPages] = useState(0);
+  const [show, setShow] = useState(false);
+  const debouncedSearch = useDebounce(request, 500);
 
   const updateCardsData = async () => dispatch(getCardsAsync({
     PACK_ID: path.current,
@@ -103,7 +101,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
 
   return (
     <motion.div
-      className={classes.PackPage}
+      className={classes.Container}
       variants={mainPageMotion}
       initial="initial"
       animate="animate"
@@ -130,89 +128,65 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
               type="blue"
             />
 
-            {show && (
-            <CardActions
-              onClick={() => setShow((p) => !p)}
-              ROWS_PER_PAGE={request.rowsPerPage || 8}
-              updateTotal={setTotalPages}
-              PACK_ID={path.current}
-              type="add"
-            />
-            )}
+            <AnimatePresence>
+              {show && (
+                <CardActions
+                  onClick={() => setShow((p) => !p)}
+                  ROWS_PER_PAGE={request.rowsPerPage || 8}
+                  updateTotal={setTotalPages}
+                  PACK_ID={path.current}
+                  type="add"
+                />
+              )}
+            </AnimatePresence>
 
           </>
         )}
       </div>
 
-      {((tableStatus === 'success all') || (tableStatus === 'success my')) && (
-      <div className={classes.ContentContainer}>
-        <div className={classes.SearchSection}>
-          <span className={classes.SearchText}>Search</span>
-          <div className={classes.InputContainer}>
-            <SearchIcon className={classes.SearchIcon} />
-            <input
-              id="inputSearchInfo"
-              className={classes.Input}
-              value={request.searchValue}
-              placeholder="Provide your text"
-              type="text"
-              onChange={(e) => changeRequestValues({ searchValue: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <CardsList
-          rowsPerPage={request.rowsPerPage || 8}
+      {(tableStatus === 'success all' || tableStatus === 'success my') && (
+        <CompletedPack
+          paginationClickHandler={clickPaginationButtons}
+          onChangeRequest={changeRequestValues}
           data={packInfo.packCards.cards}
-          updateTotal={setTotalPages}
-          ROWS_PER_PAGE={request.rowsPerPage || 8}
-          request={request}
-          sortByGrade={changeRequestValues}
-        />
-
-        <Pagination
-          total={totalPages}
-          current={currentPage}
-          separator="..."
+          setTotalPages={setTotalPages}
           onClick={clickHandler}
-          onChange={changeRequestValues}
-          ROWS_PER_PAGE={request.rowsPerPage || 8}
-          clickHandler={clickPaginationButtons}
+          current={currentPage}
+          total={totalPages}
+          request={request}
         />
-      </div>
       )}
 
       {tableStatus === "empty my" && (
-      <div className={classes.EmptyPackContainer}>
-        <div className={classes.EmptyPackText}>
-          This pack is empty. Click add new card to fill this pack
-        </div>
+        <div className={classes.EmptyPackContainer}>
+          <div className={classes.EmptyPackText}>
+            This pack is empty. Click add new card to fill this pack
+          </div>
 
-        <Button
-          text="Add new card"
-          sidePadding={35}
-          type="blue"
-          onClick={() => {
-            setShow((p) => !p);
-          }}
-        />
-      </div>
+          <Button
+            onClick={() => setShow((p) => !p)}
+            text="Add new card"
+            sidePadding={35}
+            type="blue"
+          />
+        </div>
       )}
 
       {tableStatus === "empty all" && (
-      <div className={classes.EmptyPackContainer}>
-        <div className={classes.EmptyPackText}>
-          This pack is empty.
+        <div className={classes.EmptyPackContainer}>
+          <div className={classes.EmptyPackText}>
+            This pack is empty.
+          </div>
         </div>
-      </div>
       )}
 
       {(tableStatus === "no matches my" || tableStatus === "no matches all") && (
         <NoMatchesPack
-          value={request.searchValue}
           onChange={changeRequestValues}
+          value={request.searchValue}
         />
       )}
+
     </motion.div>
   );
 };

@@ -6,10 +6,9 @@ import { ArrowBackIcon } from '../../icons/ArrowBackIcon';
 import { backPageButtonMotion } from "../../../motions/backPageButtonMotion";
 
 interface BackPageButtonProps {
-  src: string
 }
 
-export const BackPageButton: FC<PropsWithChildren<BackPageButtonProps>> = ({ src }) => (
+export const BackPageButton: FC<PropsWithChildren<BackPageButtonProps>> = () => (
   <motion.div
     variants={backPageButtonMotion}
     className={classes.Back}
@@ -19,7 +18,7 @@ export const BackPageButton: FC<PropsWithChildren<BackPageButtonProps>> = ({ src
   >
     <Link
       className={classes.Link}
-      to={src}
+      to="/"
       preload="intent"
     >
       <ArrowBackIcon />

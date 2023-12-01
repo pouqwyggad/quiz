@@ -56,14 +56,14 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
 
       <AnimatePresence>
         {isButtonShow && (
-          <BackPageButton src="/" />
+          <BackPageButton />
         )}
       </AnimatePresence>
 
       <main className={classes.Main}>
 
         {(path.current === '/' && isAuthChecked) && (
-          <Main />
+        <Main />
         )}
 
         {(isAuthChecked || showLogin) && (

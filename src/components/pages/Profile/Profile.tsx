@@ -50,17 +50,17 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
 
   return (
     <motion.div
+      className={classes.Container}
+      variants={pageMotion}
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={pageMotion}
-      className={classes.Profile}
     >
-      <div className={classes.ProfileCardContainer}>
+      <div className={classes.Profile}>
 
         <div className={classes.ProfileTitle}>Personal Information</div>
 
-        <div className={classes.AvatarContainer}>
+        <div className={classes.Avatar}>
           {data.user.avatar ? (
             <img
               className={classes.AvatarImg}
@@ -72,12 +72,14 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
           )}
 
           <label htmlFor="hangeImage" className={classes.AvatarChangeIcon}>
+
             <ChooseProfileAvatarIcon className={classes.ChooseProfileAvatarIconHover} />
+
             <input
+              onChange={handleImageChange}
               accept="image/*"
               id="hangeImage"
               type="file"
-              onChange={handleImageChange}
             />
           </label>
         </div>
@@ -86,15 +88,20 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
           {editName ? (
             <motion.div
               className={classes.EditContainer}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-
+              variants={pageMotion}
+              initial="initial"
+              animate="animate"
+              exit="exit"
             >
-              <TextField onChange={handleChangeName} text="Nickname" name="text" />
+              <TextField
+                onChange={handleChangeName}
+                text="Nickname"
+                name="text"
+              />
+
               <button
-                type="button"
                 className={classes.ButtonSave}
+                type="button"
                 onClick={() => {
                   saveNewName();
                   edit();
@@ -104,9 +111,7 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
               </button>
             </motion.div>
           ) : (
-            <div
-              className={classes.NameArea}
-            >
+            <div className={classes.NameArea}>
               {
                   data.user.name ? (
                     <>
@@ -123,7 +128,7 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
                   ) : (
                     <Skeleton animation="wave" variant="text" width={200} height={30} />
                   )
-                }
+              }
             </div>
           )}
         </div>
@@ -134,10 +139,10 @@ export const Profile: FC<PropsWithChildren<ProfileProps>> = () => {
 
         <Link to="/auth/login">
           <Button
-            sidePadding={20}
-            type="white"
-            text="Log out"
             onClick={handleLogout}
+            sidePadding={20}
+            text="Log out"
+            type="white"
           >
             <LogOutIcon />
           </Button>

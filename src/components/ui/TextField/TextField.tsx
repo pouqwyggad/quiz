@@ -2,29 +2,37 @@ import React, { FC, PropsWithChildren } from 'react';
 import classes from './TextField.module.scss';
 
 interface TextFieldProps {
-  user?: Record<string, string>
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  text: string
-  name: string
-  packName?: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  user?: Record<string, string>;
+  packName?: string;
+  text: string;
+  name: string;
 }
 
-export const TextField: FC<PropsWithChildren<TextFieldProps>> = ({
-  user, onChange, text, name, packName,
-}) => (
+export const TextField: FC<PropsWithChildren<TextFieldProps>> = (
+  {
+    onChange,
+    packName,
+    user,
+    text,
+    name,
+  },
+) => (
   <div className={classes.FormInput}>
+
     <input
-      required
-      className={`${classes.Input} ${!(user) || user[name] ? classes.InputActive : ''}`}
-      value={user ? user[name] : packName}
-      type={`${name === 'password' ? 'password' : 'text'}`}
-      name={name}
-      placeholder=""
       onChange={user ? (e) => onChange(e) : (e) => onChange(e)}
+      className={`${classes.Input} ${!(user) || user[name] ? classes.InputActive : ''}`}
+      type={`${name === 'password' ? 'password' : 'text'}`}
+      value={user ? user[name] : packName}
+      placeholder=""
+      name={name}
+      required
     />
+
     <label
-      htmlFor={name}
       className={classes.Label}
+      htmlFor={name}
     >
       {text}
     </label>
@@ -32,6 +40,6 @@ export const TextField: FC<PropsWithChildren<TextFieldProps>> = ({
 );
 
 TextField.defaultProps = {
-  user: undefined,
   packName: undefined,
+  user: undefined,
 };

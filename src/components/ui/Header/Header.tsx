@@ -60,10 +60,10 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
       {isAuth === 'true' ? (
         data.user.avatar ? (
           <button
-            type="button"
-            className={classes.ProfileContainer}
             onClick={() => setShowMenu((p) => !p)}
+            className={classes.ProfileContainer}
             ref={menuRef}
+            type="button"
           >
             <span className={classes.ProfileName}>{data.user.name}</span>
 
@@ -76,19 +76,17 @@ export const Header: FC<PropsWithChildren<HeaderProps>> = () => {
             <AnimatePresence>
               {(showMenu && notShowMenu) && <DropDownProfile />}
             </AnimatePresence>
-
           </button>
         ) : (
           <SkeletonAvatar />
-        )
-      ) : (
-        <Link to="/auth/login">
-          <Button
-            sidePadding={28}
-            type="blue"
-            text="Sing in"
-          />
-        </Link>
+        )) : (
+          <Link to="/auth/login">
+            <Button
+              sidePadding={28}
+              type="blue"
+              text="Sing in"
+            />
+          </Link>
       )}
     </header>
   );

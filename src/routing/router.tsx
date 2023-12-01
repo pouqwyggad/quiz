@@ -43,6 +43,7 @@ const loginRoute = new Route({
   getParentRoute: () => authRoute,
   path: 'login',
   component: () => <Login />,
+
 });
 
 const recoverRoute = new Route({

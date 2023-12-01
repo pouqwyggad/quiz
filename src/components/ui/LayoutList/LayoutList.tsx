@@ -1,75 +1,64 @@
-import React, { FC, PropsWithChildren, useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import React, { FC, PropsWithChildren } from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import classes from './LayoutList.module.scss';
-import { HatIcon } from '../../icons/HatIcon';
-import { EditIcon } from '../../icons/EditIcon';
-import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { Pack } from '../../../interfaces/Packs';
-import { PackActions } from '../PackActions/PackActions';
 import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
-import { formatDate } from '../../../utils/dataHelper';
 import { IRequest } from '../../../interfaces/RequestFilters';
-import { layoutListMotion } from "../../../motions/layoutListMotion";
+import { ListMotion } from "../../../motions/listMotion";
+import { ListItem } from "./ListItem/ListItem";
 
 interface LayoutListProps {
   onChangeRequest: (newValue: IRequest) => void;
   updateTotal: (total: number) => void;
-  rowsPerPage:number;
+  rowsPerPage: number;
   request: IRequest;
   data: Pack[];
 }
 
-export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
-  onChangeRequest,
-  rowsPerPage,
-  updateTotal,
-  request,
-  data,
-}) => {
+export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
+  {
+    onChangeRequest,
+    rowsPerPage,
+    updateTotal,
+    request,
+    data,
+  },
+) => {
   const isLoading = useAppSelector((state) => state.packs.loading);
-  const USER_ID = useAppSelector((state) => state.auth.user._id);
-  const [selectedItemId, setSelectedItemId] = useState('');
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleEditClick = () => setShowEditModal((p) => !p);
-
-  const handleDeleteClick = () => setShowDeleteModal((p) => !p);
-
-  const currentSelectedModal = (id: string) => setSelectedItemId(id);
+  const handleRequestHandler = () => {
+    if (request.sort === '0updated') {
+      onChangeRequest({ sort: '1updated' });
+    } else {
+      onChangeRequest({ sort: '0updated' });
+    }
+  };
 
   return (
     <motion.div
       className={classes.Container}
-      variants={layoutListMotion}
+      variants={ListMotion}
       initial="initial"
       animate="animate"
     >
       <div className={classes.Table}>
-        <div className={classes.TitleRow}>
-          <div className={classes.CellOne}>Name</div>
-          <div className={classes.CellTwo}>Cards</div>
-          <div className={classes.CellThree}>
+        <div className={classes.Row}>
+          <div className={classes.RowCellOne}>Name</div>
+          <div className={classes.RowCellTwo}>Cards</div>
+          <div className={classes.RowCellThree}>
             <button
-              type="button"
-              onClick={() => {
-                if (request.sort === '0updated') {
-                  onChangeRequest({ sort: '1updated' });
-                } else {
-                  onChangeRequest({ sort: '0updated' });
-                }
-              }}
+              onClick={handleRequestHandler}
               className={classes.ClickArea}
+              type="button"
             >
               Last Updated
               <DropDownArrowIcon rotate={request.sort === '0updated' ? 0 : 180} />
             </button>
           </div>
-          <div className={classes.CellFour}>Created by</div>
-          <div className={classes.CellFive}>Actions</div>
+          <div className={classes.RowCellFour}>Created by</div>
+          <div className={classes.RowCellFive}>Actions</div>
         </div>
 
         {isLoading && (
@@ -82,73 +71,12 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = ({
 
         {data && !isLoading && (
           data.map((item: Pack) => (
-            <div key={item._id} className={classes.DefaultRow}>
-              <div className={classes.CellOneD}>{item.name}</div>
-              <div className={classes.CellTwoD}>{item.cardsCount}</div>
-              <div className={classes.CellThreeD}>{formatDate(item.updated)}</div>
-              <div className={classes.CellFourD}>{item.user_name}</div>
-              <div className={classes.CellFiveD}>
-
-                <div className={classes.ActionsContainer}>
-
-                  <Link
-                    to="/pack/$id"
-                    params={{ id: item._id }}
-                  >
-                    <HatIcon
-                      width="16"
-                      height="16"
-                    />
-                  </Link>
-
-                  {(item.user_id === USER_ID) && (
-                  <>
-                    <EditIcon
-                      width="16"
-                      height="16"
-                      onClick={() => {
-                        handleEditClick();
-                        currentSelectedModal(item._id);
-                      }}
-                    />
-
-                    <TrashCanIcon
-                      width="14"
-                      height="16"
-                      onClick={() => {
-                        handleDeleteClick();
-                        currentSelectedModal(item._id);
-                      }}
-                    />
-                  </>
-                  )}
-
-                  <AnimatePresence>
-                    {showEditModal && selectedItemId === item._id && (
-                    <PackActions
-                      onClick={handleEditClick}
-                      type="edit"
-                      id={item._id}
-                    />
-                    )}
-                  </AnimatePresence>
-
-                  <AnimatePresence>
-                    {showDeleteModal && selectedItemId === item._id && (
-                    <PackActions
-                      onClick={handleDeleteClick}
-                      type="delete"
-                      id={item._id}
-                      packName={item.name}
-                      updateTotal={updateTotal}
-                      ROWS_PER_PAGE={rowsPerPage}
-                    />
-                    )}
-                  </AnimatePresence>
-
-                </div>
-              </div>
-            </div>
+            <ListItem
+              item={item}
+              updateTotal={updateTotal}
+              rowsPerPage={rowsPerPage}
+              key={item._id}
+            />
           ))
         )}
       </div>
