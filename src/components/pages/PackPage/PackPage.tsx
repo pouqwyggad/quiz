@@ -15,7 +15,8 @@ import { mainPageMotion } from "../../../motions/mainPageMotion";
 import { NoMatchesPack } from "./NoMatchesPack/NoMatchesPack";
 import { CompletedPack } from "./CompletedPack/CompletedPack";
 
-interface PackPageProps {}
+interface PackPageProps {
+}
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
@@ -107,16 +108,13 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
       animate="animate"
       exit="exit"
     >
-
       <div className={classes.Title}>
         {packInfo.loading ? (
           <div className={classes.PackTitle}>
             <Skeleton animation="wave" variant="text" width="100%" height="30px" />
           </div>
         ) : (
-          <PackActionsInside
-            packName={packInfo.packCards}
-          />
+          <PackActionsInside packInfo={packInfo.packCards} />
         )}
 
         {((tableStatus === 'success my') || (tableStatus === 'no matches my')) && (

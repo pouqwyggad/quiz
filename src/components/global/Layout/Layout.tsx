@@ -19,7 +19,6 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = ({ children }) => {
   const path = useRef('');
   const [isButtonShow, setIsButtonShow] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-  // const [showLogin, setShowLogin] = useState(false);
 
   useMemo(() => {
     path.current = window.location.pathname;

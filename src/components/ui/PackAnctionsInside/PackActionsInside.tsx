@@ -13,10 +13,10 @@ import { profileDropDownMotion } from '../../../motions/pageMotion';
 import { PackActions } from '../PackActions/PackActions';
 
 interface PackActionsInsideProps {
-  packName: Cards
+  packInfo: Cards;
 }
 
-export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = ({ packName }) => {
+export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = ({ packInfo}) => {
   const menuRef = useRef<HTMLButtonElement | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const USER_ID = useAppSelector((state) => state.auth.user._id);
@@ -65,8 +65,8 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
   return (
     <>
       <div className={classes.PackTitle}>
-        {packName.packName}
-        {USER_ID === packName.packUserId && (
+        {packInfo.packName}
+        {USER_ID === packInfo.packUserId && (
           <PackEditConfIcon
             onClick={() => setShowMenu((p) => !p)}
             ref={menuRef}

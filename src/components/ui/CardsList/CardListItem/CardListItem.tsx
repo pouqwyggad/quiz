@@ -90,6 +90,8 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
                   CARD_ID={item._id}
                   PACK_ID={path}
                   type="edit"
+                  currentQuestion={item.question}
+                  currentAnswer={item.answer}
                 />
               )}
             </AnimatePresence>

@@ -25,6 +25,8 @@ interface CardActionsProps {
   PACK_ID?: string;
   ROWS_PER_PAGE: number;
   updateTotal?: (total: number) => void;
+  currentQuestion?: string;
+  currentAnswer?: string;
 }
 
 export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
@@ -35,19 +37,35 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
     PACK_ID = '',
     ROWS_PER_PAGE,
     updateTotal,
+    currentQuestion = '',
+    currentAnswer = '',
   },
 ) => {
   const dispatch = useAppDispatch();
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
+  // const [question, setQuestion] = useState('');
+  // const [answer, setAnswer] = useState('');
   const [selectValue, setSelectValue] = useState('Text');
 
   // eslint-disable-next-line max-len
-  const handleChangeQuestion = (e: React.ChangeEvent<HTMLInputElement>) => setQuestion(e.target.value);
-  const handleChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
+  const [values, setValues] = useState<Record<string, string>>({ question: currentQuestion, answer: currentAnswer });
+
+  // eslint-disable-next-line max-len
+  // const handleChangeQuestion = (e: React.ChangeEvent<HTMLInputElement>) => setQuestion(e.target.value);
+  // eslint-disable-next-line max-len
+  // const handleChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
+
+  const handleChangeValues = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   const addCardHandler = async () => {
-    const firstRequest = await dispatch(addCardAsync({ question, answer, PACK_ID }));
+    // eslint-disable-next-line max-len
+    const firstRequest = await dispatch(addCardAsync({ question: values.question, answer: values.answer, PACK_ID }));
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
@@ -75,7 +93,8 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
   };
 
   const editPackHandler = async () => {
-    const firstRequest = await dispatch(editCardAsync({ question, answer, CARD_ID }));
+    // eslint-disable-next-line max-len
+    const firstRequest = await dispatch(editCardAsync({ question: values.question, answer: values.answer, CARD_ID }));
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
@@ -131,21 +150,42 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
                   <MenuItem value="Something 2">Something 2</MenuItem>
                 </Select>
               </FormControl>
-
             </div>
 
             <div className={classes.TextAreaContainer}>
-              <TextField
-                onChange={handleChangeQuestion}
-                name="question"
-                text="Question"
-              />
+              {type === "add" ? (
+                <>
+                  <TextField
+                    onChange={handleChangeValues}
+                    user={values}
+                    name="question"
+                    text="Question"
+                  />
 
-              <TextField
-                onChange={handleChangeAnswer}
-                name="answer"
-                text="Answer"
-              />
+                  <TextField
+                    onChange={handleChangeValues}
+                    user={values}
+                    name="answer"
+                    text="Answer"
+                  />
+                </>
+              ) : (
+                <>
+                  <TextField
+                    onChange={handleChangeValues}
+                    name="question"
+                    text="Question"
+                    user={values}
+                  />
+
+                  <TextField
+                    onChange={handleChangeValues}
+                    name="answer"
+                    text="Answer"
+                    user={values}
+                  />
+                </>
+              )}
             </div>
           </>
         )}
@@ -196,4 +236,6 @@ CardActions.defaultProps = {
   CARD_ID: '',
   PACK_ID: '',
   updateTotal: () => {},
+  currentQuestion: '',
+  currentAnswer: '',
 };
