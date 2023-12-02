@@ -1,11 +1,11 @@
 import React, {
   FC, PropsWithChildren, useRef, useMemo, useEffect, useState,
 } from 'react';
-import { Outlet, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence } from "framer-motion";
 import classes from './Layout.module.scss';
 import { Header } from '../../ui/Header/Header';
-import { Main } from '../../pages/Main/Main';
+// import { Main } from '../../pages/Main/Main';
 import { checkAuth } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
 import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
@@ -13,13 +13,13 @@ import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';
 interface LayoutProps {
 }
 
-export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
+export const Layout: FC<PropsWithChildren<LayoutProps>> = ({ children }) => {
   const navigate = useNavigate({ from: '/' });
   const dispatch = useAppDispatch();
   const path = useRef('');
   const [isButtonShow, setIsButtonShow] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
+  // const [showLogin, setShowLogin] = useState(false);
 
   useMemo(() => {
     path.current = window.location.pathname;
@@ -44,7 +44,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
       }
 
       if (window.location.href.includes('auth')) {
-        setShowLogin(true);
+        setIsAuthChecked(true);
       }
     };
     fetchData();
@@ -61,15 +61,7 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = () => {
       </AnimatePresence>
 
       <main className={classes.Main}>
-
-        {(path.current === '/' && isAuthChecked) && (
-        <Main />
-        )}
-
-        {(isAuthChecked || showLogin) && (
-        <Outlet />
-        )}
-
+        {isAuthChecked ? (children) : null}
       </main>
     </div>
   );

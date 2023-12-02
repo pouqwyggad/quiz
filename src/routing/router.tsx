@@ -1,42 +1,63 @@
 import {
-  Outlet, Router, Route, RootRoute, redirect,
+  Router, Route, RootRoute, redirect, Outlet,
 } from '@tanstack/react-router';
 import React from 'react';
-import { Layout } from '../components/global/Layout/Layout';
 import { Login } from '../components/pages/Login/Login';
 import { Form } from '../components/global/Form/Form';
 import { Registration } from '../components/pages/Registration/Registration';
-import { Profile } from '../components/pages/Profile/Profile';
 import { RecoverPass } from '../components/pages/RecoverPass/RecoverPass';
 import { NewPass } from '../components/pages/newPass/NewPass';
 import { CheckEmail } from '../components/pages/CheckEmail/CheckEmail';
 import { PackPage } from '../components/pages/PackPage/PackPage';
+import { Main } from "../components/pages/Main/Main";
+import { Layout } from "../components/global/Layout/Layout";
+import { Profile } from '../components/pages/Profile/Profile';
+// const { Profile } = React.lazy(() => import('../components/pages/Profile/Profile'));
 
 const rootRoute = new RootRoute({
   component: () => (
-    <Outlet />
+    <Layout>
+      <Outlet />
+    </Layout>
   ),
 });
 
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: Layout,
-  // beforeLoad: async () => {
-  //   console.log("f");
-  //   if (localStorage.getItem('isAuth') !== 'true') {
-  //     // eslint-disable-next-line @typescript-eslint/no-throw-literal
-  //     throw redirect({
-  //       to: '/auth/login',
-  //     });
-  //   }
-  // },
+  component: () => <Main />,
+});
+
+const packRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: 'pack',
+  component: () => <PackPage />,
+});
+
+const currentPackRoute = new Route({
+  getParentRoute: () => packRoute,
+  path: '$pack-id',
 });
 
 const authRoute = new Route({
-  getParentRoute: () => indexRoute,
-  path: 'auth',
+  getParentRoute: () => rootRoute,
+  path: '/auth',
   component: () => <Form />,
+});
+
+const profileRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/profile',
+  component: () => <Profile />,
+  // component: lazyRouteComponent(() => import("../components/pages/Profile/Profile")),
+  beforeLoad: async () => {
+    if (localStorage.getItem('isAuth') !== 'true') {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
+      throw redirect({
+        to: '/auth/login',
+      });
+    }
+  },
 });
 
 const loginRoute = new Route({
@@ -83,31 +104,6 @@ const checkEmailRoute = new Route({
   component: () => <CheckEmail />,
 });
 
-const packRoute = new Route({
-  getParentRoute: () => indexRoute,
-  path: 'pack',
-  component: () => <PackPage />,
-});
-
-const currentPackRoute = new Route({
-  getParentRoute: () => packRoute,
-  path: '$pack-id',
-});
-
-const profileRoute = new Route({
-  getParentRoute: () => indexRoute,
-  path: '/profile',
-  component: () => <Profile />,
-  beforeLoad: async () => {
-    if (localStorage.getItem('isAuth') !== 'true') {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
-      throw redirect({
-        to: '/auth/login',
-      });
-    }
-  },
-});
-
 const routeTree = rootRoute.addChildren([
   indexRoute.addChildren([
     authRoute.addChildren([
@@ -128,7 +124,7 @@ export const router = new Router({
 });
 
 // declare module '@tanstack/react-router' {
-//     interface Register {
-//         router: typeof router
-//     }
+//   interface Register {
+//     router: typeof router
+//   }
 // }
