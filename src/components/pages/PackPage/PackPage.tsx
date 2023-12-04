@@ -103,7 +103,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     };
 
     fetchData();
-  }, [debouncedRequest, currentPage]);
+  }, [debouncedRequest, currentPage, totalPages]);
 
   return (
     <motion.div
@@ -148,7 +148,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
 
       <AnimatePresence>
 
-        {(tableStatus.includes("Success") && packInfo.cards.length) && (
+        {(tableStatus.includes("Success") && packInfo.cards.length !== 0) && (
         <div className={classes.ContainerW}>
           <CardsList
             rowsPerPage={request.rowsPerPage || 8}
