@@ -10,13 +10,13 @@ import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { HatIcon } from '../../icons/HatIcon';
 import { profileDropDownMotion } from '../../../motions/pageMotion';
-import { PackActions } from '../PackActions/PackActions';
+import { PackModals } from '../PackModals/PackModals';
 
 interface PackActionsInsideProps {
   packInfo: Cards;
 }
 
-export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = ({ packInfo}) => {
+export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = ({ packInfo }) => {
   const menuRef = useRef<HTMLButtonElement | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const USER_ID = useAppSelector((state) => state.auth.user._id);
@@ -117,7 +117,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
         </AnimatePresence>
 
         {/* {showDeleteModal && selectedItemId === path.current && ( */}
-        {/* <PackActions */}
+        {/* <PackModals */}
         {/*  onClick={handleDeleteClick} */}
         {/*  type="delete" */}
         {/*  id={path.current} */}
@@ -127,7 +127,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
       </div>
 
       {showEditModal && (
-        <PackActions
+        <PackModals
           onClick={handleEditClick}
           type="edit"
           id={path.current}

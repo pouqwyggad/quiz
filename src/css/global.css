@@ -23,8 +23,7 @@ html, body {
     background: #F9F9FA;
     color: #000;
     width: 100%;
-    height: 100%;
-    /*overflow: hidden;*/
+    min-height: 100%;
     transition: all 0.1s ease;
 }
 
@@ -48,7 +47,3 @@ h1, h2, h3, h4, h5, h6, p, span {
     margin: 0;
     padding: 0;
 }
-
-/*.no-scroll {*/
-/*    overflow: hidden;*/
-/*}*/

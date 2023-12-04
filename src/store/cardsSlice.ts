@@ -48,7 +48,10 @@ export const addCardAsync = createAsyncThunk<void,
     try {
       const card = {
         card: {
-          cardsPack_id: PACK_ID, question, answer, grade: 0,
+          cardsPack_id: PACK_ID,
+          question,
+          answer,
+          grade: 0,
         },
       };
       await api.post('cards/card', card);
@@ -130,8 +133,8 @@ const cardsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
-        Object.assign(state.packCards, action.payload);
         state.loading = false;
+        Object.assign(state.packCards, action.payload);
       })
       .addCase(addCardAsync.pending, (state) => {
         state.loading = true;

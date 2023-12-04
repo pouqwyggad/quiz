@@ -19,9 +19,8 @@
   align-items: center;
   gap: 32px;
   padding-top: 86px;
-}
-.Title {
   @include create-text($sideText, 16px, 400);
+
 }
 
 .Spinner {

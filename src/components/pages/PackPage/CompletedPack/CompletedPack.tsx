@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren } from "react";
 import classes from './CompletedPack.module.scss';
-import { SearchIcon } from "../../../icons/SearchIcon";
+// import { SearchIcon } from "../../../icons/SearchIcon";
 import { CardsList } from "../../../ui/CardsList/CardsList";
 import { Pagination } from "../../../ui/Pagination/Pagination";
 import { IRequest } from "../../../../interfaces/RequestFilters";
@@ -30,26 +30,7 @@ export const CompletedPack: FC<PropsWithChildren<CompletedPackProps>> = (
   },
 ) => (
   <div className={classes.Container}>
-    <div className={classes.Search}>
-
-      <span className={classes.SearchText}>Search</span>
-
-      <div className={classes.InputContainer}>
-        <SearchIcon className={classes.InputIcon} />
-
-        <input
-          onChange={(e) => onChangeRequest({ searchValue: e.target.value })}
-          placeholder="Provide your text"
-          value={request.searchValue}
-          className={classes.Input}
-          id="inputSearchInfo"
-          type="text"
-        />
-      </div>
-    </div>
-
     <CardsList
-      ROWS_PER_PAGE={request.rowsPerPage || 8}
       rowsPerPage={request.rowsPerPage || 8}
       sortByGrade={onChangeRequest}
       updateTotal={setTotalPages}

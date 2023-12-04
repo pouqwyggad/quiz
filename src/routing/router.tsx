@@ -30,7 +30,7 @@ const indexRoute = new Route({
 
 const packRoute = new Route({
   getParentRoute: () => rootRoute,
-  path: 'pack',
+  path: '/pack',
   component: () => <PackPage />,
 });
 

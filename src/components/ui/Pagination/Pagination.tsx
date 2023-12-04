@@ -57,6 +57,7 @@ export const Pagination: FC<PropsWithChildren<PaginationProps>> = (
       className={classes.PaginationWrapper}
       initial="initial"
       animate="animate"
+      exit="exit"
     >
       <div className={classes.PaginationContainer}>
 
