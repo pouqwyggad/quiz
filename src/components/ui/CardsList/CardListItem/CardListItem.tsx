@@ -17,6 +17,7 @@ interface CardListItemProps {
   ROWS_PER_PAGE: number;
   path: string;
   item: Card;
+  resetUI: () => void;
 }
 
 const StyledRating = styled(Rating)({
@@ -31,6 +32,7 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
     ROWS_PER_PAGE,
     item,
     path,
+    resetUI,
   },
 ) => {
   const USER_ID = useAppSelector((state) => state.auth.user._id);
@@ -99,6 +101,7 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
                   type="edit"
                   currentQuestion={item.question}
                   currentAnswer={item.answer}
+                  resetUI={resetUI}
                 />
               )}
             </AnimatePresence>
@@ -112,6 +115,7 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
                   CARD_ID={item._id}
                   PACK_ID={path}
                   type="delete"
+                  resetUI={resetUI}
                   currentQuestion={item.question}
                 />
               )}

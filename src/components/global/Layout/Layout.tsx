@@ -5,7 +5,6 @@ import { useNavigate } from '@tanstack/react-router';
 import { AnimatePresence } from "framer-motion";
 import classes from './Layout.module.scss';
 import { Header } from '../../ui/Header/Header';
-// import { Main } from '../../pages/Main/Main';
 import { checkAuth } from '../../../store/authSlice';
 import { useAppDispatch } from '../../../hooks/hook';
 import { BackPageButton } from '../../ui/BackPageButton/BackPageButton';

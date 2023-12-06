@@ -14,10 +14,8 @@ import {
   addCardAsync,
   deleteCardAsync,
   editCardAsync,
-  getCardsAsync,
 } from '../../../store/cardsSlice';
 import { modalContainer, modalMotion } from "../../../motions/modalMotion";
-import { Cards } from "../../../interfaces/Cards";
 
 interface CardModalsProps {
   updateTotal?: (total: number) => void;
@@ -28,8 +26,7 @@ interface CardModalsProps {
   CARD_ID?: string;
   PACK_ID?: string;
   type: string;
-  // eslint-disable-next-line react/require-default-props
-  updateGet?: () => Promise<Cards>
+  resetUI: () => void;
 }
 
 export const CardModals: FC<PropsWithChildren<CardModalsProps>> = (
@@ -42,9 +39,11 @@ export const CardModals: FC<PropsWithChildren<CardModalsProps>> = (
     CARD_ID = '',
     PACK_ID = '',
     type,
-    updateGet,
+    resetUI,
   },
 ) => {
+  console.log(ROWS_PER_PAGE);
+  console.log(updateTotal);
   const dispatch = useAppDispatch();
   const [selectValue, setSelectValue] = useState('Text');
   const [values, setValues] = useState<Record<string, string>>({
@@ -71,15 +70,14 @@ export const CardModals: FC<PropsWithChildren<CardModalsProps>> = (
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      if (updateGet) {
-        const res = await updateGet();
+      // if (updateGet) {
+      await resetUI();
 
-        if (updateTotal) {
-          // @ts-ignore
-          updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
-          console.log(res);
-        }
-      }
+      // if (updateTotal) {
+      //   // @ts-ignore
+      //   updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+      // }
+      // }
     }
   };
 
@@ -89,15 +87,14 @@ export const CardModals: FC<PropsWithChildren<CardModalsProps>> = (
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      if (updateGet) {
-        const res = await updateGet();
+      // if (updateGet) {
+      await resetUI();
 
-        if (updateTotal) {
-          // @ts-ignore
-          updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
-          console.log(res);
-        }
-      }
+      // if (updateTotal) {
+      //   // @ts-ignore
+      //   updateTotal(Math.ceil(res.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+      //   // }
+      // }
     }
   };
 
@@ -110,8 +107,19 @@ export const CardModals: FC<PropsWithChildren<CardModalsProps>> = (
 
     onClick();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    firstRequest.meta.requestStatus === 'fulfilled' && dispatch(getCardsAsync({ PACK_ID }));
+    if (firstRequest.meta.requestStatus === 'fulfilled') {
+      // if (updateGet) {
+      await resetUI();
+
+      // if (updateTotal) {
+      // @ts-ignore
+      // updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+      // handleChangeValue();
+      // }
+      // }
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // firstRequest.meta.requestStatus === 'fulfilled' && dispatch(getCardsAsync({ PACK_ID }));
+    }
   };
 
   return (

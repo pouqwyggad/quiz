@@ -17,6 +17,7 @@ interface CardsListProps {
   rowsPerPage: number;
   request: IRequest;
   data: Card[];
+  resetUI: () => void;
 }
 
 export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
@@ -26,6 +27,7 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
     updateTotal,
     request,
     sortByGrade,
+    resetUI,
   },
 ) => {
   const isLoading = useAppSelector((state) => state.cards.loading);
@@ -34,6 +36,8 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     request.sort === '0grade' ? sortByGrade({ sort: '1grade' }) : sortByGrade({ sort: '0grade' });
   };
+
+  console.log(data);
 
   useEffect(() => {
     const url = window.location.pathname.split('/');
@@ -92,6 +96,7 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
               path={path.current}
               item={item}
               key={item._id}
+              resetUI={resetUI}
             />
           ))
         )}

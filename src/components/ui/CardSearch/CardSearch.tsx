@@ -1,4 +1,5 @@
 import React, { FC, PropsWithChildren } from "react";
+import { motion } from "framer-motion";
 import classes from './CardSearch.module.scss';
 import { SearchIcon } from "../../icons/SearchIcon";
 import { IRequest } from "../../../interfaces/RequestFilters";
@@ -9,7 +10,10 @@ interface CardSearchProps {
 }
 
 export const CardSearch: FC<PropsWithChildren<CardSearchProps>> = ({ onChange, value }) => (
-  <div className={classes.Search}>
+  <motion.div
+    className={classes.Search}
+    exit={{ display: "none" }}
+  >
 
     <span className={classes.SearchText}>Search</span>
 
@@ -25,7 +29,7 @@ export const CardSearch: FC<PropsWithChildren<CardSearchProps>> = ({ onChange, v
         type="text"
       />
     </div>
-  </div>
+  </motion.div>
 );
 
 CardSearch.defaultProps = {

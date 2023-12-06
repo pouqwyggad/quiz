@@ -147,13 +147,13 @@ const cardsSlice = createSlice({
       })
       .addCase(editCardAsync.fulfilled, (state) => {
         state.loading = false;
-      })
-      .addCase(deleteCardAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteCardAsync.fulfilled, (state) => {
-        state.loading = false;
       });
+    // .addCase(deleteCardAsync.pending, (state) => {
+    //   // state.loading = true;
+    // })
+    // .addCase(deleteCardAsync.fulfilled, (state) => {
+    //   state.loading = false;
+    // });
   },
 });
 
