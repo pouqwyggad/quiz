@@ -1,5 +1,5 @@
 import React, {
-  FC, PropsWithChildren, useEffect, useRef,
+  FC, PropsWithChildren,
 } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { motion } from "framer-motion";
@@ -14,10 +14,11 @@ import { CardListItem } from "./CardListItem/CardListItem";
 interface CardsListProps {
   sortByGrade: (newValue: IRequest) => void;
   updateTotal: (total: number) => void;
+  resetUI: () => void;
   rowsPerPage: number;
   request: IRequest;
   data: Card[];
-  resetUI: () => void;
+  path: string;
 }
 
 export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
@@ -25,24 +26,17 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
     data,
     rowsPerPage,
     updateTotal,
-    request,
     sortByGrade,
+    request,
     resetUI,
+    path,
   },
 ) => {
   const isLoading = useAppSelector((state) => state.cards.loading);
-  const path = useRef('');
   const changeSortHandler = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     request.sort === '0grade' ? sortByGrade({ sort: '1grade' }) : sortByGrade({ sort: '0grade' });
   };
-
-  console.log(data);
-
-  useEffect(() => {
-    const url = window.location.pathname.split('/');
-    path.current = url[url.length - 1];
-  }, []);
 
   return (
     <motion.div
@@ -93,7 +87,7 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
             <CardListItem
               ROWS_PER_PAGE={rowsPerPage}
               updateTotal={updateTotal}
-              path={path.current}
+              path={path}
               item={item}
               key={item._id}
               resetUI={resetUI}

@@ -141,13 +141,13 @@ const cardsSlice = createSlice({
       })
       .addCase(addCardAsync.fulfilled, (state) => {
         state.loading = false;
-      })
-      .addCase(editCardAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(editCardAsync.fulfilled, (state) => {
-        state.loading = false;
       });
+    // .addCase(editCardAsync.pending, (state) => {
+    //   state.loading = true;
+    // })
+    // .addCase(editCardAsync.fulfilled, (state) => {
+    //   state.loading = false;
+    // });
     // .addCase(deleteCardAsync.pending, (state) => {
     //   // state.loading = true;
     // })

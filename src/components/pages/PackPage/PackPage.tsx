@@ -16,16 +16,21 @@ import { NoMatchesPack } from "./NoMatchesPack/NoMatchesPack";
 import { CardSearch } from "../../ui/CardSearch/CardSearch";
 import { CardsList } from "../../ui/CardsList/CardsList";
 import { Pagination } from "../../ui/Pagination/Pagination";
-import { ListMotion } from "../../../motions/listMotion";
+import { CardsListMotion } from "../../../motions/listMotion";
 
 interface PackPageProps {
 }
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
-  const ID_USER = useAppSelector((state) => state.auth.user._id);
-  const loading = useAppSelector((state) => state.cards.loading);
   const packInfo = useAppSelector((state) => state.cards.packCards);
+  const loading = useAppSelector((state) => state.cards.loading);
+  const ID_USER = useAppSelector((state) => state.auth.user._id);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tableStatus, setTableStatus] = useState('');
+  const [totalPages, setTotalPages] = useState(0);
+  const [show, setShow] = useState(false);
+  const [reset, setReset] = useState(false);
   const path = useRef('');
   const [request, setRequest] = useState<IRequest>({
     PACK_ID: path.current,
@@ -33,19 +38,8 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     sort: '0grade',
     rowsPerPage: 6,
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [tableStatus, setTableStatus] = useState('');
-  const [totalPages, setTotalPages] = useState(0);
-  const [show, setShow] = useState(false);
   const debouncedRequest = useDebounce(request, 500);
-  const [reset, setReset] = useState(false);
-  const updateCardsData = async () => dispatch(getCardsAsync({
-    cardQuestion: request.searchValue,
-    rowsPerPage: request.rowsPerPage,
-    sortCards: request.sort,
-    PACK_ID: path.current,
-    page: currentPage,
-  }));
+  const debouncePagination = useDebounce(currentPage, 700);
 
   const clickPaginationButtons = (page: number, type: number) => {
     if ((page === 1 && type === -1) || (page === totalPages && type === 1)) return;
@@ -63,6 +57,14 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   };
 
   const addCardHandler = () => setShow((n) => !n);
+
+  const updateCardsData = async () => dispatch(getCardsAsync({
+    cardQuestion: request.searchValue,
+    rowsPerPage: request.rowsPerPage,
+    sortCards: request.sort,
+    PACK_ID: path.current,
+    page: currentPage,
+  }));
 
   useEffect(() => {
     const url = window.location.pathname.split('/');
@@ -100,7 +102,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     };
 
     fetchData();
-  }, [debouncedRequest, reset]);
+  }, [debouncedRequest, debouncePagination, reset]);
 
   return (
     <motion.div
@@ -146,18 +148,22 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {(tableStatus.includes("Success")) && (
+        {tableStatus.includes("Success") && (
           <motion.div
             className={classes.ContainerW}
-            exit={{ display: "none" }}
+            variants={CardsListMotion}
+            initial="initial"
+            animate="animate"
+            exit="exit"
           >
             <CardsList
+              resetUI={() => setReset((n) => !n)}
               rowsPerPage={request.rowsPerPage || 8}
               sortByGrade={changeRequestValues}
               updateTotal={setTotalPages}
-              request={request}
               data={packInfo.cards}
-              resetUI={() => setReset((n) => !n)}
+              request={request}
+              path={path.current}
             />
 
             <Pagination
@@ -179,7 +185,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           ID_USER === packInfo.packUserId ? (
             <motion.div
               className={classes.EmptyPackContainer}
-              variants={ListMotion}
+              variants={CardsListMotion}
               initial="initial"
               animate="animate"
               exit="exit"
@@ -197,7 +203,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
           ) : (
             <motion.div
               className={classes.EmptyPackContainer}
-              variants={ListMotion}
+              variants={CardsListMotion}
               initial="initial"
               animate="animate"
               exit="exit"
@@ -217,12 +223,12 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
       <AnimatePresence>
         {show && (
           <CardModals
-            onClick={addCardHandler}
+            resetUI={() => setReset((n) => !n)}
             ROWS_PER_PAGE={request.rowsPerPage || 8}
             updateTotal={setTotalPages}
+            onClick={addCardHandler}
             PACK_ID={path.current}
             type="add"
-            resetUI={() => setReset((n) => !n)}
           />
         )}
       </AnimatePresence>
