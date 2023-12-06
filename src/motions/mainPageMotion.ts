@@ -1,7 +1,7 @@
 export const mainPageMotion = {
   initial: {
     opacity: 0,
-    x: "100vw",
+    x: -1920,
   },
   animate: {
     opacity: 1,
@@ -9,6 +9,6 @@ export const mainPageMotion = {
   },
   exit: {
     opacity: 0,
-    x: "-100vw",
+    x: 1920,
   },
 };

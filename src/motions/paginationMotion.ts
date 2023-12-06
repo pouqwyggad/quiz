@@ -7,4 +7,8 @@ export const paginationMotion = {
     opacity: 1,
     y: 0,
   },
+  exit: {
+    opacity: 0,
+    y: 30,
+  },
 };

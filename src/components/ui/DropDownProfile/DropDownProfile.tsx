@@ -36,7 +36,7 @@ export const DropDownProfile: FC<PropsWithChildren<DropDownProfileProps>> = () =
       <Link
         className={classes.Item}
         onClick={handleLogout}
-        to="auth/login"
+        to="/auth/login"
         replace
       >
         <LogOutIcon />

@@ -1,14 +1,15 @@
 import React, { FC, PropsWithChildren, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import classes from './ListItem.module.scss';
 import { formatDate } from "../../../../utils/dataHelper";
 import { HatIcon } from "../../../icons/HatIcon";
 import { EditIcon } from "../../../icons/EditIcon";
 import { TrashCanIcon } from "../../../icons/TrashCanIcon";
-import { PackActions } from "../../PackActions/PackActions";
+import { PackModals } from "../../PackModals/PackModals";
 import { Pack } from "../../../../interfaces/Packs";
 import { useAppSelector } from "../../../../hooks/hook";
+import { CardRowItem } from "../../../../motions/listMotion";
 
 interface ListItemProps {
   updateTotal: (total: number) => void;
@@ -35,7 +36,13 @@ export const ListItem: FC<PropsWithChildren<ListItemProps>> = (
   const currentSelectedModal = (id: string) => setSelectedItemId(id);
 
   return (
-    <div className={classes.Row}>
+    <motion.div
+      className={classes.Row}
+      variants={CardRowItem}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <div className={classes.RowCellOne}>{item.name}</div>
       <div className={classes.RowCellTwo}>{item.cardsCount}</div>
       <div className={classes.RowCellThree}>{formatDate(item.updated)}</div>
@@ -78,7 +85,7 @@ export const ListItem: FC<PropsWithChildren<ListItemProps>> = (
           <AnimatePresence>
 
             {showEditModal && selectedItemId === item._id && (
-              <PackActions
+              <PackModals
                 onClick={handleEditClick}
                 type="edit"
                 id={item._id}
@@ -90,7 +97,7 @@ export const ListItem: FC<PropsWithChildren<ListItemProps>> = (
           <AnimatePresence>
 
             {showDeleteModal && selectedItemId === item._id && (
-              <PackActions
+              <PackModals
                 onClick={handleDeleteClick}
                 type="delete"
                 id={item._id}
@@ -104,6 +111,6 @@ export const ListItem: FC<PropsWithChildren<ListItemProps>> = (
 
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

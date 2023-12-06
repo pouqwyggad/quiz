@@ -48,7 +48,10 @@ export const addCardAsync = createAsyncThunk<void,
     try {
       const card = {
         card: {
-          cardsPack_id: PACK_ID, question, answer, grade: 0,
+          cardsPack_id: PACK_ID,
+          question,
+          answer,
+          grade: 0,
         },
       };
       await api.post('cards/card', card);
@@ -130,27 +133,27 @@ const cardsSlice = createSlice({
         state.loading = true;
       })
       .addCase(getCardsAsync.fulfilled, (state, action) => {
-        Object.assign(state.packCards, action.payload);
         state.loading = false;
+        Object.assign(state.packCards, action.payload);
       })
       .addCase(addCardAsync.pending, (state) => {
         state.loading = true;
       })
       .addCase(addCardAsync.fulfilled, (state) => {
         state.loading = false;
-      })
-      .addCase(editCardAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(editCardAsync.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(deleteCardAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteCardAsync.fulfilled, (state) => {
-        state.loading = false;
       });
+    // .addCase(editCardAsync.pending, (state) => {
+    //   state.loading = true;
+    // })
+    // .addCase(editCardAsync.fulfilled, (state) => {
+    //   state.loading = false;
+    // });
+    // .addCase(deleteCardAsync.pending, (state) => {
+    //   // state.loading = true;
+    // })
+    // .addCase(deleteCardAsync.fulfilled, (state) => {
+    //   state.loading = false;
+    // });
   },
 });
 

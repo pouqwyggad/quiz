@@ -5,7 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { motion } from "framer-motion";
-import classes from './CardActions.module.scss';
+import classes from './CardModals.module.scss';
 import { CloseIcon } from '../../icons/CloseIcon';
 import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
@@ -14,72 +14,111 @@ import {
   addCardAsync,
   deleteCardAsync,
   editCardAsync,
-  getCardsAsync,
 } from '../../../store/cardsSlice';
 import { modalContainer, modalMotion } from "../../../motions/modalMotion";
 
-interface CardActionsProps {
+interface CardModalsProps {
+  updateTotal?: (total: number) => void;
+  currentQuestion?: string;
+  currentAnswer?: string;
+  ROWS_PER_PAGE: number;
   onClick: () => void;
-  type: string;
   CARD_ID?: string;
   PACK_ID?: string;
-  ROWS_PER_PAGE: number;
-  updateTotal?: (total: number) => void;
+  type: string;
+  resetUI: () => void;
 }
 
-export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
+export const CardModals: FC<PropsWithChildren<CardModalsProps>> = (
   {
+    currentQuestion = '',
+    ROWS_PER_PAGE,
+    currentAnswer = '',
+    updateTotal,
     onClick,
-    type,
     CARD_ID = '',
     PACK_ID = '',
-    ROWS_PER_PAGE,
-    updateTotal,
+    type,
+    resetUI,
   },
 ) => {
+  console.log(ROWS_PER_PAGE);
+  console.log(updateTotal);
   const dispatch = useAppDispatch();
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
   const [selectValue, setSelectValue] = useState('Text');
+  const [values, setValues] = useState<Record<string, string>>({
+    question: currentQuestion,
+    answer: currentAnswer,
+  });
 
-  // eslint-disable-next-line max-len
-  const handleChangeQuestion = (e: React.ChangeEvent<HTMLInputElement>) => setQuestion(e.target.value);
-  const handleChangeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => setAnswer(e.target.value);
+  const handleChangeValues = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setValues((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   const addCardHandler = async () => {
-    const firstRequest = await dispatch(addCardAsync({ question, answer, PACK_ID }));
+    const firstRequest = await dispatch(addCardAsync({
+      question: values.question,
+      answer: values.answer,
+      PACK_ID,
+    }));
+
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      const res = await dispatch(getCardsAsync({ PACK_ID }));
-      if (res.meta.requestStatus === 'fulfilled') {
-        if (updateTotal) {
-          updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
-        }
-      }
+      // if (updateGet) {
+      await resetUI();
+
+      // if (updateTotal) {
+      //   // @ts-ignore
+      //   updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+      // }
+      // }
     }
   };
 
   const deleteCardHandler = async () => {
     const firstRequest = await dispatch(deleteCardAsync({ CARD_ID }));
+
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      const res = await dispatch(getCardsAsync({ PACK_ID }));
-      if (res.meta.requestStatus === 'fulfilled') {
-        if (updateTotal) {
-          updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
-        }
-      }
+      // if (updateGet) {
+      await resetUI();
+
+      // if (updateTotal) {
+      //   // @ts-ignore
+      //   updateTotal(Math.ceil(res.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+      //   // }
+      // }
     }
   };
 
   const editPackHandler = async () => {
-    const firstRequest = await dispatch(editCardAsync({ question, answer, CARD_ID }));
+    const firstRequest = await dispatch(editCardAsync({
+      question: values.question,
+      answer: values.answer,
+      CARD_ID,
+    }));
+
     onClick();
 
     if (firstRequest.meta.requestStatus === 'fulfilled') {
-      dispatch(getCardsAsync({ PACK_ID }));
+      // if (updateGet) {
+      await resetUI();
+
+      // if (updateTotal) {
+      // @ts-ignore
+      // updateTotal(Math.ceil(res.payload.cardsTotalCount / (ROWS_PER_PAGE || 8)));
+      // handleChangeValue();
+      // }
+      // }
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      // firstRequest.meta.requestStatus === 'fulfilled' && dispatch(getCardsAsync({ PACK_ID }));
     }
   };
 
@@ -110,7 +149,9 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
 
         {type === 'delete' && (
           <div className={classes.DeleteText}>
-            Do you really want to remove this card?
+            Do you really want to remove
+            <b>{` ${currentQuestion} `}</b>
+            card?
           </div>
         )}
 
@@ -131,21 +172,24 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
                   <MenuItem value="Something 2">Something 2</MenuItem>
                 </Select>
               </FormControl>
-
             </div>
 
             <div className={classes.TextAreaContainer}>
+
               <TextField
-                onChange={handleChangeQuestion}
+                onChange={handleChangeValues}
                 name="question"
                 text="Question"
+                user={values}
               />
 
               <TextField
-                onChange={handleChangeAnswer}
+                onChange={handleChangeValues}
                 name="answer"
                 text="Answer"
+                user={values}
               />
+
             </div>
           </>
         )}
@@ -153,36 +197,36 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
         <div className={classes.ButtonsContainer}>
 
           <Button
-            sidePadding={28}
-            type="white"
-            text="Cancel"
             onClick={onClick}
+            sidePadding={28}
+            text="Cancel"
+            type="white"
           />
 
           {type === 'add' && (
             <Button
+              onClick={addCardHandler}
               sidePadding={44}
               type="blue"
               text="Save"
-              onClick={addCardHandler}
             />
           )}
 
           {type === 'edit' && (
             <Button
-              sidePadding={44}
-              type="blue"
-              text="Edit"
               onClick={editPackHandler}
+              sidePadding={44}
+              text="Edit"
+              type="blue"
             />
           )}
 
           {type === 'delete' && (
             <Button
-              sidePadding={44}
-              type="red"
-              text="Delete"
               onClick={deleteCardHandler}
+              sidePadding={44}
+              text="Delete"
+              type="red"
             />
           )}
 
@@ -192,8 +236,10 @@ export const CardActions: FC<PropsWithChildren<CardActionsProps>> = (
   );
 };
 
-CardActions.defaultProps = {
-  CARD_ID: '',
-  PACK_ID: '',
+CardModals.defaultProps = {
   updateTotal: () => {},
+  currentQuestion: '',
+  currentAnswer: '',
+  PACK_ID: '',
+  CARD_ID: '',
 };

@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren, useState } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { motion } from "framer-motion";
 import { Checkbox } from '@mui/material';
-import classes from './PackActions.module.scss';
+import classes from './PackModals.module.scss';
 import { CloseIcon } from '../../icons/CloseIcon';
 import { TextField } from '../TextField/TextField';
 import { Button } from '../Button/Button';
@@ -12,7 +12,7 @@ import {
 } from '../../../store/packsSlice';
 import { modalContainer, modalMotion } from "../../../motions/modalMotion";
 
-interface AddNewPackProps {
+interface PackModalsProps {
   updateTotal?: (total: number) => void;
   ROWS_PER_PAGE?: number;
   onClick: () => void;
@@ -21,7 +21,7 @@ interface AddNewPackProps {
   id?: string;
 }
 
-export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = (
+export const PackModals: FC<PropsWithChildren<PackModalsProps>> = (
   {
     ROWS_PER_PAGE,
     updateTotal,
@@ -175,7 +175,7 @@ export const PackActions: FC<PropsWithChildren<AddNewPackProps>> = (
   );
 };
 
-PackActions.defaultProps = {
+PackModals.defaultProps = {
   id: '',
   packName: 'this Pack',
   updateTotal: () => {},

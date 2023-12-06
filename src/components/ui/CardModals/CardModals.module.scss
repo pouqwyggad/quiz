@@ -1,22 +1,23 @@
 @import "../../../css/common";
 
 .Wrapper {
-  position: absolute;
+  display: flex;
+  justify-content: center;
+  position: fixed;
   width: 100%;
   height: 100vh;
+  z-index: 10;
   top: 0;
   left: 0;
-  z-index: 10;
   background: rgba(0, 0, 0, .6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .Container {
+  margin-top: 15%;
   z-index: 11;
   background-color: #fff;
   width: 395px;
+  height: fit-content;
   border-radius: 2px;
   filter: drop-shadow(0 0 30px #343D40);
 }
@@ -79,5 +80,5 @@ hr {
 
 .DeleteText {
   @include create-text($text, 14px, 400, $lineHeight: 24px);
-  padding: 0 0 24px 24px;
+  padding: 0 24px 24px 24px;
 }

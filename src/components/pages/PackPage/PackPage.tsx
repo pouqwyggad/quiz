@@ -9,39 +9,37 @@ import { Button } from '../../ui/Button/Button';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { getCardsAsync } from '../../../store/cardsSlice';
 import { PackActionsInside } from '../../ui/PackAnctionsInside/PackActionsInside';
-import { CardActions } from '../../ui/CardActions/CardActions';
+import { CardModals } from '../../ui/CardModals/CardModals';
 import { IRequest } from '../../../interfaces/RequestFilters';
 import { mainPageMotion } from "../../../motions/mainPageMotion";
 import { NoMatchesPack } from "./NoMatchesPack/NoMatchesPack";
-import { CompletedPack } from "./CompletedPack/CompletedPack";
+import { CardSearch } from "../../ui/CardSearch/CardSearch";
+import { CardsList } from "../../ui/CardsList/CardsList";
+import { Pagination } from "../../ui/Pagination/Pagination";
+import { CardsListMotion } from "../../../motions/listMotion";
 
-interface PackPageProps {}
+interface PackPageProps {
+}
 
 export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
   const dispatch = useAppDispatch();
+  const packInfo = useAppSelector((state) => state.cards.packCards);
+  const loading = useAppSelector((state) => state.cards.loading);
   const ID_USER = useAppSelector((state) => state.auth.user._id);
-  const packInfo = useAppSelector((state) => state.cards);
-  const path = useRef('');
-  const [request, setRequest] = useState<IRequest>({
-    PACK_ID: path.current,
-    page: 1,
-    rowsPerPage: 6,
-    sort: '0grade',
-    searchValue: '',
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [tableStatus, setTableStatus] = useState('');
   const [totalPages, setTotalPages] = useState(0);
   const [show, setShow] = useState(false);
-  const debouncedSearch = useDebounce(request, 500);
-
-  const updateCardsData = async () => dispatch(getCardsAsync({
+  const [reset, setReset] = useState(false);
+  const path = useRef('');
+  const [request, setRequest] = useState<IRequest>({
     PACK_ID: path.current,
-    page: currentPage,
-    rowsPerPage: request.rowsPerPage,
-    sortCards: request.sort,
-    cardQuestion: request.searchValue,
-  }));
+    searchValue: '',
+    sort: '0grade',
+    rowsPerPage: 6,
+  });
+  const debouncedRequest = useDebounce(request, 500);
+  const debouncePagination = useDebounce(currentPage, 700);
 
   const clickPaginationButtons = (page: number, type: number) => {
     if ((page === 1 && type === -1) || (page === totalPages && type === 1)) return;
@@ -58,36 +56,43 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     setCurrentPage(page);
   };
 
+  const addCardHandler = () => setShow((n) => !n);
+
+  const updateCardsData = async () => dispatch(getCardsAsync({
+    cardQuestion: request.searchValue,
+    rowsPerPage: request.rowsPerPage,
+    sortCards: request.sort,
+    PACK_ID: path.current,
+    page: currentPage,
+  }));
+
   useEffect(() => {
     const url = window.location.pathname.split('/');
     path.current = url[url.length - 1];
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
-      if (!debouncedSearch) {
-        return;
-      }
+      if (!debouncedRequest) return;
+
       const res = await updateCardsData();
 
-      if (res.meta.requestStatus === 'fulfilled') {
-        const cardsNotEmpty = res.payload.cards.length !== 0;
-        const isMyPack = ID_USER === res.payload.packUserId;
-        const hasSearchValue = request.searchValue !== '';
+      const hasSearchValue = request.searchValue !== '';
+      const cardsLength = res.payload.cards.length;
+      const isCurrentUserPack = ID_USER === res.payload.packUserId;
 
-        if (cardsNotEmpty && isMyPack) {
-          setTableStatus('success my');
-        } else if (cardsNotEmpty) {
-          setTableStatus('success all');
-        } else if (!cardsNotEmpty && isMyPack) {
-          setTableStatus('empty my');
+      if (res.meta.requestStatus === 'fulfilled') {
+        if (cardsLength > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          isCurrentUserPack ? setTableStatus('MyPackSuccess') : setTableStatus('StrangerPackSuccess');
+        } else if (isCurrentUserPack) {
+          setTableStatus('MyPackEmpty');
         } else {
-          setTableStatus('empty all');
+          setTableStatus('StrangerPackEmpty');
         }
 
-        if (!cardsNotEmpty && hasSearchValue) {
-          if (isMyPack) {
-            setTableStatus('no matches my');
-          } else {
-            setTableStatus('no matches all');
-          }
+        if (cardsLength === 0 && hasSearchValue) {
+          setTableStatus(isCurrentUserPack ? 'MyPackNoThisCard' : 'StrangerPackNoThisCard');
         }
 
         if (res.meta.requestStatus === 'fulfilled' && request.rowsPerPage !== undefined) {
@@ -97,7 +102,7 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
     };
 
     fetchData();
-  }, [debouncedSearch, currentPage]);
+  }, [debouncedRequest, debouncePagination, reset]);
 
   return (
     <motion.div
@@ -107,85 +112,126 @@ export const PackPage: FC<PropsWithChildren<PackPageProps>> = () => {
       animate="animate"
       exit="exit"
     >
-
       <div className={classes.Title}>
-        {packInfo.loading ? (
+
+        {loading ? (
           <div className={classes.PackTitle}>
-            <Skeleton animation="wave" variant="text" width="100%" height="30px" />
+            <Skeleton
+              animation="wave"
+              variant="text"
+              width="100%"
+              height="30px"
+            />
           </div>
         ) : (
-          <PackActionsInside
-            packName={packInfo.packCards}
-          />
+          <PackActionsInside packInfo={packInfo} />
         )}
 
-        {((tableStatus === 'success my') || (tableStatus === 'no matches my')) && (
-          <>
-            <Button
-              onClick={() => setShow((p) => !p)}
-              text="Add new card"
-              sidePadding={35}
-              type="blue"
-            />
-
-            <AnimatePresence>
-              {show && (
-                <CardActions
-                  onClick={() => setShow((p) => !p)}
-                  ROWS_PER_PAGE={request.rowsPerPage || 8}
-                  updateTotal={setTotalPages}
-                  PACK_ID={path.current}
-                  type="add"
-                />
-              )}
-            </AnimatePresence>
-
-          </>
-        )}
-      </div>
-
-      {(tableStatus === 'success all' || tableStatus === 'success my') && (
-        <CompletedPack
-          paginationClickHandler={clickPaginationButtons}
-          onChangeRequest={changeRequestValues}
-          data={packInfo.packCards.cards}
-          setTotalPages={setTotalPages}
-          onClick={clickHandler}
-          current={currentPage}
-          total={totalPages}
-          request={request}
-        />
-      )}
-
-      {tableStatus === "empty my" && (
-        <div className={classes.EmptyPackContainer}>
-          <div className={classes.EmptyPackText}>
-            This pack is empty. Click add new card to fill this pack
-          </div>
-
+        {tableStatus.includes("My") && (
           <Button
             onClick={() => setShow((p) => !p)}
             text="Add new card"
             sidePadding={35}
             type="blue"
           />
-        </div>
-      )}
+        )}
 
-      {tableStatus === "empty all" && (
-        <div className={classes.EmptyPackContainer}>
-          <div className={classes.EmptyPackText}>
-            This pack is empty.
-          </div>
-        </div>
-      )}
+      </div>
 
-      {(tableStatus === "no matches my" || tableStatus === "no matches all") && (
-        <NoMatchesPack
+      <AnimatePresence>
+        {(tableStatus.includes("Success") || tableStatus.includes("NoThisCard")) && (
+        <CardSearch
           onChange={changeRequestValues}
           value={request.searchValue}
         />
-      )}
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {tableStatus.includes("Success") && (
+          <motion.div
+            className={classes.ContainerW}
+            variants={CardsListMotion}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <CardsList
+              resetUI={() => setReset((n) => !n)}
+              rowsPerPage={request.rowsPerPage || 8}
+              sortByGrade={changeRequestValues}
+              updateTotal={setTotalPages}
+              data={packInfo.cards}
+              request={request}
+              path={path.current}
+            />
+
+            <Pagination
+              ROWS_PER_PAGE={request.rowsPerPage || 8}
+              clickHandler={clickPaginationButtons}
+              onChange={changeRequestValues}
+              onClick={clickHandler}
+              current={currentPage}
+              separator="..."
+              total={totalPages}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {tableStatus.includes("Empty") && (
+
+          ID_USER === packInfo.packUserId ? (
+            <motion.div
+              className={classes.EmptyPackContainer}
+              variants={CardsListMotion}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className={classes.EmptyPackText}>
+                This pack is empty. Click add new card to fill this pack
+              </div>
+              <Button
+                onClick={() => setShow((p) => !p)}
+                text="Add new card"
+                sidePadding={35}
+                type="blue"
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              className={classes.EmptyPackContainer}
+              variants={CardsListMotion}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className={classes.EmptyPackText}>This pack is empty.</div>
+            </motion.div>
+          )
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {tableStatus.includes("NoThisCard") && (
+          <NoMatchesPack />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {show && (
+          <CardModals
+            resetUI={() => setReset((n) => !n)}
+            ROWS_PER_PAGE={request.rowsPerPage || 8}
+            updateTotal={setTotalPages}
+            onClick={addCardHandler}
+            PACK_ID={path.current}
+            type="add"
+          />
+        )}
+      </AnimatePresence>
 
     </motion.div>
   );

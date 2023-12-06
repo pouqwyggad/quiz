@@ -6,7 +6,7 @@ import { Pack } from '../../../interfaces/Packs';
 import { useAppSelector } from '../../../hooks/hook';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { IRequest } from '../../../interfaces/RequestFilters';
-import { ListMotion } from "../../../motions/listMotion";
+import { CardRowItem } from "../../../motions/listMotion";
 import { ListItem } from "./ListItem/ListItem";
 
 interface LayoutListProps {
@@ -37,12 +37,7 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
   };
 
   return (
-    <motion.div
-      className={classes.Container}
-      variants={ListMotion}
-      initial="initial"
-      animate="animate"
-    >
+    <div className={classes.Container}>
       <div className={classes.Table}>
         <div className={classes.Row}>
           <div className={classes.RowCellOne}>Name</div>
@@ -62,10 +57,22 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
         </div>
 
         {isLoading && (
-          Array.from(Array(rowsPerPage).keys()).map((n, i) => (
-            <div key={i} className={classes.SkeletonRow}>
-              <Skeleton className={classes.Skeleton} animation="wave" variant="rectangular" width="98%" />
-            </div>
+          Array.from(Array(data.length).keys()).map((n, i) => (
+            <motion.div
+              className={classes.SkeletonRow}
+              variants={CardRowItem}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              key={i}
+            >
+              <Skeleton
+                className={classes.Skeleton}
+                animation="wave"
+                variant="rectangular"
+                width="96%"
+              />
+            </motion.div>
           ))
         )}
 
@@ -79,7 +86,8 @@ export const LayoutList: FC<PropsWithChildren<LayoutListProps>> = (
             />
           ))
         )}
+
       </div>
-    </motion.div>
+    </div>
   );
 };

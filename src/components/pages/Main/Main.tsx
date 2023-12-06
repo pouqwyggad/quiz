@@ -2,24 +2,25 @@ import React, {
   FC, PropsWithChildren, useEffect, useState,
 } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
-import Stack from '@mui/material/Stack';
-import CircularProgress from '@mui/material/CircularProgress';
 import { AnimatePresence, motion } from 'framer-motion';
 import classes from './Main.module.scss';
 import { Filters } from '../../ui/Filters/Filters';
 import { Pagination } from '../../ui/Pagination/Pagination';
 import { Button } from '../../ui/Button/Button';
-import { PackActions } from '../../ui/PackActions/PackActions';
+import { PackModals } from '../../ui/PackModals/PackModals';
 import { useAppDispatch, useAppSelector } from '../../../hooks/hook';
 import { LayoutList } from '../../ui/LayoutList/LayoutList';
 import { IRequest } from '../../../interfaces/RequestFilters';
 import { getPacksAsync } from '../../../store/packsSlice';
 import { mainPageMotion } from "../../../motions/mainPageMotion";
+import { Spinner } from "../../ui/Spinner/Spinner";
+import { ListMotion } from "../../../motions/listMotion";
 
 interface MainProps {}
 
 export const Main: FC<PropsWithChildren<MainProps>> = () => {
   const dispatch = useAppDispatch();
+  const loading = useAppSelector((state) => state.packs.loading);
   const cards = useAppSelector((state) => state.packs.cardsInfo);
   const [request, setRequest] = useState<IRequest>({
     searchValue: '',
@@ -74,8 +75,8 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
       const res = await updatePacksData();
 
       if (res.meta.requestStatus === 'fulfilled') {
-        if (res.payload.cardsPack !== 0) setTableStatus('success');
-        else setTableStatus('empty');
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        res.payload.cardPacks ? setTableStatus('success') : setTableStatus('empty');
 
         if (request.rowsPerPage !== undefined) {
           setTotalPages(Math.ceil(res.payload.cardPacksTotalCount / request.rowsPerPage));
@@ -106,7 +107,7 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
 
         <AnimatePresence>
           {newPackStatus && (
-          <PackActions
+          <PackModals
             onClick={addCardHandler}
             type="add"
             updateTotal={setTotalPages}
@@ -122,8 +123,14 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
         onReset={resetRequestValue}
       />
 
-      {tableStatus === 'success' ? (
-        <div>
+      {tableStatus === 'success' && cards.cardPacks.length ? (
+        <motion.div
+          variants={ListMotion}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+        >
+
           <LayoutList
             data={cards.cardPacks}
             rowsPerPage={request.rowsPerPage || 8}
@@ -141,40 +148,33 @@ export const Main: FC<PropsWithChildren<MainProps>> = () => {
             ROWS_PER_PAGE={request.rowsPerPage || 8}
             clickHandler={clickPaginationButtons}
           />
-        </div>
+
+        </motion.div>
       ) : (
-        <div className={classes.Spinner}>
-          <Stack sx={{ color: '#366eff' }} spacing={2} direction="row">
-            <CircularProgress color="inherit" />
-          </Stack>
-        </div>
-      )}
-
-      {tableStatus === 'empty' && (
-      <div className={classes.NoPacks}>
-        <div className={classes.Title}>No packages found. Add new pack</div>
-
-        <Button
-          sidePadding={28}
-          type="blue"
-          text="Add new pack"
-          onClick={addCardHandler}
-        />
-
         <AnimatePresence>
-          {newPackStatus && (
-          <PackActions
-            onClick={addCardHandler}
-            type="add"
-            updateTotal={setTotalPages}
-            ROWS_PER_PAGE={request.rowsPerPage}
-          />
+          {loading ? (
+            <Spinner className={classes.Spinner} />
+          ) : (
+            <motion.div
+              className={classes.NoPacks}
+              variants={ListMotion}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              No packages found. Add new pack
+
+              <Button
+                onClick={addCardHandler}
+                text="Add new pack"
+                sidePadding={28}
+                type="blue"
+              />
+
+            </motion.div>
           )}
         </AnimatePresence>
-
-      </div>
       )}
-
     </motion.div>
   );
 };

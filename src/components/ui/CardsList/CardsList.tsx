@@ -1,5 +1,5 @@
 import React, {
-  FC, PropsWithChildren, useEffect, useRef,
+  FC, PropsWithChildren,
 } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { motion } from "framer-motion";
@@ -7,17 +7,18 @@ import classes from './CardsList.tsx.module.scss';
 import { DropDownArrowIcon } from '../../icons/DropDownArrowIcon';
 import { Card } from '../../../interfaces/Cards';
 import { useAppSelector } from '../../../hooks/hook';
-import { ListMotion } from '../../../motions/listMotion';
+import { CardRowItem, ListMotion } from '../../../motions/listMotion';
 import { IRequest } from "../../../interfaces/RequestFilters";
 import { CardListItem } from "./CardListItem/CardListItem";
 
 interface CardsListProps {
   sortByGrade: (newValue: IRequest) => void;
   updateTotal: (total: number) => void;
-  ROWS_PER_PAGE: number;
+  resetUI: () => void;
   rowsPerPage: number;
   request: IRequest;
   data: Card[];
+  path: string;
 }
 
 export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
@@ -25,25 +26,17 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
     data,
     rowsPerPage,
     updateTotal,
-    ROWS_PER_PAGE,
-    request,
     sortByGrade,
+    request,
+    resetUI,
+    path,
   },
 ) => {
   const isLoading = useAppSelector((state) => state.cards.loading);
-  const path = useRef('');
   const changeSortHandler = () => {
-    if (request.sort === '0grade') {
-      sortByGrade({ sort: '1grade' });
-    } else {
-      sortByGrade({ sort: '0grade' });
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    request.sort === '0grade' ? sortByGrade({ sort: '1grade' }) : sortByGrade({ sort: '0grade' });
   };
-
-  useEffect(() => {
-    const url = window.location.pathname.split('/');
-    path.current = url[url.length - 1];
-  }, []);
 
   return (
     <motion.div
@@ -70,29 +63,34 @@ export const CardsList: FC<PropsWithChildren<CardsListProps>> = (
         </div>
 
         {isLoading && (
-          Array.from(Array(rowsPerPage).keys()).map((n, i) => (
-            <div
+          Array.from(Array(data.length).keys()).map((n, i) => (
+            <motion.div
               className={classes.SkeletonRow}
+              variants={CardRowItem}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               key={i}
             >
               <Skeleton
                 className={classes.SkeletonRowItem}
                 variant="rectangular"
                 animation="wave"
-                width="98%"
+                width="96%"
               />
-            </div>
+            </motion.div>
           ))
         )}
 
         {data && !isLoading && (
           data.map((item: Card) => (
             <CardListItem
-              ROWS_PER_PAGE={ROWS_PER_PAGE}
+              ROWS_PER_PAGE={rowsPerPage}
               updateTotal={updateTotal}
-              path={path.current}
+              path={path}
               item={item}
               key={item._id}
+              resetUI={resetUI}
             />
           ))
         )}

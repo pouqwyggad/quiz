@@ -10,13 +10,13 @@ import { EditIcon } from '../../icons/EditIcon';
 import { TrashCanIcon } from '../../icons/TrashCanIcon';
 import { HatIcon } from '../../icons/HatIcon';
 import { profileDropDownMotion } from '../../../motions/pageMotion';
-import { PackActions } from '../PackActions/PackActions';
+import { PackModals } from '../PackModals/PackModals';
 
 interface PackActionsInsideProps {
-  packName: Cards
+  packInfo: Cards;
 }
 
-export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = ({ packName }) => {
+export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = ({ packInfo }) => {
   const menuRef = useRef<HTMLButtonElement | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const USER_ID = useAppSelector((state) => state.auth.user._id);
@@ -65,8 +65,8 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
   return (
     <>
       <div className={classes.PackTitle}>
-        {packName.packName}
-        {USER_ID === packName.packUserId && (
+        {packInfo.packName}
+        {USER_ID === packInfo.packUserId && (
           <PackEditConfIcon
             onClick={() => setShowMenu((p) => !p)}
             ref={menuRef}
@@ -117,7 +117,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
         </AnimatePresence>
 
         {/* {showDeleteModal && selectedItemId === path.current && ( */}
-        {/* <PackActions */}
+        {/* <PackModals */}
         {/*  onClick={handleDeleteClick} */}
         {/*  type="delete" */}
         {/*  id={path.current} */}
@@ -127,7 +127,7 @@ export const PackActionsInside: FC<PropsWithChildren<PackActionsInsideProps>> = 
       </div>
 
       {showEditModal && (
-        <PackActions
+        <PackModals
           onClick={handleEditClick}
           type="edit"
           id={path.current}

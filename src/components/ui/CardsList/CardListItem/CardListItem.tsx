@@ -2,20 +2,22 @@ import React, { FC, PropsWithChildren, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import { styled } from "@mui/material/styles";
 import Rating from "@mui/material/Rating";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import classes from './CardListItem.module.scss';
 import { formatDate } from "../../../../utils/dataHelper";
 import { EditIcon } from "../../../icons/EditIcon";
 import { TrashCanIcon } from "../../../icons/TrashCanIcon";
-import { CardActions } from "../../CardActions/CardActions";
+import { CardModals } from "../../CardModals/CardModals";
 import { Card } from "../../../../interfaces/Cards";
 import { useAppSelector } from "../../../../hooks/hook";
+import { CardRowItem } from "../../../../motions/listMotion";
 
 interface CardListItemProps {
   updateTotal: (total: number) => void;
   ROWS_PER_PAGE: number;
   path: string;
   item: Card;
+  resetUI: () => void;
 }
 
 const StyledRating = styled(Rating)({
@@ -30,6 +32,7 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
     ROWS_PER_PAGE,
     item,
     path,
+    resetUI,
   },
 ) => {
   const USER_ID = useAppSelector((state) => state.auth.user._id);
@@ -42,7 +45,13 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
   const currentSelectedModal = (id: string) => setSelectedItemId(id);
 
   return (
-    <div className={classes.Row}>
+    <motion.div
+      className={classes.Row}
+      variants={CardRowItem}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <div className={classes.RowCellOne}>{item.question}</div>
       <div className={classes.RowCellTwo}>{item.answer}</div>
       <div className={classes.RowCellThree}>{formatDate(item.updated)}</div>
@@ -83,26 +92,31 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
 
             <AnimatePresence>
               {showEditModal && selectedItemId === item._id && (
-                <CardActions
+                <CardModals
                   ROWS_PER_PAGE={ROWS_PER_PAGE}
                   onClick={handleEditClick}
                   updateTotal={updateTotal}
                   CARD_ID={item._id}
                   PACK_ID={path}
                   type="edit"
+                  currentQuestion={item.question}
+                  currentAnswer={item.answer}
+                  resetUI={resetUI}
                 />
               )}
             </AnimatePresence>
 
             <AnimatePresence>
               {showDeleteModal && selectedItemId === item._id && (
-                <CardActions
+                <CardModals
                   ROWS_PER_PAGE={ROWS_PER_PAGE}
                   onClick={handleDeleteClick}
                   updateTotal={updateTotal}
                   CARD_ID={item._id}
                   PACK_ID={path}
                   type="delete"
+                  resetUI={resetUI}
+                  currentQuestion={item.question}
                 />
               )}
             </AnimatePresence>
@@ -110,6 +124,6 @@ export const CardListItem: FC<PropsWithChildren<CardListItemProps>> = (
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
